@@ -4,8 +4,14 @@ import streamlit as st
 st.set_page_config(
     page_title="Blood Diagnosis Tool",
     page_icon="🔬",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
+
+# Add viewport meta tag for mobile
+st.markdown("""
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+""", unsafe_allow_html=True)
 
 # Custom CSS for the layout
 st.markdown("""
@@ -165,6 +171,8 @@ html, body {
     display: flex;
     width: 100vw;
     height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
     padding: 24px;
     align-items: flex-start;
     gap: 24px;
@@ -174,6 +182,7 @@ html, body {
     position: fixed;
     top: 0;
     left: 0;
+    overflow: hidden;
 }
 
 /* Left container */
@@ -181,12 +190,15 @@ html, body {
     display: flex;
     width: 374px;
     height: 100%;
+    min-height: calc(100vh - 48px);
+    max-height: calc(100vh - 48px);
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     flex-shrink: 0;
     align-self: stretch;
     position: relative;
+    overflow: hidden;
 }
 
 /* Top container inside left */
@@ -322,6 +334,8 @@ html, body {
 .right-container {
     flex: 1 0 0;
     height: 100%;
+    min-height: calc(100vh - 48px);
+    max-height: calc(100vh - 48px);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -490,6 +504,8 @@ html, body {
     flex-direction: column;
     width: 100%;
     height: 100%;
+    min-height: 0;
+    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0;
@@ -648,6 +664,172 @@ html, body {
     height: 1px;
     background: #E5E7EB;
     margin: 0 24px;
+}
+
+/* Mobile and tablet responsive design */
+@media (max-width: 1024px) {
+    .main-container {
+        flex-direction: column;
+        height: 100vh;
+        min-height: 100vh;
+        max-height: 100vh;
+        padding: 12px;
+        gap: 12px;
+        overflow-y: auto;
+    }
+    
+    .left-container {
+        width: 100%;
+        height: 40vh;
+        min-height: 40vh;
+        max-height: 40vh;
+        flex-shrink: 0;
+    }
+    
+    .right-container {
+        width: 100%;
+        height: 60vh;
+        min-height: 60vh;
+        max-height: 60vh;
+        flex-shrink: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    .left-container {
+        height: 35vh;
+        min-height: 35vh;
+        max-height: 35vh;
+    }
+    
+    .right-container {
+        height: 65vh;
+        min-height: 65vh;
+        max-height: 65vh;
+    }
+    
+    .chat-item {
+        padding: 12px 16px;
+    }
+    
+    .input-section {
+        padding: 12px 16px;
+    }
+    
+    .section-header {
+        padding: 12px 16px;
+    }
+    
+    .bottom-container {
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 4px;
+        gap: 4px;
+    }
+    
+    .left-container {
+        height: 30vh;
+        min-height: 30vh;
+        max-height: 30vh;
+    }
+    
+    .right-container {
+        height: 70vh;
+        min-height: 70vh;
+        max-height: 70vh;
+    }
+    
+    .chat-item {
+        padding: 8px 12px;
+    }
+    
+    .input-section {
+        padding: 8px 12px;
+    }
+    
+    .section-header {
+        padding: 8px 12px;
+    }
+    
+    .bottom-container {
+        padding: 8px 12px;
+    }
+    
+    .user-name {
+        font-size: 12px !important;
+    }
+    
+    .user-role {
+        font-size: 10px !important;
+    }
+}
+
+/* Landscape orientation for tablets */
+@media (max-height: 600px) and (orientation: landscape) {
+    .main-container {
+        flex-direction: row;
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    .left-container {
+        width: 300px;
+        height: 100%;
+        min-height: calc(100vh - 16px);
+        max-height: calc(100vh - 16px);
+    }
+    
+    .right-container {
+        flex: 1;
+        height: 100%;
+        min-height: calc(100vh - 16px);
+        max-height: calc(100vh - 16px);
+    }
+}
+
+/* Touch-friendly interactions for mobile */
+@media (max-width: 1024px) {
+    .chat-item {
+        min-height: 60px;
+        padding: 16px 20px;
+    }
+    
+    .send-btn, .action-btn {
+        min-width: 44px;
+        min-height: 44px;
+        width: 44px;
+        height: 44px;
+    }
+    
+    .user-profile {
+        min-height: 60px;
+        padding: 8px 0;
+    }
+    
+    .message-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px 0;
+    }
+}
+
+/* Prevent text selection on mobile */
+@media (max-width: 1024px) {
+    .chat-item, .user-profile, .send-btn, .action-btn {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
