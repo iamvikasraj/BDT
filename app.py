@@ -1,4 +1,15 @@
 import streamlit as st
+from pathlib import Path
+
+# Version information
+def get_version():
+    """Get version from VERSION file"""
+    version_file = Path("VERSION")
+    if version_file.exists():
+        return version_file.read_text().strip()
+    return "0.0.0"
+
+VERSION = get_version()
 
 # Page configuration
 st.set_page_config(
@@ -984,4 +995,10 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+# Add version information in sidebar
+with st.sidebar:
+    st.markdown("---")
+    st.markdown(f"**Version:** {VERSION}")
+    st.markdown("**BDT - Blood Diagnosis Tool**")
 
