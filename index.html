@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blood Diagnosis Tool</title>
+    
+    <!-- Import Work Sans font -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables for Color Palette */
+        :root {
+            /* Primary Colors */
+            --color-primary: #19B76A;
+            --color-primary-dark: #16A085;
+            
+            /* Background Colors */
+            --bg-main: linear-gradient(180deg, #BFC3C8 0%, #DAD9DA 100%);
+            --bg-container: #F8F8F8;
+            --bg-left-top: rgba(245, 245, 245, 0.9);
+            --bg-left-bottom: rgba(255, 255, 255, 0.9);
+            --bg-input: rgba(255, 255, 255, 0.95);
+            
+            /* Text Colors */
+            --text-primary: #202020;
+            --text-secondary: #343434;
+            --text-muted: #6B7280;
+            --text-placeholder: #9CA3AF;
+            --text-disabled: #D1D5DB;
+            
+            /* Border Colors */
+            --border-light: #EAEAEA;
+            --border-medium: #E5E7EB;
+            --border-glass: rgba(255, 255, 255, 0.3);
+            
+            /* Shadow Colors */
+            --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            
+            /* Avatar Colors */
+            --avatar-bg: #dbdbdb;
+        }
+
+        /* Reset all default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-main);
+        }
+
+        /* Main page container */
+        .main-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            min-height: 100vh;
+            max-height: 100vh;
+            background: var(--bg-main);
+            padding: 16px;
+            gap: 16px;
+        }
+
+        /* Left container - Chat history */
+        .left-container {
+            flex: 0 0 330px;
+            display: flex;
+            flex-direction: column;
+            /* background: var(--bg-container); */
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .top-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            /* background: var(--bg-left-top); */
+            padding: 0;
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+
+        .top-container::-webkit-scrollbar {
+            display: none; /* WebKit */
+        }
+
+        .section-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chat-history {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .chat-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            padding: 20px;
+        }
+
+        .chat-item:hover {
+            background: #f5f5f5;
+            transform: translateX(2px);
+        }
+
+        .chat-item.active {
+            background: #d2d2d2;
+            /* border-right: 1px solid var(--color-primary); */
+        }
+
+
+        .special-item {
+            background: linear-gradient(135deg, #19B76A, #16A085);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: none;
+        }
+
+        .special-item .chat-date {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .special-item .chat-message {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .special-item:hover {
+            background: linear-gradient(135deg, #16A085, #138D75);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(25, 183, 106, 0.3);
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .chat-date {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .chat-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .bottom-container {
+            /* background: var(--bg-left-bottom); */
+            padding: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--avatar-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Right container - Chat interface */
+        .right-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* background: var(--bg-container); */
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .right-top-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            min-height: 0; /* Important for flexbox scrolling */
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+
+        .welcome-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            transition: all 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .welcome-section.hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+        }
+
+        .welcome-section svg {
+            margin-bottom: 20px;
+        }
+
+        .welcome-section p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .chat-conversation {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            /* padding: 10px 0; */
+            height: 100%;
+            overflow-y: auto;
+            /* min-height: 0; */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+
+        .chat-conversation::-webkit-scrollbar {
+            display: none; /* WebKit */
+        }
+
+        .chat-conversation.active {
+            display: flex;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+            animation: slideInUp 0.3s ease;
+            margin: 8px 0;
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+        }
+
+        .message-bubble {
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            background: #dedede;
+            color: #2c2c2c;
+            border: none;
+        }
+
+        .message.user .message-bubble {
+            background: #dedede;
+            color: #2c2c2c;
+            border: none;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            padding: 0 8px;
+        }
+
+        .message.user .message-time {
+            text-align: right;
+        }
+
+        .message.assistant .message-time {
+            text-align: left;
+        }
+
+        .medical-data {
+            background: #ffffff8c;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 70vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .medical-data::-webkit-scrollbar {
+            display: none;
+        }
+
+        .patient-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .patient-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 14px;
+            min-width: 100px;
+        }
+
+        .info-value {
+            color: #1e293b;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .patient-avatar {
+            width: 48px;
+            height: 48px;
+            background: #E3F2FD;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .patient-details h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .patient-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .patient-gender {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .lab-results {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .lab-header {
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+
+        .lab-header h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .lab-summary {
+            font-size: 14px;
+            color: #EF4444;
+            font-weight: 500;
+        }
+
+        .lab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1px;
+            background: #E5E7EB;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .lab-item {
+            background: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lab-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lab-item-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lab-name {
+            font-weight: 500;
+            color: #1F2937;
+            margin-bottom: 4px;
+        }
+
+        .lab-normal {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .lab-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .lab-value.high {
+            color: #EF4444;
+        }
+
+        .lab-value.low {
+            color: #EF4444;
+        }
+
+        .lab-severity {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .severity-severe {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .severity-moderate {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .severity-mild {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .diagnosis-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .diagnosis-header {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: -20px -20px 20px -20px;
+        }
+
+        .diagnosis-header h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .diagnosis-description {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .diagnosis-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .diagnosis-card {
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .diagnosis-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .diagnosis-rank {
+            position: absolute;
+            top: -8px;
+            left: 20px;
+            background: #19B76A;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .diagnosis-confidence {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .confidence-score {
+            font-size: 24px;
+            font-weight: 700;
+            color: #19B76A;
+        }
+
+        .confidence-label {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .diagnosis-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 12px;
+        }
+
+        .diagnosis-reasoning {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .diagnosis-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: #E3F2FD;
+            color: #1E40AF;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .medical-message {
+            /* background: #f8fafc; */
+            /* border: 1px solid #e2e8f0; */
+            /* border-radius: 12px; */
+            /* padding: 16px; */
+            /* margin: 8px 0; */
+        }
+
+        .medical-message h4 {
+            margin: 0 0 12px 0;
+            color: #1e293b;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .patient-info-content p {
+            margin: 4px 0;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .abnormal-count {
+            color: #dc2626;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .lab-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lab-item-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .lab-name {
+            font-weight: 500;
+            color: #1e293b;
+            flex: 1;
+        }
+
+        .lab-value {
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .lab-value.high {
+            color: #dc2626;
+        }
+
+        .lab-value.low {
+            color: #dc2626;
+        }
+
+        .lab-severity {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .lab-severity.severe {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .lab-severity.moderate {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .lab-severity.mild {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .diagnosis-subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .diagnosis-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .diagnosis-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+        }
+
+        .diagnosis-rank {
+            position: absolute;
+            top: -8px;
+            left: 16px;
+            background: #19b76a;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .diagnosis-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .confidence-score {
+            color: #19b76a;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .diagnosis-reasoning {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .pdf-analysis {
+            padding-bottom: 12px;
+            border-bottom: 0.25px solid #d7d7d7;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            /* border-left: 4px solid #3b82f6; */
+        }
+
+        .pdf-analysis .chat-date {
+            font-weight: 600;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .right-bottom-container {
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 0;
+            align-items: center;
+            border: 1px solid var(--border-medium);
+            border-radius: 12px;
+            background: #ffffff8c;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .input-section:hover {
+            border: 1.5px solid #cccccc;
+        }
+
+        .input-section:focus-within {
+            border: 1.5px solid #cccccc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #19B76A, #16A085, #19B76A, #16A085);
+            background-size: 400% 400%;
+            border-radius: 14px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .input-field {
+            flex: 1;
+        }
+
+        .message-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .message-input::placeholder {
+            color: var(--text-placeholder);
+        }
+
+        .button-group {
+            display: flex;
+        }
+
+        .pdf-btn, .send-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pdf-btn {
+            border-right: 1px solid var(--border-medium);
+        }
+
+        .pdf-btn:hover, .send-btn:hover {
+            background: rgba(25, 183, 106, 0.1);
+            color: var(--color-primary);
+        }
+
+        /* Custom scrollbar for main container */
+        .main-container::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .main-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main-container::-webkit-scrollbar-thumb {
+            background: #E5E7EB;
+            border-radius: 1.5px;
+            transition: all 0.3s ease;
+        }
+
+        .main-container::-webkit-scrollbar-thumb:hover {
+            background: #D1D5DB;
+            width: 4px;
+        }
+
+        .main-container {
+            scrollbar-width: thin;
+            scrollbar-color: #E5E7EB transparent;
+        }
+
+        /* Global scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF;
+        }
+
+        /* Mobile and tablet responsive design */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                height: 100vh;
+                min-height: 100vh;
+                max-height: 100vh;
+                padding: 12px;
+            }
+
+            .left-container {
+                flex: 0 0 200px;
+            }
+
+            .right-container {
+                flex: 1;
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            .left-container {
+                flex: 0 0 180px;
+            }
+            
+            .top-container {
+                padding: 16px;
+            }
+            
+            .right-top-container {
+                padding: 20px;
+            }
+            
+            .right-top-container p {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 4px;
+                gap: 4px;
+            }
+            
+            .left-container {
+                flex: 0 0 160px;
+            }
+            
+            .top-container {
+                padding: 12px;
+            }
+            
+            .right-top-container {
+                padding: 16px;
+            }
+            
+            .right-top-container p {
+                font-size: 14px;
+            }
+            
+            .input-section {
+                gap: 8px;
+            }
+            
+            .message-input {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+            
+            .send-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Landscape orientation for tablets */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .main-container {
+                flex-direction: row;
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            .left-container {
+                flex: 0 0 300px;
+            }
+            
+            .right-container {
+                flex: 1;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .chat-item:hover {
+                transform: none;
+            }
+            
+            .send-btn:hover {
+                transform: none;
+            }
+            
+            .message-input:focus {
+                -webkit-tap-highlight-color: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="left-container">
+            <div class="top-container">
+                <div class="section-header">
+                    <span class="section-title">Previous Diagnosis</span>
+                </div>
+                <div class="chat-history">
+                    <div class="chat-item medical-records-item" data-type="medical-records">
+                        <div class="chat-header">
+                            <div class="chat-date">Medical Records</div>
+                            <div class="chat-time">John Smith</div>
+                        </div>
+                        <div class="chat-message">Complete patient analysis & lab results</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-container">
+                <div class="user-profile">
+                    <div class="user-avatar-container">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT7ZW1MttWL5hg-E0pJuXIftWMBhUpcifEsA&s" alt="Vikas Raj Yadav" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">Dr. Vikas Raj</div>
+                        <div class="user-role">General Practitioner</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="right-top-container">
+                <div class="chat-container">
+                    <div class="welcome-section" id="welcomeSection">
+                        <svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.0129 2.67236C12.9723 -0.890788 18.0277 -0.890787 18.9871 2.67236L20.3219 7.62994C20.6565 8.87273 21.6273 9.8435 22.8701 10.1781L27.8276 11.5129C31.3908 12.4723 31.3908 17.5277 27.8276 18.4871L22.8701 19.8219C21.6273 20.1565 20.6565 21.1273 20.3219 22.3701L18.9871 27.3276C18.0277 30.8908 12.9723 30.8908 12.0129 27.3276L10.6781 22.3701C10.3435 21.1273 9.37273 20.1565 8.12994 19.8219L3.17236 18.4871C-0.390788 17.5277 -0.390787 12.4723 3.17236 11.5129L8.12994 10.1781C9.37273 9.8435 10.3435 8.87273 10.6781 7.62994L12.0129 2.67236Z" fill="#19B76A"/>
+                        </svg>
+                        <p>Hello, Vikas!<br>
+                        How can I help you today?</p>
+                    </div>
+                    <div class="chat-conversation" id="chatConversation">
+                        <!-- Messages will be added here dynamically -->
+                    </div>
+                    <div class="medical-data" id="medicalData" style="display: none;">
+                        <!-- Medical data will be displayed here -->
+                    </div>
+                </div>
+            </div>
+            <div class="right-bottom-container">
+                <div class="input-section">
+                    <div class="input-field">
+                        <input type="text" placeholder="Type your message..." class="message-input">
+                        <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;">
+                    </div>
+                    <div class="button-group">
+                        <button class="pdf-btn" id="pdfUploadBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21.44 11.05L12.25 20.24C11.1242 21.3658 9.59722 21.9983 8.005 21.9983C6.41278 21.9983 4.8858 21.3658 3.76 20.24C2.6342 19.1142 2.0017 17.5872 2.0017 15.995C2.0017 14.4028 2.6342 12.8758 3.76 11.75L12.95 2.56C13.7006 1.80944 14.7186 1.38787 15.79 1.38787C16.8614 1.38787 17.8794 1.80944 18.63 2.56C19.3806 3.31056 19.8021 4.32856 19.8021 5.4C19.8021 6.47144 19.3806 7.48944 18.63 8.24L9.41 17.46C9.03475 17.8352 8.53125 18.0499 8.005 18.0499C7.47875 18.0499 6.97525 17.8352 6.6 17.46C6.22475 17.0848 6.01005 16.5813 6.01005 16.055C6.01005 15.5287 6.22475 15.0252 6.6 14.65L15.07 6.18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <button class="send-btn">
+                            <svg width="16" height="16" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.9006 8.95457L10.2934 14.4616M10.2934 14.4616L14.8101 22.1449C15.2412 22.8782 16.3329 22.7726 16.6154 21.9703L23.341 2.87133C23.6137 2.09687 22.8885 1.34195 22.1037 1.58338L2.16397 7.71785C1.33369 7.97328 1.20155 9.09305 1.94956 9.53473L10.2934 14.4616Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh for development (remove in production)
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            // Check for file changes every 2 seconds
+            setInterval(() => {
+                fetch(window.location.href, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.headers.get('last-modified') !== window.lastModified) {
+                            window.location.reload();
+                        }
+                    })
+                    .catch(() => {});
+            }, 2000);
+        }
+
+        // Add basic interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageInput = document.querySelector('.message-input');
+            const sendBtn = document.querySelector('.send-btn');
+            const pdfUploadBtn = document.getElementById('pdfUploadBtn');
+            const pdfFileInput = document.getElementById('pdfFileInput');
+            const chatHistory = document.querySelector('.chat-history');
+            const welcomeSection = document.getElementById('welcomeSection');
+            const chatConversation = document.getElementById('chatConversation');
+
+            // Send message functionality
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    // Hide welcome section only when sending first message
+                    hideWelcomeSection();
+
+                    // Add user message to right container
+                    addMessageToConversation(message, 'user');
+
+                    // Add to left chat history as well
+                    addMessageToHistory(message);
+
+                    // Generate AI response
+                    setTimeout(() => {
+                        const aiResponse = generateAIResponse(message);
+                        addMessageToConversation(aiResponse, 'assistant');
+                    }, 1000);
+
+                    // Clear input
+                    messageInput.value = '';
+                }
+            }
+
+            function addMessageToConversation(message, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">${message}</div>
+                    <div class="message-time">${timeString}</div>
+                `;
+                
+                chatConversation.appendChild(messageDiv);
+                
+                // Scroll to bottom with smooth animation
+                setTimeout(() => {
+                    chatConversation.scrollTo({
+                        top: chatConversation.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            }
+
+            function addMessageToHistory(message) {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item';
+                
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                
+                chatItem.innerHTML = `
+                    <div class="chat-header">
+                        <div class="chat-date">Now</div>
+                        <div class="chat-time">${timeString}</div>
+                    </div>
+                    <div class="chat-message">${message}</div>
+                `;
+                
+                // Remove active class from all existing chat items
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Add active class to new chat item
+                chatItem.classList.add('active');
+                
+                // Add to top of chat history
+                chatHistory.insertBefore(chatItem, chatHistory.firstChild);
+                
+                // Add click functionality
+                chatItem.addEventListener('click', () => {
+                    // Remove active class from all chat items
+                    document.querySelectorAll('.chat-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item
+                    chatItem.classList.add('active');
+                    
+                    // Show the conversation for this chat item
+                    showConversationForChatItem(chatItem);
+                });
+                
+                // Scroll to top
+                chatHistory.scrollTop = 0;
+            }
+
+            function generateAIResponse(userMessage) {
+                const responses = [
+                    "I understand your concern. Let me help you with that.",
+                    "That's a great question. Based on the symptoms you've described, I'd recommend...",
+                    "I can see you're looking for information about blood test results. Let me assist you.",
+                    "Thank you for sharing that information. Here's what I suggest...",
+                    "I understand you need help with patient management. Let me guide you through the process.",
+                    "That's an interesting case. Let me analyze this for you.",
+                    "I can help you with the diagnosis process. What specific information do you need?",
+                    "Based on your input, I recommend reviewing the patient's medical history first."
+                ];
+                
+                // Simple keyword-based responses
+                if (userMessage.toLowerCase().includes('blood')) {
+                    return "I can help you analyze blood test results. Please share the specific values you'd like me to review.";
+                } else if (userMessage.toLowerCase().includes('patient')) {
+                    return "I'm here to help with patient management. What specific information do you need about the patient?";
+                } else if (userMessage.toLowerCase().includes('diagnosis')) {
+                    return "I can assist with the diagnosis process. Please provide the symptoms and test results for analysis.";
+                } else {
+                    return responses[Math.floor(Math.random() * responses.length)];
+                }
+            }
+
+            function showConversationForChatItem(chatItem) {
+                // Clear existing conversation
+                chatConversation.innerHTML = '';
+                
+                // Get the message from the chat item
+                const message = chatItem.querySelector('.chat-message').textContent;
+                
+                // Add user message
+                addMessageToConversation(message, 'user');
+                
+                // Generate and add AI response
+                setTimeout(() => {
+                    const aiResponse = generateAIResponse(message);
+                    addMessageToConversation(aiResponse, 'assistant');
+                }, 500);
+                
+                // Hide welcome section if it's visible
+                hideWelcomeSection();
+            }
+
+            // Event listeners
+            sendBtn.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // PDF upload functionality
+            pdfUploadBtn.addEventListener('click', () => {
+                pdfFileInput.click();
+            });
+
+            pdfFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type === 'application/pdf') {
+                    processPDFUpload(file);
+                } else {
+                    alert('Please select a valid PDF file.');
+                }
+            });
+
+            function processPDFUpload(file) {
+                // Simulate PDF processing
+                showProcessingMessage();
+                
+                setTimeout(() => {
+                    // Create new chat entry in left sidebar
+                    addPDFChatEntry(file.name);
+                    
+                    // Show medical data in chat conversation
+                    showMedicalDataInChat();
+                    
+                    // Hide welcome section
+                    hideWelcomeSection();
+                }, 2000);
+            }
+
+            function showProcessingMessage() {
+                addMessageToConversation('Processing blood report PDF...', 'assistant');
+            }
+
+            function addPDFChatEntry(fileName) {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item';
+                
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                chatItem.innerHTML = `
+                    <div class="chat-header">
+                        <div class="chat-date">PDF Upload</div>
+                        <div class="chat-time">${timeString}</div>
+                    </div>
+                    <div class="chat-message">${fileName}</div>
+                `;
+                
+                // Add to top of chat history
+                chatHistory.insertBefore(chatItem, chatHistory.firstChild);
+                
+                // Add click functionality
+                chatItem.addEventListener('click', () => {
+                    // Remove active class from all chat items
+                    document.querySelectorAll('.chat-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item
+                    chatItem.classList.add('active'); 
+                    
+                    // Show conversation for this chat item
+                    showConversationForChatItem(chatItem);
+                });
+            }
+
+            function showMedicalDataInChat() {
+                // Hide welcome section and show conversation
+                const welcomeSection = document.getElementById('welcomeSection');
+                const chatConversation = document.getElementById('chatConversation');
+                
+                welcomeSection.style.display = 'none';
+                chatConversation.style.display = 'flex';
+                
+                // Clear existing messages
+                chatConversation.innerHTML = '';
+                
+                // Create single consolidated medical message
+                const medicalMessage = createConsolidatedMedicalMessage();
+                addMessageToConversation(medicalMessage, 'assistant');
+            }
+
+            function createPatientInfoMessage() {
+                return `
+                    <div class="medical-message">
+                        <h4>👤 Patient Information</h4>
+                        <div class="patient-info-content">
+                            <p><strong>Name:</strong> Vikas Raj Yadav</p>
+                            <p><strong>Age:</strong> 54 years old</p>
+                            <p><strong>MRN:</strong> MRN-2024-001</p>
+                            <p><strong>Gender:</strong> Male</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function createLabResultsMessage() {
+                return `
+                    <div class="medical-message">
+                        <h4>🧪 Lab Results Summary</h4>
+                        <div class="lab-summary-content">
+                            <p class="abnormal-count">6 of 6 values abnormal</p>
+                            <div class="lab-items">
+                                <div class="lab-item-result">
+                                    <span class="lab-name">Troponin I</span>
+                                    <span class="lab-value high">2.5 ng/mL</span>
+                                    <span class="lab-severity severe">Severe</span>
+                                </div>
+                                <div class="lab-item-result">
+                                    <span class="lab-name">CK-MB</span>
+                                    <span class="lab-value high">8.2 ng/mL</span>
+                                    <span class="lab-severity moderate">Moderate</span>
+                                </div>
+                                <div class="lab-item-result">
+                                    <span class="lab-name">BNP</span>
+                                    <span class="lab-value high">450 pg/mL</span>
+                                    <span class="lab-severity moderate">Moderate</span>
+                                </div>
+                                <div class="lab-item-result">
+                                    <span class="lab-name">Total Cholesterol</span>
+                                    <span class="lab-value high">240 mg/dL</span>
+                                    <span class="lab-severity mild">Mild</span>
+                                </div>
+                                <div class="lab-item-result">
+                                    <span class="lab-name">HDL Cholesterol</span>
+                                    <span class="lab-value low">35 mg/dL</span>
+                                    <span class="lab-severity mild">Mild</span>
+                                </div>
+                                <div class="lab-item-result">
+                                    <span class="lab-name">LDL Cholesterol</span>
+                                    <span class="lab-value high">165 mg/dL</span>
+                                    <span class="lab-severity moderate">Moderate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function createDiagnosisMessage() {
+                return `
+                    <div class="medical-message">
+                        <h4>🔍 Diagnostic Analysis</h4>
+                        <div class="diagnosis-content">
+                            <p class="diagnosis-subtitle">3 differential diagnoses ranked by confidence</p>
+                            <div class="diagnosis-cards">
+                                <div class="diagnosis-card">
+                                    <div class="diagnosis-rank">1</div>
+                                    <div class="diagnosis-name">Acute Coronary Syndrome</div>
+                                    <div class="confidence-score">85% confidence</div>
+                                    <div class="diagnosis-reasoning">Significantly elevated troponin (2.5 ng/mL) with supporting cardiac biomarkers and clinical presentation consistent with acute myocardial injury.</div>
+                                </div>
+                                <div class="diagnosis-card">
+                                    <div class="diagnosis-rank">2</div>
+                                    <div class="diagnosis-name">Myocarditis</div>
+                                    <div class="confidence-score">60% confidence</div>
+                                    <div class="diagnosis-reasoning">Troponin elevation in younger patient with possible viral prodrome. Less likely given age and risk factors but requires exclusion.</div>
+                                </div>
+                                <div class="diagnosis-card">
+                                    <div class="diagnosis-rank">3</div>
+                                    <div class="diagnosis-name">Pulmonary Embolism with RV Strain</div>
+                                    <div class="confidence-score">30% confidence</div>
+                                    <div class="diagnosis-reasoning">Troponin can be elevated with right heart strain from massive PE. Consider given tachycardia and dyspnea.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function createConsolidatedMedicalMessage() {
+                return `
+                    <div class="medical-message">
+                        <h4>👤 Patient Information</h4>
+                        <div class="patient-info">
+                            <div class="info-row">
+                                <span class="info-label">Name:</span>
+                                <span class="info-value">John Smith</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Age:</span>
+                                <span class="info-value">45 years</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Gender:</span>
+                                <span class="info-value">Male</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Date of Birth:</span>
+                                <span class="info-value">March 15, 1979</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Patient ID:</span>
+                                <span class="info-value">#P-2024-001234</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="medical-message">
+                        <h4>🧪 Lab Results Summary</h4>
+                        <div class="lab-results">
+                            <div class="lab-item critical">
+                                <span class="lab-name">Glucose (Fasting)</span>
+                                <span class="lab-value">180 mg/dL</span>
+                                <span class="lab-status">High</span>
+                            </div>
+                            <div class="lab-item critical">
+                                <span class="lab-name">HbA1c</span>
+                                <span class="lab-value">8.2%</span>
+                                <span class="lab-status">High</span>
+                            </div>
+                            <div class="lab-item normal">
+                                <span class="lab-name">Total Cholesterol</span>
+                                <span class="lab-value">195 mg/dL</span>
+                                <span class="lab-status">Normal</span>
+                            </div>
+                            <div class="lab-item warning">
+                                <span class="lab-name">LDL Cholesterol</span>
+                                <span class="lab-value">135 mg/dL</span>
+                                <span class="lab-status">Borderline</span>
+                            </div>
+                            <div class="lab-item normal">
+                                <span class="lab-name">HDL Cholesterol</span>
+                                <span class="lab-value">45 mg/dL</span>
+                                <span class="lab-status">Normal</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="medical-message">
+                        <h4>🔍 Diagnostic Analysis</h4>
+                        <div class="diagnosis-content">
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Primary Diagnosis:</span>
+                                <span class="diagnosis-value">Type 2 Diabetes Mellitus</span>
+                            </div>
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Secondary Findings:</span>
+                                <span class="diagnosis-value">Mild Hyperlipidemia</span>
+                            </div>
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Risk Assessment:</span>
+                                <span class="diagnosis-value">Moderate cardiovascular risk</span>
+                            </div>
+                            <div class="diagnosis-item">
+                                <span class="diagnosis-label">Recommendations:</span>
+                                <span class="diagnosis-value">Lifestyle modifications, medication review, follow-up in 3 months</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Hide welcome section only when there are chat messages
+            function hideWelcomeSection() {
+                if (!welcomeSection.classList.contains('hidden')) {
+                    welcomeSection.classList.add('hidden');
+                    setTimeout(() => {
+                        chatConversation.classList.add('active');
+                    }, 300);
+                }
+            }
+
+            // Chat item click functionality
+            chatHistory.addEventListener('click', function(e) {
+                const chatItem = e.target.closest('.chat-item');
+                if (chatItem) {
+                    // Remove active class from all chat items
+                    document.querySelectorAll('.chat-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item
+                    chatItem.classList.add('active');
+                    
+                // Check if it's a medical records item
+                if (chatItem.classList.contains('medical-records-item')) {
+                    showMedicalDataInChat();
+                } else {
+                    // Handle regular chat items
+                    console.log('Regular chat item clicked');
+                }
+                }
+            });
+
+            // Function to show medical data
+            function showMedicalData(type) {
+                const medicalData = document.getElementById('medicalData');
+                const welcomeSection = document.getElementById('welcomeSection');
+                const chatConversation = document.getElementById('chatConversation');
+                
+                // Hide welcome and chat, show medical data
+                welcomeSection.style.display = 'none';
+                chatConversation.style.display = 'none';
+                medicalData.style.display = 'block';
+                
+                if (type === 'patient-info') {
+                    medicalData.innerHTML = `
+                        <div class="patient-card">
+                            <div class="patient-header">
+                                <div class="patient-info">
+                                    <div class="patient-avatar">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                    <div class="patient-details">
+                                        <h3>John Smith</h3>
+                                        <div class="patient-meta">
+                                            <span>54 years old</span>
+                                            <span>MRN-2024-001</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="patient-gender">Male</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (type === 'lab-results') {
+                    medicalData.innerHTML = `
+                        <div class="lab-results">
+                            <div class="lab-header">
+                                <h3>Lab Results</h3>
+                                <p class="lab-summary">6 of 6 values abnormal</p>
+                            </div>
+                            <div class="lab-grid">
+                                <div class="lab-item">
+                                    <div class="lab-item-left">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
+                                            <path d="M16 7h6v6"></path>
+                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
+                                        </svg>
+                                        <div>
+                                            <div class="lab-name">Troponin I</div>
+                                            <div class="lab-normal">Normal: &lt;0.04 ng/mL</div>
+                                        </div>
+                                    </div>
+                                    <div class="lab-item-right">
+                                        <div class="lab-value high">2.5 ng/mL</div>
+                                        <span class="lab-severity severity-severe">Severe</span>
+                                    </div>
+                                </div>
+                                <div class="lab-item">
+                                    <div class="lab-item-left">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #F59E0B;">
+                                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                            <path d="M12 9v4"></path>
+                                            <path d="M12 17h.01"></path>
+                                        </svg>
+                                        <div>
+                                            <div class="lab-name">CK-MB</div>
+                                            <div class="lab-normal">Normal: 0.0-6.3 ng/mL</div>
+                                        </div>
+                                    </div>
+                                    <div class="lab-item-right">
+                                        <div class="lab-value high">8.2 ng/mL</div>
+                                        <span class="lab-severity severity-moderate">Moderate</span>
+                                    </div>
+                                </div>
+                                <div class="lab-item">
+                                    <div class="lab-item-left">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
+                                            <path d="M16 7h6v6"></path>
+                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
+                                        </svg>
+                                        <div>
+                                            <div class="lab-name">BNP</div>
+                                            <div class="lab-normal">Normal: &lt;100 pg/mL</div>
+                                        </div>
+                                    </div>
+                                    <div class="lab-item-right">
+                                        <div class="lab-value high">450 pg/mL</div>
+                                        <span class="lab-severity severity-moderate">Moderate</span>
+                                    </div>
+                                </div>
+                                <div class="lab-item">
+                                    <div class="lab-item-left">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
+                                            <path d="M16 7h6v6"></path>
+                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
+                                        </svg>
+                                        <div>
+                                            <div class="lab-name">Total Cholesterol</div>
+                                            <div class="lab-normal">Normal: &lt;200 mg/dL</div>
+                                        </div>
+                                    </div>
+                                    <div class="lab-item-right">
+                                        <div class="lab-value high">240 mg/dL</div>
+                                        <span class="lab-severity severity-mild">Mild</span>
+                                    </div>
+                                </div>
+                                <div class="lab-item">
+                                    <div class="lab-item-left">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
+                                            <path d="M16 17h6v-6"></path>
+                                            <path d="m22 17-8.5-8.5-5 5L2 7"></path>
+                                        </svg>
+                                        <div>
+                                            <div class="lab-name">HDL Cholesterol</div>
+                                            <div class="lab-normal">Normal: &gt;40 mg/dL</div>
+                                        </div>
+                                    </div>
+                                    <div class="lab-item-right">
+                                        <div class="lab-value low">35 mg/dL</div>
+                                        <span class="lab-severity severity-mild">Mild</span>
+                                    </div>
+                                </div>
+                                <div class="lab-item">
+                                    <div class="lab-item-left">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
+                                            <path d="M16 7h6v6"></path>
+                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
+                                        </svg>
+                                        <div>
+                                            <div class="lab-name">LDL Cholesterol</div>
+                                            <div class="lab-normal">Normal: &lt;100 mg/dL</div>
+                                        </div>
+                                    </div>
+                                    <div class="lab-item-right">
+                                        <div class="lab-value high">165 mg/dL</div>
+                                        <span class="lab-severity severity-moderate">Moderate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="diagnosis-section">
+                            <div class="diagnosis-header">
+                                <h3>Diagnostic Analysis</h3>
+                                <p class="diagnosis-description">3 differential diagnoses ranked by confidence</p>
+                            </div>
+                            <div class="diagnosis-grid">
+                                <div class="diagnosis-card">
+                                    <div class="diagnosis-rank">1</div>
+                                    <div class="diagnosis-confidence">
+                                        <div class="confidence-score">85%</div>
+                                        <div class="confidence-label">Confidence Level</div>
+                                    </div>
+                                    <div class="diagnosis-name">Acute Coronary Syndrome</div>
+                                    <div class="diagnosis-reasoning">Significantly elevated troponin (2.5 ng/mL) with supporting cardiac biomarkers and clinical presentation consistent with acute myocardial injury.</div>
+                                    <div class="diagnosis-badges">
+                                        <span class="badge">Troponin I</span>
+                                        <span class="badge">CK-MB</span>
+                                        <span class="badge">BNP</span>
+                                    </div>
+                                </div>
+                                <div class="diagnosis-card">
+                                    <div class="diagnosis-rank">2</div>
+                                    <div class="diagnosis-confidence">
+                                        <div class="confidence-score">60%</div>
+                                        <div class="confidence-label">Confidence Level</div>
+                                    </div>
+                                    <div class="diagnosis-name">Myocarditis</div>
+                                    <div class="diagnosis-reasoning">Troponin elevation in younger patient with possible viral prodrome. Less likely given age and risk factors but requires exclusion.</div>
+                                    <div class="diagnosis-badges">
+                                        <span class="badge">Troponin I</span>
+                                        <span class="badge">BNP</span>
+                                    </div>
+                                </div>
+                                <div class="diagnosis-card">
+                                    <div class="diagnosis-rank">3</div>
+                                    <div class="diagnosis-confidence">
+                                        <div class="confidence-score">30%</div>
+                                        <div class="confidence-label">Confidence Level</div>
+                                    </div>
+                                    <div class="diagnosis-name">Pulmonary Embolism with RV Strain</div>
+                                    <div class="diagnosis-reasoning">Troponin can be elevated with right heart strain from massive PE. Consider given tachycardia and dyspnea.</div>
+                                    <div class="diagnosis-badges">
+                                        <span class="badge">Troponin I</span>
+                                        <span class="badge">BNP</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
