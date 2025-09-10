@@ -1,5 +1,11 @@
 import streamlit as st
 from pathlib import Path
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime, date
+import json
 
 # Version information
 def get_version():
@@ -10,6 +16,48 @@ def get_version():
     return "0.0.0"
 
 VERSION = get_version()
+
+# Initialize session state
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
+if 'patients' not in st.session_state:
+    st.session_state.patients = []
+if 'blood_tests' not in st.session_state:
+    st.session_state.blood_tests = []
+
+# Blood test reference ranges
+BLOOD_RANGES = {
+    'Hemoglobin': {'min': 12.0, 'max': 16.0, 'unit': 'g/dL'},
+    'Hematocrit': {'min': 36.0, 'max': 46.0, 'unit': '%'},
+    'White Blood Cells': {'min': 4.5, 'max': 11.0, 'unit': 'K/μL'},
+    'Red Blood Cells': {'min': 4.0, 'max': 5.2, 'unit': 'M/μL'},
+    'Platelets': {'min': 150, 'max': 450, 'unit': 'K/μL'},
+    'Glucose': {'min': 70, 'max': 100, 'unit': 'mg/dL'},
+    'Cholesterol': {'min': 0, 'max': 200, 'unit': 'mg/dL'},
+    'Triglycerides': {'min': 0, 'max': 150, 'unit': 'mg/dL'}
+}
+
+def analyze_blood_test(test_data):
+    """Analyze blood test results and provide basic diagnosis"""
+    analysis = {}
+    for test, value in test_data.items():
+        if test in BLOOD_RANGES:
+            range_info = BLOOD_RANGES[test]
+            if value < range_info['min']:
+                analysis[test] = f"LOW ({value} {range_info['unit']}) - Below normal range"
+            elif value > range_info['max']:
+                analysis[test] = f"HIGH ({value} {range_info['unit']}) - Above normal range"
+            else:
+                analysis[test] = f"NORMAL ({value} {range_info['unit']}) - Within normal range"
+    return analysis
+
+def add_message(role, content):
+    """Add a message to the chat history"""
+    st.session_state.messages.append({
+        'role': role,
+        'content': content,
+        'timestamp': datetime.now().strftime("%H:%M")
+    })
 
 # Page configuration
 st.set_page_config(
@@ -996,9 +1044,146 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Add version information in sidebar
+# Add interactive functionality
+
+# Sidebar with navigation and tools
 with st.sidebar:
+    st.markdown(f"# 🔬 BDT v{VERSION}")
+    st.markdown("**Blood Diagnosis Tool**")
+    
+    # Navigation
+    page = st.selectbox("Navigate", ["Chat", "Blood Test Input", "Patient Management", "Analysis Dashboard"])
+    
+    st.markdown("---")
+    
+    if page == "Blood Test Input":
+        st.markdown("### 📊 Blood Test Input")
+        
+        with st.form("blood_test_form"):
+            st.markdown("**Enter Blood Test Results:**")
+            
+            test_data = {}
+            for test_name, range_info in BLOOD_RANGES.items():
+                test_data[test_name] = st.number_input(
+                    f"{test_name} ({range_info['unit']})",
+                    min_value=0.0,
+                    value=0.0,
+                    step=0.1,
+                    help=f"Normal range: {range_info['min']}-{range_info['max']} {range_info['unit']}"
+                )
+            
+            submitted = st.form_submit_button("Analyze Results", type="primary")
+            
+            if submitted:
+                # Filter out zero values
+                filtered_data = {k: v for k, v in test_data.items() if v > 0}
+                
+                if filtered_data:
+                    analysis = analyze_blood_test(filtered_data)
+                    
+                    # Store the test
+                    test_record = {
+                        'timestamp': datetime.now(),
+                        'data': filtered_data,
+                        'analysis': analysis
+                    }
+                    st.session_state.blood_tests.append(test_record)
+                    
+                    # Add to chat
+                    add_message("system", f"Blood test analysis completed for {len(filtered_data)} parameters")
+                    
+                    st.success("Blood test analyzed! Check the chat for results.")
+                    st.rerun()
+                else:
+                    st.warning("Please enter at least one blood test value.")
+    
+    elif page == "Patient Management":
+        st.markdown("### 👤 Patient Management")
+        
+        with st.form("patient_form"):
+            st.markdown("**Add New Patient:**")
+            patient_id = st.text_input("Patient ID")
+            patient_name = st.text_input("Patient Name")
+            age = st.number_input("Age", min_value=0, max_value=120)
+            gender = st.selectbox("Gender", ["Male", "Female", "Other"])
+            
+            if st.form_submit_button("Add Patient"):
+                if patient_id and patient_name:
+                    patient = {
+                        'id': patient_id,
+                        'name': patient_name,
+                        'age': age,
+                        'gender': gender,
+                        'created': datetime.now()
+                    }
+                    st.session_state.patients.append(patient)
+                    add_message("system", f"Added patient: {patient_name} (ID: {patient_id})")
+                    st.success(f"Patient {patient_name} added successfully!")
+                    st.rerun()
+                else:
+                    st.warning("Please fill in Patient ID and Name.")
+        
+        # Display patients
+        if st.session_state.patients:
+            st.markdown("**Current Patients:**")
+            for patient in st.session_state.patients:
+                st.markdown(f"• {patient['name']} (ID: {patient['id']}) - {patient['age']} years old")
+    
+    elif page == "Analysis Dashboard":
+        st.markdown("### 📈 Analysis Dashboard")
+        
+        if st.session_state.blood_tests:
+            st.markdown("**Recent Blood Tests:**")
+            
+            # Create a simple chart
+            test_df = pd.DataFrame([
+                {
+                    'Test': test,
+                    'Value': value,
+                    'Timestamp': record['timestamp'].strftime("%H:%M")
+                }
+                for record in st.session_state.blood_tests[-5:]  # Last 5 tests
+                for test, value in record['data'].items()
+            ])
+            
+            if not test_df.empty:
+                fig = px.bar(test_df, x='Test', y='Value', title="Recent Blood Test Values")
+                st.plotly_chart(fig, use_container_width=True)
+            
+            # Show analysis summary
+            st.markdown("**Analysis Summary:**")
+            for record in st.session_state.blood_tests[-1:]:  # Latest test
+                for test, analysis in record['analysis'].items():
+                    st.markdown(f"• **{test}**: {analysis}")
+        else:
+            st.info("No blood tests available. Please add some test results first.")
+    
+    # Version info at bottom
     st.markdown("---")
     st.markdown(f"**Version:** {VERSION}")
-    st.markdown("**BDT - Blood Diagnosis Tool**")
+    st.markdown("*Blood Diagnosis Tool*")
+
+# Chat functionality (after sidebar where page is defined)
+if page == "Chat":
+    # Chat input functionality
+    with st.form("chat_form", clear_on_submit=True):
+        user_input = st.text_input("Type your message...", placeholder="Ask about blood test results, patient info, or diagnosis...")
+        submitted = st.form_submit_button("Send", type="primary")
+        
+        if submitted and user_input:
+            add_message("user", user_input)
+            
+            # Simple AI-like responses based on keywords
+            response = "I understand your question. "
+            if "blood" in user_input.lower():
+                response += "For blood test analysis, please use the 'Blood Test Input' section in the sidebar. "
+            if "patient" in user_input.lower():
+                response += "You can manage patients using the 'Patient Management' section. "
+            if "analysis" in user_input.lower() or "chart" in user_input.lower():
+                response += "View detailed analysis and charts in the 'Analysis Dashboard'. "
+            if "help" in user_input.lower():
+                response += "I can help you with blood test analysis, patient management, and data visualization. Use the navigation menu to access different features."
+            
+            add_message("assistant", response)
+            st.rerun()
 
