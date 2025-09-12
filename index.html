@@ -104,7 +104,7 @@
             top: 0;
             z-index: 10;
             padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(32, 32, 32, 0.094);
         }
 
         .section-title {
@@ -125,6 +125,7 @@
             transition: all 0.2s ease;
             cursor: pointer;
             padding: 20px;
+            border-bottom: 1px solid #d4d4d47a;
         }
 
         .chat-item:hover {
@@ -188,7 +189,7 @@
         .bottom-container {
             /* background: var(--bg-left-bottom); */
             padding: 20px;
-            border-top: 1px solid var(--border-light);
+            border-top: 1px solid #d4d4d47a;
         }
 
         .user-profile {
@@ -233,7 +234,7 @@
             /* background: var(--bg-container); */
             border-radius: 16px;
             box-shadow: var(--shadow-medium);
-            overflow: hidden;
+            overflow: visible;
         }
 
         .right-top-container {
@@ -241,17 +242,17 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
-            overflow: hidden;
+            padding-bottom: 60px; /* Space for sticky input */
             position: relative;
-            min-height: 0; /* Important for flexbox scrolling */
             width: 100%;
-            max-width: 500px;
+            max-width: 800px;
+            overflow-y: auto;
         }
 
         .chat-container {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            min-height: 100%;
             position: relative;
         }
 
@@ -358,15 +359,54 @@
             background: #ffffff8c;
             border-radius: 12px;
             padding: 20px;
-            margin: 20px 0;
-            max-height: 70vh;
-            overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            /* margin: 20px 0; */
+            max-height: none;
+            overflow-y: visible;
+            scrollbar-width: thin;
+            -ms-overflow-style: auto;
         }
 
         .medical-data::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+        }
+
+        .medical-data::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .medical-data::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px;
+        }
+
+        .medical-data::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF;
+        }
+
+        .medical-message {
+            margin: 0;
+            padding: 0;
+        }
+
+        .medical-message:last-child {
+            margin-bottom: 0;
+        }
+
+        .right-top-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .right-top-container::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px;
+        }
+
+        .right-top-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .right-top-container::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF;
         }
 
         .patient-card {
@@ -396,7 +436,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid #d4d4d47a;
         }
 
         .info-row:last-child {
@@ -449,12 +489,30 @@
             font-weight: 500;
         }
 
+        .abnormal-count {
+            color: #dc2626;
+            font-weight: 500;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+
         .lab-results {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .lab-results {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lab-results {
+                grid-template-columns: 1fr;
+            }
         }
 
         .lab-header {
@@ -659,13 +717,7 @@
             font-weight: 500;
         }
 
-        .medical-message {
-            /* background: #f8fafc; */
-            /* border: 1px solid #e2e8f0; */
-            /* border-radius: 12px; */
-            /* padding: 16px; */
-            /* margin: 8px 0; */
-        }
+       
 
         .medical-message h4 {
             margin: 0 0 12px 0;
@@ -742,6 +794,107 @@
         .lab-severity.mild {
             background: #fef3c7;
             color: #d97706;
+        }
+
+        .lab-item {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: transparent;
+            text-align: left;
+            transition: all 0.2s ease;
+            align-items: flex-start;
+        }
+
+        .lab-item:hover {
+            border-color: rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .lab-name {
+            font-weight: 500;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .lab-value-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .lab-value {
+            font-weight: 700;
+            font-size: 18px;
+            color: #1e293b;
+        }
+
+        .lab-normal {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .lab-status-icon {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .lab-status-icon.high {
+            color: #dc2626;
+        }
+
+        .lab-status-icon.low {
+            color: #dc2626;
+        }
+
+        .lab-status-icon.moderate {
+            color: #f59e0b;
+        }
+
+        .lab-status:contains("High") {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .lab-status:contains("Normal") {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .lab-status:contains("Borderline") {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .diagnosis-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #d4d4d47a;
+        }
+
+        .diagnosis-item:last-child {
+            border-bottom: none;
+        }
+
+        .diagnosis-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 14px;
+            min-width: 140px;
+        }
+
+        .diagnosis-value {
+            color: #1e293b;
+            font-size: 14px;
+            text-align: right;
+            flex: 1;
         }
 
         .diagnosis-subtitle {
@@ -826,7 +979,13 @@
         .right-bottom-container {
             padding: 20px;
             width: 100%;
-            max-width: 500px;
+            max-width: 800px;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
         }
 
         .input-section {
@@ -838,6 +997,8 @@
             background: #ffffff8c;
             position: relative;
             transition: all 0.3s ease;
+            width: 100%;
+            max-width: 800px;
         }
 
         .input-section:hover {
@@ -1086,7 +1247,7 @@
                     <span class="section-title">Previous Diagnosis</span>
                 </div>
                 <div class="chat-history">
-                    <div class="chat-item medical-records-item" data-type="medical-records">
+                    <div class="chat-item medical-records-item active" data-type="medical-records">
                         <div class="chat-header">
                             <div class="chat-date">Medical Records</div>
                             <div class="chat-time">John Smith</div>
@@ -1110,7 +1271,7 @@
         <div class="right-container">
             <div class="right-top-container">
                 <div class="chat-container">
-                    <div class="welcome-section" id="welcomeSection">
+                    <div class="welcome-section hidden" id="welcomeSection">
                         <svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.0129 2.67236C12.9723 -0.890788 18.0277 -0.890787 18.9871 2.67236L20.3219 7.62994C20.6565 8.87273 21.6273 9.8435 22.8701 10.1781L27.8276 11.5129C31.3908 12.4723 31.3908 17.5277 27.8276 18.4871L22.8701 19.8219C21.6273 20.1565 20.6565 21.1273 20.3219 22.3701L18.9871 27.3276C18.0277 30.8908 12.9723 30.8908 12.0129 27.3276L10.6781 22.3701C10.3435 21.1273 9.37273 20.1565 8.12994 19.8219L3.17236 18.4871C-0.390788 17.5277 -0.390787 12.4723 3.17236 11.5129L8.12994 10.1781C9.37273 9.8435 10.3435 8.87273 10.6781 7.62994L12.0129 2.67236Z" fill="#19B76A"/>
                         </svg>
@@ -1120,8 +1281,108 @@
                     <div class="chat-conversation" id="chatConversation">
                         <!-- Messages will be added here dynamically -->
                     </div>
-                    <div class="medical-data" id="medicalData" style="display: none;">
-                        <!-- Medical data will be displayed here -->
+                    <div class="medical-data" id="medicalData">
+                        <div class="medical-message">
+                            <h4>Patient Information</h4>
+                            <div class="patient-info">
+                                <div class="info-row">
+                                    <span class="info-label">Name:</span>
+                                    <span class="info-value">John Smith</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Age:</span>
+                                    <span class="info-value">45 years</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Gender:</span>
+                                    <span class="info-value">Male</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Date of Birth:</span>
+                                    <span class="info-value">March 15, 1979</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Patient ID:</span>
+                                    <span class="info-value">#P-2024-001234</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="medical-message">
+                            <h4>Lab Results <span class="abnormal-count">6 of 6 values abnormal</span></h4>
+                            <div class="lab-results">
+                                <div class="lab-item">
+                                    <span class="lab-name">Glucose (Fasting)</span>
+                                    <div class="lab-value-container">
+                                        <span class="lab-status-icon high">↗</span>
+                                        <span class="lab-value">180 mg/dL</span>
+                                    </div>
+                                    <span class="lab-normal">Normal: 70-100 mg/dL</span>
+                                </div>
+                                <div class="lab-item">
+                                    <span class="lab-name">HbA1c</span>
+                                    <div class="lab-value-container">
+                                        <span class="lab-status-icon high">↗</span>
+                                        <span class="lab-value">8.2%</span>
+                                    </div>
+                                    <span class="lab-normal">Normal: <6.0%</span>
+                                </div>
+                                <div class="lab-item">
+                                    <span class="lab-name">Total Cholesterol</span>
+                                    <div class="lab-value-container">
+                                        <span class="lab-status-icon high">↗</span>
+                                        <span class="lab-value">240 mg/dL</span>
+                                    </div>
+                                    <span class="lab-normal">Normal: <200 mg/dL</span>
+                                </div>
+                                <div class="lab-item">
+                                    <span class="lab-name">LDL Cholesterol</span>
+                                    <div class="lab-value-container">
+                                        <span class="lab-status-icon high">↗</span>
+                                        <span class="lab-value">165 mg/dL</span>
+                                    </div>
+                                    <span class="lab-normal">Normal: <100 mg/dL</span>
+                                </div>
+                                <div class="lab-item">
+                                    <span class="lab-name">HDL Cholesterol</span>
+                                    <div class="lab-value-container">
+                                        <span class="lab-status-icon low">↘</span>
+                                        <span class="lab-value">35 mg/dL</span>
+                                    </div>
+                                    <span class="lab-normal">Normal: >40 mg/dL</span>
+                                </div>
+                                <div class="lab-item">
+                                    <span class="lab-name">Triglycerides</span>
+                                    <div class="lab-value-container">
+                                        <span class="lab-status-icon high">↗</span>
+                                        <span class="lab-value">220 mg/dL</span>
+                                    </div>
+                                    <span class="lab-normal">Normal: <150 mg/dL</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="medical-message">
+                            <h4>Diagnostic Analysis</h4>
+                            <div class="diagnosis-content">
+                                <div class="diagnosis-item">
+                                    <span class="diagnosis-label">Primary Diagnosis:</span>
+                                    <span class="diagnosis-value">Type 2 Diabetes Mellitus</span>
+                                </div>
+                                <div class="diagnosis-item">
+                                    <span class="diagnosis-label">Secondary Findings:</span>
+                                    <span class="diagnosis-value">Mild Hyperlipidemia</span>
+                                </div>
+                                <div class="diagnosis-item">
+                                    <span class="diagnosis-label">Risk Assessment:</span>
+                                    <span class="diagnosis-value">Moderate cardiovascular risk</span>
+                                </div>
+                                <div class="diagnosis-item">
+                                    <span class="diagnosis-label">Recommendations:</span>
+                                    <span class="diagnosis-value">Lifestyle modifications, medication review, follow-up in 3 months</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1177,8 +1438,10 @@
             function sendMessage() {
                 const message = messageInput.value.trim();
                 if (message) {
-                    // Hide welcome section only when sending first message
+                    // Hide welcome section and medical data, show chat conversation
                     hideWelcomeSection();
+                    hideMedicalData();
+                    showChatConversation();
 
                     // Add user message to right container
                     addMessageToConversation(message, 'user');
@@ -1393,25 +1656,26 @@
             }
 
             function showMedicalDataInChat() {
-                // Hide welcome section and show conversation
+                // Hide welcome section and chat conversation, show medical data
                 const welcomeSection = document.getElementById('welcomeSection');
                 const chatConversation = document.getElementById('chatConversation');
+                const medicalData = document.getElementById('medicalData');
                 
                 welcomeSection.style.display = 'none';
-                chatConversation.style.display = 'flex';
+                chatConversation.classList.remove('active');
+                medicalData.style.display = 'block';
                 
-                // Clear existing messages
-                chatConversation.innerHTML = '';
-                
-                // Create single consolidated medical message
-                const medicalMessage = createConsolidatedMedicalMessage();
-                addMessageToConversation(medicalMessage, 'assistant');
+                // Set medical records item as active
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector('.medical-records-item').classList.add('active');
             }
 
             function createPatientInfoMessage() {
                 return `
                     <div class="medical-message">
-                        <h4>👤 Patient Information</h4>
+                        <h4>Patient Information</h4>
                         <div class="patient-info-content">
                             <p><strong>Name:</strong> Vikas Raj Yadav</p>
                             <p><strong>Age:</strong> 54 years old</p>
@@ -1425,7 +1689,7 @@
             function createLabResultsMessage() {
                 return `
                     <div class="medical-message">
-                        <h4>🧪 Lab Results Summary</h4>
+                        <h4>Lab Results Summary</h4>
                         <div class="lab-summary-content">
                             <p class="abnormal-count">6 of 6 values abnormal</p>
                             <div class="lab-items">
@@ -1468,7 +1732,7 @@
             function createDiagnosisMessage() {
                 return `
                     <div class="medical-message">
-                        <h4>🔍 Diagnostic Analysis</h4>
+                        <h4>Diagnostic Analysis</h4>
                         <div class="diagnosis-content">
                             <p class="diagnosis-subtitle">3 differential diagnoses ranked by confidence</p>
                             <div class="diagnosis-cards">
@@ -1499,7 +1763,7 @@
             function createConsolidatedMedicalMessage() {
                 return `
                     <div class="medical-message">
-                        <h4>👤 Patient Information</h4>
+                        <h4>Patient Information</h4>
                         <div class="patient-info">
                             <div class="info-row">
                                 <span class="info-label">Name:</span>
@@ -1525,7 +1789,7 @@
                     </div>
                     
                     <div class="medical-message">
-                        <h4>🧪 Lab Results Summary</h4>
+                        <h4>Lab Results Summary</h4>
                         <div class="lab-results">
                             <div class="lab-item critical">
                                 <span class="lab-name">Glucose (Fasting)</span>
@@ -1556,7 +1820,7 @@
                     </div>
                     
                     <div class="medical-message">
-                        <h4>🔍 Diagnostic Analysis</h4>
+                        <h4>Diagnostic Analysis</h4>
                         <div class="diagnosis-content">
                             <div class="diagnosis-item">
                                 <span class="diagnosis-label">Primary Diagnosis:</span>
@@ -1583,9 +1847,23 @@
             function hideWelcomeSection() {
                 if (!welcomeSection.classList.contains('hidden')) {
                     welcomeSection.classList.add('hidden');
-                    setTimeout(() => {
-                        chatConversation.classList.add('active');
-                    }, 300);
+                }
+            }
+
+            function hideMedicalData() {
+                const medicalData = document.getElementById('medicalData');
+                if (medicalData) {
+                    medicalData.style.display = 'none';
+                }
+            }
+
+            function showChatConversation() {
+                const medicalData = document.getElementById('medicalData');
+                if (chatConversation) {
+                    chatConversation.classList.add('active');
+                }
+                if (medicalData) {
+                    medicalData.style.display = 'none';
                 }
             }
 
