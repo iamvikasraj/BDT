@@ -340,20 +340,6 @@
             border: none;
         }
 
-        .message-time {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            padding: 0 8px;
-        }
-
-        .message.user .message-time {
-            text-align: right;
-        }
-
-        .message.assistant .message-time {
-            text-align: left;
-        }
 
         .medical-data {
             background: #ffffff8c;
@@ -1078,7 +1064,7 @@
         }
 
         .pdf-btn:hover, .send-btn:hover {
-            background: rgba(25, 183, 106, 0.1);
+            /* background: rgba(25, 183, 106, 0.1); */
             color: var(--color-primary);
         }
 
@@ -1410,19 +1396,19 @@
     </div>
 
     <script>
-        // Auto-refresh for development (remove in production)
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // Check for file changes every 2 seconds
-            setInterval(() => {
-                fetch(window.location.href, { method: 'HEAD' })
-                    .then(response => {
-                        if (response.headers.get('last-modified') !== window.lastModified) {
-                            window.location.reload();
-                        }
-                    })
-                    .catch(() => {});
-            }, 2000);
-        }
+        // Auto-refresh disabled for better user experience
+        // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        //     // Check for file changes every 2 seconds
+        //     setInterval(() => {
+        //         fetch(window.location.href, { method: 'HEAD' })
+        //             .then(response => {
+        //                 if (response.headers.get('last-modified') !== window.lastModified) {
+        //                     window.location.reload();
+        //                 }
+        //             })
+        //             .catch(() => {});
+        //     }, 2000);
+        // }
 
         // Add basic interactivity
         document.addEventListener('DOMContentLoaded', function() {
@@ -1464,16 +1450,8 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${sender}`;
                 
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', { 
-                    hour: 'numeric', 
-                    minute: '2-digit',
-                    hour12: true 
-                });
-                
                 messageDiv.innerHTML = `
                     <div class="message-bubble">${message}</div>
-                    <div class="message-time">${timeString}</div>
                 `;
                 
                 chatConversation.appendChild(messageDiv);
