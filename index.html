@@ -106,6 +106,12 @@
             transition: all 0.3s ease;
             position: relative;
             padding: 40px 20px;
+            opacity: 1;
+        }
+
+        .welcome-section.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .welcome-section svg {
@@ -1274,6 +1280,13 @@
             max-width: 1200px;
             margin: 0 auto;
             /* padding: 20px; */
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+
+        .previous-chats-container.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .previous-chat-header {
@@ -2395,13 +2408,21 @@
                 `;
             }
 
-            // Hide welcome section only when there are chat messages
+            // Hide welcome section and previous chats when chat starts
             function hideWelcomeSection() {
-                welcomeSection.style.display = 'none';
+                welcomeSection.classList.add('hidden');
+                const previousChatsContainer = document.querySelector('.previous-chats-container');
+                if (previousChatsContainer) {
+                    previousChatsContainer.classList.add('hidden');
+                }
             }
 
             function showWelcomeSection() {
-                welcomeSection.style.display = 'flex';
+                welcomeSection.classList.remove('hidden');
+                const previousChatsContainer = document.querySelector('.previous-chats-container');
+                if (previousChatsContainer) {
+                    previousChatsContainer.classList.remove('hidden');
+                }
             }
 
             function showChatConversation() {
@@ -2410,7 +2431,17 @@
                 }
             }
 
-            // Chat history functionality removed for single layout
+            // Chat card click functionality
+            document.querySelectorAll('.chat-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    // Hide welcome section and previous chats
+                    hideWelcomeSection();
+                    showChatConversation();
+                    
+                    // Add a message indicating previous case is being loaded
+                    addMessageToConversation('Loading previous case...', 'assistant');
+                });
+            });
 
             // Auto-generate medical data for testing
             setTimeout(() => {
