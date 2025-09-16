@@ -16,8 +16,8 @@
             --color-primary-dark: #16A085;
             
             /* Background Colors */
-            --bg-main: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            --bg-container: rgba(255, 255, 255, 0.05);
+            --bg-main: linear-gradient(180deg, #BFC3C8 0%, #DAD9DA 100%);
+            --bg-container: #F8F8F8;
             --bg-left-top: rgba(245, 245, 245, 0.9);
             --bg-left-bottom: rgba(255, 255, 255, 0.9);
             --bg-input: rgba(255, 255, 255, 0.95);
@@ -108,134 +108,16 @@
             left: 0;
             right: 0;
             bottom: 0;
-            padding: 40px 20px;
         }
 
-        .welcome-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--color-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 16px rgba(25, 183, 106, 0.3);
-        }
-
-        .welcome-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
-
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .welcome-subtitle {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-
-        .welcome-input {
-            width: 100%;
-            max-width: 600px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 0 24px;
-            font-size: 16px;
-            color: white;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            margin-bottom: 40px;
-        }
-
-        .welcome-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .welcome-input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .previous-chat-section {
-            width: 100%;
-            max-width: 800px;
-        }
-
-        .previous-chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .welcome-section svg {
             margin-bottom: 20px;
         }
 
-        .previous-chat-title {
+        .welcome-section p {
             font-size: 18px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .see-all-link {
-            font-size: 14px;
-            color: var(--color-primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .see-all-link:hover {
-            color: #16A085;
-        }
-
-        .previous-chat-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-        }
-
-        .chat-card {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .chat-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .chat-card-title {
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 12px;
-        }
-
-        .chat-card-icon {
-            width: 24px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--text-secondary);
+            line-height: 1.5;
         }
 
         .chat-conversation {
@@ -1601,38 +1483,11 @@
             <div class="right-top-container">
                 <div class="chat-container">
                     <div class="welcome-section" id="welcomeSection">
-                        <div class="welcome-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <h1 class="welcome-title">Hello, Doctor!</h1>
-                        <p class="welcome-subtitle">How can I help you today?</p>
-                        <input type="text" class="welcome-input" placeholder="Type your message or upload a file...">
-                        <div class="previous-chat-section">
-                            <div class="previous-chat-header">
-                                <h3 class="previous-chat-title">Explore your previous chat</h3>
-                                <a href="#" class="see-all-link">See all</a>
-                            </div>
-                            <div class="previous-chat-cards">
-                                <div class="chat-card">
-                                    <div class="chat-card-title">Name of the case</div>
-                                    <div class="chat-card-icon"></div>
-                                </div>
-                                <div class="chat-card">
-                                    <div class="chat-card-title">Name of the case</div>
-                                    <div class="chat-card-icon"></div>
-                                </div>
-                                <div class="chat-card">
-                                    <div class="chat-card-title">Name of the case</div>
-                                    <div class="chat-card-icon"></div>
-                                </div>
-                                <div class="chat-card">
-                                    <div class="chat-card-title">Name of the case</div>
-                                    <div class="chat-card-icon"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.0129 2.67236C12.9723 -0.890788 18.0277 -0.890787 18.9871 2.67236L20.3219 7.62994C20.6565 8.87273 21.6273 9.8435 22.8701 10.1781L27.8276 11.5129C31.3908 12.4723 31.3908 17.5277 27.8276 18.4871L22.8701 19.8219C21.6273 20.1565 20.6565 21.1273 20.3219 22.3701L18.9871 27.3276C18.0277 30.8908 12.9723 30.8908 12.0129 27.3276L10.6781 22.3701C10.3435 21.1273 9.37273 20.1565 8.12994 19.8219L3.17236 18.4871C-0.390788 17.5277 -0.390787 12.4723 3.17236 11.5129L8.12994 10.1781C9.37273 9.8435 10.3435 8.87273 10.6781 7.62994L12.0129 2.67236Z" fill="#19B76A"/>
+                        </svg>
+                        <p>Hello, Mihir!<br>
+                        How can I help you today?</p>
                     </div>
                     <div class="chat-conversation" id="chatConversation">
                         <!-- Messages will be added here dynamically -->
@@ -1686,7 +1541,7 @@
             // Chat history removed for single layout
             const welcomeSection = document.getElementById('welcomeSection');
             const chatConversation = document.getElementById('chatConversation');
-            const welcomeInput = document.querySelector('.welcome-input');
+            // Welcome input removed
 
             // Send message functionality
             function sendMessage() {
@@ -1788,39 +1643,7 @@
                 }
             });
 
-            // Welcome input functionality
-            welcomeInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    const message = welcomeInput.value.trim();
-                    if (message) {
-                        // Hide welcome section and show chat conversation
-                        hideWelcomeSection();
-                        showChatConversation();
-
-                        // Add user message to conversation
-                        addMessageToConversation(message, 'user');
-
-                        // Generate AI response
-                        setTimeout(() => {
-                            const aiResponse = generateAIResponse(message);
-                            addMessageToConversation(aiResponse, 'assistant');
-                        }, 1000);
-
-                        // Clear input
-                        welcomeInput.value = '';
-                    }
-                }
-            });
-
-            // Chat card click functionality
-            document.querySelectorAll('.chat-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    // For now, just show a placeholder message
-                    hideWelcomeSection();
-                    showChatConversation();
-                    addMessageToConversation('Loading previous case...', 'assistant');
-                });
-            });
+            // Welcome input and chat card functionality removed
 
 
             // PDF upload functionality
