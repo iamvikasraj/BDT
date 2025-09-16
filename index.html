@@ -122,7 +122,7 @@
 
 
         .chat-item {
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             cursor: pointer;
             padding: 20px;
             border-bottom: 1px solid #d4d4d47a;
@@ -189,7 +189,7 @@
         .bottom-container {
             /* background: var(--bg-left-bottom); */
             padding: 20px;
-            border-top: 1px solid #d4d4d47a;
+            border-top: 1px solid #c6c6c6;
         }
 
         .user-profile {
@@ -242,7 +242,6 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
-            padding-bottom: 60px; /* Space for sticky input */
             position: relative;
             width: 100%;
             max-width: 800px;
@@ -263,18 +262,12 @@
             justify-content: center;
             text-align: center;
             height: 100%;
-            transition: all 0.5s ease;
+            transition: all 0.3s ease;
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-        }
-
-        .welcome-section.hidden {
-            opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
         }
 
         .welcome-section svg {
@@ -603,11 +596,12 @@
         }
 
         .diagnosis-header {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin: -20px -20px 20px -20px;
+            background: transparent;
+            color: var(--text-primary);
+            padding: 0;
+            border-radius: 0;
+            margin: 0 0 16px 0;
+            border-bottom: 1px solid var(--border-light);
         }
 
         .diagnosis-header h3 {
@@ -632,7 +626,7 @@
             padding: 20px;
             position: relative;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .diagnosis-card:hover {
@@ -695,12 +689,421 @@
         }
 
         .badge {
-            background: #E3F2FD;
-            color: #1E40AF;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(30, 64, 175, 0.2);
+            box-shadow: 0 2px 4px rgba(30, 64, 175, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(30, 64, 175, 0.15);
+        }
+
+        .analyzing-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .processing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: #19b76a;
+            border-radius: 50%;
+            animation: processingDots 1.2s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0s;
+        }
+
+        @keyframes processingDots {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .pdf-document-card {
+            /* background: #1e293b; */
+            /* border: 1px solid #334155; */
+            /* border-radius: 12px; */
+            /* padding: 16px; */
+            max-width: 280px;
+            /* transition: all 0.2s ease; */
+        }
+
+        .pdf-file-name {
+            color: #2c2c2d;
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 12px;
+            word-break: break-word;
+        }
+
+        .pdf-icon-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pdf-icon {
+            background: #dc2626;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 12px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .pdf-type {
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Detailed Diagnosis Chat - Minimal Design */
+        .detailed-diagnosis {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            margin: 8px 0;
+            border: none;
+        }
+
+        .detailed-diagnosis .diagnosis-header {
+            text-align: left;
+            padding: 0 0 12px 0;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .diagnosis-rank-circle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .rank-number {
+            width: 20px;
+            height: 20px;
+            background: #19b76a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .detailed-diagnosis .diagnosis-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .detailed-diagnosis .confidence-badge {
+            display: inline-block;
+            background: var(--bg-input);
+            color: var(--text-muted);
             padding: 4px 8px;
-            border-radius: 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        .progress-wrapper {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .progress-label-text {
+            font-weight: 500;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .progress-label-value {
+            font-weight: 600;
+            color: #19b76a;
+            font-size: 12px;
+        }
+
+        .detailed-diagnosis .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: var(--border-light);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .detailed-diagnosis .progress-bar {
+            height: 100%;
+            background: var(--color-primary);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .detailed-diagnosis .diagnosis-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .diagnosis-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detailed-diagnosis .detail-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .detailed-diagnosis .detail-card.danger {
+            /* border-left: 3px solid #dc2626; */
+            /* background: #fef2f2; */
+        }
+
+        .detailed-diagnosis .detail-card.success {
+            /* border-left: 3px solid #059669; */
+            /* background: #f0fdf4; */
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .card-icon {
+            width: 12px;
+            height: 12px;
+            margin-right: 6px;
+        }
+
+        .detailed-diagnosis .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .detailed-diagnosis .card-title.danger {
+            color: #dc2626;
+        }
+
+        .detailed-diagnosis .card-title.success {
+            color: #059669;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+
+        .detailed-diagnosis .badge {
+            background: var(--bg-container);
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid var(--border-light);
+        }
+
+        .detailed-diagnosis .red-flag-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border-radius: 0;
+            padding: 4px 0;
+        }
+
+        .detailed-diagnosis .red-flag-dot {
+            width: 8px;
+            height: 8px;
+            background: #dc2626;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .detailed-diagnosis .red-flag-text {
+            color: #dc2626;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .detailed-diagnosis .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            background: transparent;
+            border-radius: 0;
+            padding: 4px 0;
+        }
+
+        .detailed-diagnosis .step-number {
+            width: 20px;
+            height: 20px;
+            background: var(--bg-container);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            border: 1px solid var(--border-light);
+        }
+
+        .detailed-diagnosis .step-number span {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .detailed-diagnosis .step-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .detailed-diagnosis .evidence-section {
+            margin-top: 16px;
+        }
+
+        .detailed-diagnosis .evidence-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .detailed-diagnosis .evidence-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .detailed-diagnosis .evidence-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 2px 8px rgba(25, 183, 106, 0.1);
+        }
+
+        .detailed-diagnosis .evidence-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .detailed-diagnosis .evidence-badge {
+            background: var(--bg-container);
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+        }
+
+        .detailed-diagnosis .evidence-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+
+        .detailed-diagnosis .evidence-source {
+            color: var(--text-muted);
             font-size: 12px;
             font-weight: 500;
+        }
+
+        .detailed-diagnosis .evidence-quote {
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.4;
+            border-left: 3px solid var(--color-primary);
+            padding-left: 12px;
+            background: transparent;
+            padding: 8px 0 8px 12px;
+            border-radius: 0;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+
+        @media (max-width: 768px) {
+            .diagnosis-details {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .evidence-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .diagnosis-title {
+                font-size: 24px;
+            }
         }
 
        
@@ -790,7 +1193,7 @@
             border: 1px solid rgba(0, 0, 0, 0.08);
             background: transparent;
             text-align: left;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             align-items: flex-start;
         }
 
@@ -895,54 +1298,111 @@
             gap: 12px;
         }
 
-        .diagnosis-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 16px;
-            position: relative;
+        .diagnosis-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
         }
 
-        .diagnosis-rank {
-            position: absolute;
-            top: -8px;
-            left: 16px;
-            background: #19b76a;
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+        .diagnosis-cards-container .diagnosis-header-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 12px;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+
+        .diagnosis-cards-container .diagnosis-name {
+            font-weight: 500;
+            font-size: 18px;
+            color: #1e293b;
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        .diagnosis-cards-container .diagnosis-confidence {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 0;
+        }
+
+        .diagnosis-card {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: transparent;
+            text-align: left;
+            transition: all 0.3s ease;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .diagnosis-card:hover {
+            border-color: rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+
+        .diagnosis-rank {
+            font-weight: 500;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .diagnosis-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 4px;
         }
 
         .diagnosis-name {
-            font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 18px;
             color: #1e293b;
-            margin-bottom: 8px;
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        .diagnosis-confidence {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
         }
 
         .confidence-score {
-            color: #19b76a;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 18px;
+            color: #1e293b;
+        }
+
+        .confidence-score.high-confidence {
+            color: #dc2626;
+        }
+
+        .confidence-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
         }
 
         .diagnosis-reasoning {
             color: #64748b;
             font-size: 14px;
-            line-height: 1.5;
+            margin-bottom: 8px;
         }
 
         .pdf-analysis {
             padding-bottom: 12px;
             border-bottom: 0.25px solid #d7d7d7;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             cursor: pointer;
             /* border-left: 4px solid #3b82f6; */
         }
@@ -1056,7 +1516,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .pdf-btn {
@@ -1233,13 +1693,7 @@
                     <span class="section-title">Previous Diagnosis</span>
                 </div>
                 <div class="chat-history">
-                    <div class="chat-item medical-records-item active" data-type="medical-records">
-                        <div class="chat-header">
-                            <div class="chat-date">Medical Records</div>
-                            <div class="chat-time">John Smith</div>
-                        </div>
-                        <div class="chat-message">Complete patient analysis & lab results</div>
-                    </div>
+                    <!-- Chat items will be added dynamically -->
                 </div>
             </div>
             <div class="bottom-container">
@@ -1257,7 +1711,7 @@
         <div class="right-container">
             <div class="right-top-container">
                 <div class="chat-container">
-                    <div class="welcome-section hidden" id="welcomeSection">
+                    <div class="welcome-section" id="welcomeSection">
                         <svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.0129 2.67236C12.9723 -0.890788 18.0277 -0.890787 18.9871 2.67236L20.3219 7.62994C20.6565 8.87273 21.6273 9.8435 22.8701 10.1781L27.8276 11.5129C31.3908 12.4723 31.3908 17.5277 27.8276 18.4871L22.8701 19.8219C21.6273 20.1565 20.6565 21.1273 20.3219 22.3701L18.9871 27.3276C18.0277 30.8908 12.9723 30.8908 12.0129 27.3276L10.6781 22.3701C10.3435 21.1273 9.37273 20.1565 8.12994 19.8219L3.17236 18.4871C-0.390788 17.5277 -0.390787 12.4723 3.17236 11.5129L8.12994 10.1781C9.37273 9.8435 10.3435 8.87273 10.6781 7.62994L12.0129 2.67236Z" fill="#19B76A"/>
                         </svg>
@@ -1267,7 +1721,557 @@
                     <div class="chat-conversation" id="chatConversation">
                         <!-- Messages will be added here dynamically -->
                     </div>
-                    <div class="medical-data" id="medicalData">
+                </div>
+            </div>
+            <div class="right-bottom-container">
+                <div class="input-section">
+                    <div class="input-field">
+                        <input type="text" placeholder="Type your message..." class="message-input">
+                        <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;">
+                    </div>
+                    <div class="button-group">
+                        <button class="pdf-btn" id="pdfUploadBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21.44 11.05L12.25 20.24C11.1242 21.3658 9.59722 21.9983 8.005 21.9983C6.41278 21.9983 4.8858 21.3658 3.76 20.24C2.6342 19.1142 2.0017 17.5872 2.0017 15.995C2.0017 14.4028 2.6342 12.8758 3.76 11.75L12.95 2.56C13.7006 1.80944 14.7186 1.38787 15.79 1.38787C16.8614 1.38787 17.8794 1.80944 18.63 2.56C19.3806 3.31056 19.8021 4.32856 19.8021 5.4C19.8021 6.47144 19.3806 7.48944 18.63 8.24L9.41 17.46C9.03475 17.8352 8.53125 18.0499 8.005 18.0499C7.47875 18.0499 6.97525 17.8352 6.6 17.46C6.22475 17.0848 6.01005 16.5813 6.01005 16.055C6.01005 15.5287 6.22475 15.0252 6.6 14.65L15.07 6.18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <button class="send-btn">
+                            <svg width="16" height="16" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.9006 8.95457L10.2934 14.4616M10.2934 14.4616L14.8101 22.1449C15.2412 22.8782 16.3329 22.7726 16.6154 21.9703L23.341 2.87133C23.6137 2.09687 22.8885 1.34195 22.1037 1.58338L2.16397 7.71785C1.33369 7.97328 1.20155 9.09305 1.94956 9.53473L10.2934 14.4616Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh disabled for better user experience
+        // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        //     // Check for file changes every 2 seconds
+        //     setInterval(() => {
+        //         fetch(window.location.href, { method: 'HEAD' })
+        //             .then(response => {
+        //                 if (response.headers.get('last-modified') !== window.lastModified) {
+        //                     window.location.reload();
+        //                 }
+        //             })
+        //             .catch(() => {});
+        //     }, 2000);
+        // }
+
+
+        // Add basic interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageInput = document.querySelector('.message-input');
+            const sendBtn = document.querySelector('.send-btn');
+            const pdfUploadBtn = document.getElementById('pdfUploadBtn');
+            const pdfFileInput = document.getElementById('pdfFileInput');
+            const chatHistory = document.querySelector('.chat-history');
+            const welcomeSection = document.getElementById('welcomeSection');
+            const chatConversation = document.getElementById('chatConversation');
+
+            // Send message functionality
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    // Hide welcome section and show chat conversation
+                    hideWelcomeSection();
+                    showChatConversation();
+
+                    // Add user message to right container
+                    addMessageToConversation(message, 'user');
+
+                    // Only add to chat history if this is the first message in a conversation
+                    if (!document.querySelector('.chat-item.conversation-item')) {
+                        addConversationToHistory();
+                    } else {
+                        // Update the existing conversation item
+                        updateConversationInHistory(message);
+                    }
+
+                    // Generate AI response
+                    setTimeout(() => {
+                        const aiResponse = generateAIResponse(message);
+                        addMessageToConversation(aiResponse, 'assistant');
+                    }, 1000);
+
+                    // Clear input
+                    messageInput.value = '';
+                }
+            }
+
+            function addMessageToConversation(message, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                    messageDiv.innerHTML = `
+                        <div class="message-bubble">${message}</div>
+                    `;
+                
+                chatConversation.appendChild(messageDiv);
+                
+                // Scroll to bottom with smooth animation
+                setTimeout(() => {
+                    chatConversation.scrollTo({
+                        top: chatConversation.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            }
+
+            function addConversationToHistory() {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item conversation-item';
+                
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                
+                    chatItem.innerHTML = `
+                        <div class="chat-header">
+                            <div class="chat-date">Chat Conversation</div>
+                        <div class="chat-time">${timeString}</div>
+                        </div>
+                        <div class="chat-message">Click to view conversation</div>
+                    `;
+                
+                // Remove active class from all existing chat items
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Add active class to new chat item
+                chatItem.classList.add('active');
+                    
+                    // Add to top of chat history
+                    chatHistory.insertBefore(chatItem, chatHistory.firstChild);
+                    
+                    // Add click functionality
+                    chatItem.addEventListener('click', () => {
+                        // Remove active class from all chat items
+                        document.querySelectorAll('.chat-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        
+                        // Add active class to clicked item
+                        chatItem.classList.add('active');
+                        
+                    // Show the conversation for this chat item
+                    showConversationForChatItem(chatItem);
+                    });
+                
+                // Scroll to top
+                chatHistory.scrollTop = 0;
+                }
+                
+            function updateConversationInHistory(message) {
+                const conversationItem = document.querySelector('.chat-item.conversation-item');
+                if (conversationItem) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                
+                    conversationItem.querySelector('.chat-time').textContent = timeString;
+                    conversationItem.querySelector('.chat-message').textContent = `Last message: ${message.substring(0, 30)}${message.length > 30 ? '...' : ''}`;
+                }
+            }
+
+            function generateAIResponse(userMessage) {
+                // Check if user has already uploaded a PDF in this conversation
+                const hasUploadedPDF = document.querySelector('.pdf-document-card');
+                
+                const responses = [
+                    "I understand your concern. Let me help you with that.",
+                    "That's a great question. I'd be happy to assist you with that.",
+                    "I can see you're looking for medical information. Let me help you with that.",
+                    "Thank you for reaching out. I'm here to help you with your medical analysis needs.",
+                    "I understand you need assistance. Let me guide you through the process.",
+                    "That's an interesting question. I can definitely help you with that.",
+                    "I'm here to help you with medical diagnosis and analysis. What would you like to know?",
+                    "I can assist you with patient management and medical analysis. How can I help?"
+                ];
+                
+                // Simple keyword-based responses
+                if (userMessage.toLowerCase().includes('blood')) {
+                    if (hasUploadedPDF) {
+                        return "I can help you analyze blood test results. I see you've already uploaded a PDF - I can provide detailed analysis based on those results, or you can ask me specific questions about the values.";
+                    } else {
+                        return "I can help you analyze blood test results! For the most accurate analysis, please upload your blood test PDF using the paperclip icon. I can then provide detailed insights and diagnosis recommendations.";
+                    }
+                } else if (userMessage.toLowerCase().includes('patient')) {
+                    if (hasUploadedPDF) {
+                        return "I'm here to help with patient management. I can see you've uploaded test results - I can provide comprehensive analysis and recommendations based on those findings.";
+                    } else {
+                        return "I'm here to help with patient management! To provide the most accurate analysis, please upload the patient's test results PDF using the paperclip icon. I can then give you detailed insights and treatment recommendations.";
+                    }
+                } else if (userMessage.toLowerCase().includes('diagnosis')) {
+                    if (hasUploadedPDF) {
+                        return "I can assist with the diagnosis process. I see you've uploaded test results - I can provide detailed diagnostic analysis based on those findings, or you can ask me specific questions about the results.";
+                    } else {
+                        return "I can assist with the diagnosis process! For comprehensive diagnostic analysis, please upload the patient's test results PDF using the paperclip icon. I can then provide detailed diagnosis recommendations and supporting evidence.";
+                    }
+                } else {
+                    // General response with PDF upload guidance
+                    if (hasUploadedPDF) {
+                        return responses[Math.floor(Math.random() * responses.length)] + " I can see you've uploaded test results - feel free to ask me any questions about the analysis or upload additional files if needed.";
+                    } else {
+                        return responses[Math.floor(Math.random() * responses.length)] + " For detailed medical analysis, I recommend uploading your test results PDF using the paperclip icon. I can then provide comprehensive insights and recommendations.";
+                    }
+                }
+            }
+
+            function showConversationForChatItem(chatItem) {
+                // Show the current conversation
+                    showChatConversation();
+            }
+
+            // Event listeners
+            sendBtn.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+
+            // PDF upload functionality
+            pdfUploadBtn.addEventListener('click', () => {
+                pdfFileInput.click();
+            });
+
+            pdfFileInput.addEventListener('change', function(e) {
+                console.log('PDF file selected');
+                const file = e.target.files[0];
+                if (file && file.type === 'application/pdf') {
+                    console.log('Valid PDF file:', file.name);
+                    processPDFUpload(file);
+                } else {
+                    console.log('Invalid file type:', file ? file.type : 'no file');
+                    alert('Please select a valid PDF file.');
+                }
+            });
+
+            function processPDFUpload(file) {
+                console.log('PDF upload started:', file.name);
+                
+                // Hide welcome section and show chat conversation
+                hideWelcomeSection();
+                showChatConversation();
+                
+                // If no conversation exists, create one
+                if (!document.querySelector('.chat-item.conversation-item')) {
+                    addConversationToHistory();
+                }
+                
+                // Add PDF document card to current conversation
+                addMessageToConversation(`
+                    <div class="pdf-document-card">
+                        <div class="pdf-file-name">${file.name}</div>
+                        <div class="pdf-icon-container">
+                            <div class="pdf-icon">PDF</div>
+                        </div>
+                    </div>
+                `, 'user');
+                
+                // Show animated processing message
+                showAnimatedProcessingMessage();
+                
+                setTimeout(() => {
+                    console.log('Processing complete, showing medical data');
+                    
+                    // Hide processing message first
+                    hideProcessingMessage();
+                    
+                    // Show medical data after a short delay
+                    setTimeout(() => {
+                        showMedicalDataAsMessages();
+                    }, 300);
+                }, 3000);
+            }
+
+            function showAnimatedProcessingMessage() {
+                const processingId = 'processing-' + Date.now();
+                addMessageToConversation(`
+                    <div id="${processingId}" class="analyzing-text">
+                        Analyzing
+                        <div class="processing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                `, 'assistant');
+            }
+
+            function hideProcessingMessage() {
+                const processingMessage = document.querySelector('.analyzing-text');
+                if (processingMessage) {
+                    processingMessage.style.transition = 'all 0.3s ease';
+                    processingMessage.style.opacity = '0';
+                    processingMessage.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        // Find the parent message div and remove it
+                        const messageDiv = processingMessage.closest('.message.assistant');
+                        if (messageDiv) {
+                            messageDiv.remove();
+                        }
+                    }, 300);
+                }
+            }
+
+            // Detailed Diagnosis Chat Functions
+            function showDetailedDiagnosis(diagnosisData) {
+                // Add user message asking for details
+                addMessageToConversation(`Tell me more about ${diagnosisData.name}`, 'user');
+                
+                // Add detailed diagnosis as assistant message
+                setTimeout(() => {
+                    addMessageToConversation(`
+                        <div class="detailed-diagnosis">
+                            <div class="diagnosis-header">
+                                <div class="diagnosis-rank-circle">
+                                    <div class="rank-number">${diagnosisData.rank}</div>
+                                    <h4 class="diagnosis-title">${diagnosisData.name}</h4>
+                    </div>
+                                <span class="confidence-badge">${diagnosisData.confidence}% Confidence</span>
+                                <div class="progress-wrapper">
+                                    <div class="progress-label">
+                                        <span class="progress-label-text">Confidence</span>
+                                        <span class="progress-label-value">${diagnosisData.confidence}%</span>
+                                    </div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: ${diagnosisData.confidence}%"></div>
+                                    </div>
+                                </div>
+                                <p class="diagnosis-description">${diagnosisData.description}</p>
+                            </div>
+                            <div class="diagnosis-details">
+                                <div class="detail-section">
+                                    <div class="detail-card">
+                                        <div class="card-header">
+                                            <div class="card-icon" style="background: #19b76a; border-radius: 50%;"></div>
+                                            <h5 class="card-title">Supporting Lab Values</h5>
+                                        </div>
+                                        <div class="badge-container">
+                                            ${diagnosisData.supportingLabs.map(lab => `<span class="badge">${lab}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                    <div class="detail-card danger">
+                                        <div class="card-header">
+                                            <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                                <path d="M12 9v4"></path>
+                                                <path d="M12 17h.01"></path>
+                                            </svg>
+                                            <h5 class="card-title danger">Red Flags</h5>
+                                        </div>
+                                        <div class="space-y-4">
+                                            ${diagnosisData.redFlags.map(flag => `
+                                                <div class="red-flag-item">
+                                                    <div class="red-flag-dot"></div>
+                                                    <span class="red-flag-text">${flag}</span>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-section">
+                                    <div class="detail-card success">
+                                        <div class="card-header">
+                                            <div class="card-icon" style="background: #059669; border-radius: 50%;"></div>
+                                            <h5 class="card-title success">Recommended Next Steps</h5>
+                                        </div>
+                                        <div class="space-y-5">
+                                            ${diagnosisData.nextSteps.map((step, index) => `
+                                                <div class="step-item">
+                                                    <div class="step-number">
+                                                        <span>${index + 1}</span>
+                                                    </div>
+                                                    <p class="step-text">${step}</p>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="evidence-section">
+                                    <div class="detail-card">
+                                        <div class="card-header">
+                                            <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M15 3h6v6"></path>
+                                                <path d="M10 14 21 3"></path>
+                                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            </svg>
+                                            <h5 class="card-title">Evidence & Citations</h5>
+                                        </div>
+                                        <div class="evidence-grid">
+                                            ${diagnosisData.evidence.map(evidence => `
+                                                <div class="evidence-card">
+                                                    <div class="evidence-header">
+                                                        <span class="evidence-badge">${evidence.level}</span>
+                                                        <a href="${evidence.url}" target="_blank" rel="noopener noreferrer">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="M15 3h6v6"></path>
+                                                                <path d="M10 14 21 3"></path>
+                                                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                            </svg>
+                                                        </a>
+                                                    </div>
+                                                    <h6 class="evidence-title">${evidence.title}</h6>
+                                                    <p class="evidence-source">${evidence.source}</p>
+                                                    <blockquote class="evidence-quote">"${evidence.quote}"</blockquote>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `, 'assistant');
+                }, 500);
+            }
+
+            // Add click handlers to diagnosis cards
+            function addDiagnosisClickHandlers() {
+                setTimeout(() => {
+                    const diagnosisCards = document.querySelectorAll('.diagnosis-card');
+                    diagnosisCards.forEach(card => {
+                        card.style.cursor = 'pointer';
+                        card.addEventListener('click', function() {
+                            const rank = this.querySelector('.diagnosis-rank').textContent;
+                            const name = this.querySelector('.diagnosis-name').textContent;
+                            const confidence = this.querySelector('.confidence-score').textContent.replace('%', '');
+                            
+                            // Get diagnosis data based on the card clicked
+                            const diagnosisData = getDiagnosisData(rank, name, confidence);
+                            showDetailedDiagnosis(diagnosisData);
+                        });
+                    });
+                }, 2000);
+            }
+
+            function getDiagnosisData(rank, name, confidence) {
+                const diagnosisData = {
+                    '1': {
+                        rank: 1,
+                        name: 'Type 2 Diabetes Mellitus',
+                        confidence: 85,
+                        description: 'Significantly elevated glucose (180 mg/dL) and HbA1c (8.2%) with supporting metabolic markers consistent with diabetes diagnosis.',
+                        supportingLabs: ['Glucose', 'HbA1c', 'Metabolic Panel'],
+                        redFlags: ['Severe hyperglycemia', 'Poor glycemic control'],
+                        nextSteps: [
+                            'Start metformin therapy',
+                            'Implement lifestyle modifications',
+                            'Schedule endocrinology consultation',
+                            'Monitor blood glucose regularly'
+                        ],
+                        evidence: [
+                            {
+                                level: 'Level I',
+                                title: 'Standards of Medical Care in Diabetes',
+                                source: 'ADA Guidelines • 2024',
+                                quote: 'HbA1c ≥6.5% is diagnostic for diabetes when performed in an appropriately certified laboratory.',
+                                url: 'https://diabetesjournals.org/care'
+                            }
+                        ]
+                    },
+                    '2': {
+                        rank: 2,
+                        name: 'Mild Hyperlipidemia',
+                        confidence: 60,
+                        description: 'Elevated total cholesterol (240 mg/dL) and LDL (165 mg/dL) with low HDL (35 mg/dL) indicating lipid metabolism disorder.',
+                        supportingLabs: ['Total Cholesterol', 'LDL', 'HDL'],
+                        redFlags: ['High cardiovascular risk'],
+                        nextSteps: [
+                            'Start statin therapy',
+                            'Dietary counseling',
+                            'Exercise program',
+                            'Follow-up lipid panel in 3 months'
+                        ],
+                        evidence: [
+                            {
+                                level: 'Level I',
+                                title: '2018 AHA/ACC/AACVPR/AAPA/ABC/ACPM/ADA/AGS/APhA/ASPC/NLA/PCNA Guideline',
+                                source: 'AHA Guidelines • 2018',
+                                quote: 'High-intensity statin therapy is recommended for primary prevention in patients with LDL-C ≥190 mg/dL.',
+                                url: 'https://www.ahajournals.org'
+                            }
+                        ]
+                    },
+                    '3': {
+                        rank: 3,
+                        name: 'Cardiovascular Risk',
+                        confidence: 30,
+                        description: 'Combined diabetes and dyslipidemia increases cardiovascular risk. Requires comprehensive management and monitoring.',
+                        supportingLabs: ['Glucose', 'Cholesterol', 'Blood Pressure'],
+                        redFlags: ['Multiple risk factors'],
+                        nextSteps: [
+                            'Cardiovascular risk assessment',
+                            'Blood pressure monitoring',
+                            'Lifestyle modifications',
+                            'Regular follow-up appointments'
+                        ],
+                        evidence: [
+                            {
+                                level: 'Level I',
+                                title: '2019 ESC/EAS Guidelines for the Management of Dyslipidaemias',
+                                source: 'ESC Guidelines • 2019',
+                                quote: 'Patients with diabetes should be considered at very high cardiovascular risk.',
+                                url: 'https://www.escardio.org'
+                            }
+                        ]
+                    }
+                };
+                
+                return diagnosisData[rank] || diagnosisData['1'];
+            }
+
+            function simulatePDFUpload() {
+                console.log('Simulating PDF upload...');
+                
+                // Add PDF document card to current conversation
+                addMessageToConversation(`
+                    <div class="pdf-document-card">
+                        <div class="pdf-file-name">Blood_Test_Report_John_Smith_2024.pdf</div>
+                        <div class="pdf-icon-container">
+                            <div class="pdf-icon">PDF</div>
+                        </div>
+                    </div>
+                `, 'user');
+                
+                // Show animated processing message
+                showAnimatedProcessingMessage();
+                
+                setTimeout(() => {
+                    console.log('Processing complete, showing medical data');
+                    
+                    // Hide processing message first
+                    hideProcessingMessage();
+                    
+                    // Show medical data after a short delay
+                    setTimeout(() => {
+                        showMedicalDataAsMessages();
+                    }, 300);
+                }, 3000);
+            }
+
+            function showMedicalDataAsMessages() {
+                console.log('showMedicalDataAsMessages called');
+                
+                // Add medical data as assistant messages in the chat (don't clear existing conversation)
+                addMessageToConversation('I\'ve analyzed the blood report. Here are the key findings:', 'assistant');
+                
+                // Add patient information
+                setTimeout(() => {
+                    addMessageToConversation(`
                         <div class="medical-message">
                             <h4>Patient Information</h4>
                             <div class="patient-info">
@@ -1293,7 +2297,56 @@
                                 </div>
                             </div>
                         </div>
-                        
+                    `, 'assistant');
+                }, 500);
+                
+                // Add diagnosis with cards first
+                setTimeout(() => {
+                    addMessageToConversation(`
+                        <div class="medical-message">
+                            <h4>Diagnostic Analysis</h4>
+                            <div class="diagnosis-cards-container">
+                                <div class="diagnosis-card">
+                                    <span class="diagnosis-rank">1</span>
+                                    <div class="diagnosis-header-row">
+                                        <span class="diagnosis-name">Type 2 Diabetes Mellitus</span>
+                                        <div class="diagnosis-confidence">
+                                            <span class="confidence-score high-confidence">85%</span>
+                                            <span class="confidence-label">Confidence</span>
+                                        </div>
+                                    </div>
+                                    <span class="diagnosis-reasoning">Significantly elevated glucose (180 mg/dL) and HbA1c (8.2%) with supporting metabolic markers consistent with diabetes diagnosis.</span>
+                                </div>
+                                <div class="diagnosis-card">
+                                    <span class="diagnosis-rank">2</span>
+                                    <div class="diagnosis-header-row">
+                                        <span class="diagnosis-name">Mild Hyperlipidemia</span>
+                                        <div class="diagnosis-confidence">
+                                            <span class="confidence-score">60%</span>
+                                            <span class="confidence-label">Confidence</span>
+                                        </div>
+                                    </div>
+                                    <span class="diagnosis-reasoning">Elevated total cholesterol (240 mg/dL) and LDL (165 mg/dL) with low HDL (35 mg/dL) indicating lipid metabolism disorder.</span>
+                                </div>
+                                <div class="diagnosis-card">
+                                    <span class="diagnosis-rank">3</span>
+                                    <div class="diagnosis-header-row">
+                                        <span class="diagnosis-name">Cardiovascular Risk</span>
+                                        <div class="diagnosis-confidence">
+                                            <span class="confidence-score">30%</span>
+                                            <span class="confidence-label">Confidence</span>
+                                        </div>
+                                    </div>
+                                    <span class="diagnosis-reasoning">Combined diabetes and dyslipidemia increases cardiovascular risk. Requires comprehensive management and monitoring.</span>
+                                </div>
+                            </div>
+                        </div>
+                    `, 'assistant');
+                }, 1000);
+                
+                // Add lab results second
+                setTimeout(() => {
+                    addMessageToConversation(`
                         <div class="medical-message">
                             <h4>Lab Results <span class="abnormal-count">6 of 6 values abnormal</span></h4>
                             <div class="lab-results">
@@ -1347,308 +2400,19 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="medical-message">
-                            <h4>Diagnostic Analysis</h4>
-                            <div class="diagnosis-content">
-                                <div class="diagnosis-item">
-                                    <span class="diagnosis-label">Primary Diagnosis:</span>
-                                    <span class="diagnosis-value">Type 2 Diabetes Mellitus</span>
-                                </div>
-                                <div class="diagnosis-item">
-                                    <span class="diagnosis-label">Secondary Findings:</span>
-                                    <span class="diagnosis-value">Mild Hyperlipidemia</span>
-                                </div>
-                                <div class="diagnosis-item">
-                                    <span class="diagnosis-label">Risk Assessment:</span>
-                                    <span class="diagnosis-value">Moderate cardiovascular risk</span>
-                                </div>
-                                <div class="diagnosis-item">
-                                    <span class="diagnosis-label">Recommendations:</span>
-                                    <span class="diagnosis-value">Lifestyle modifications, medication review, follow-up in 3 months</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="right-bottom-container">
-                <div class="input-section">
-                    <div class="input-field">
-                        <input type="text" placeholder="Type your message..." class="message-input">
-                        <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;">
-                    </div>
-                    <div class="button-group">
-                        <button class="pdf-btn" id="pdfUploadBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M21.44 11.05L12.25 20.24C11.1242 21.3658 9.59722 21.9983 8.005 21.9983C6.41278 21.9983 4.8858 21.3658 3.76 20.24C2.6342 19.1142 2.0017 17.5872 2.0017 15.995C2.0017 14.4028 2.6342 12.8758 3.76 11.75L12.95 2.56C13.7006 1.80944 14.7186 1.38787 15.79 1.38787C16.8614 1.38787 17.8794 1.80944 18.63 2.56C19.3806 3.31056 19.8021 4.32856 19.8021 5.4C19.8021 6.47144 19.3806 7.48944 18.63 8.24L9.41 17.46C9.03475 17.8352 8.53125 18.0499 8.005 18.0499C7.47875 18.0499 6.97525 17.8352 6.6 17.46C6.22475 17.0848 6.01005 16.5813 6.01005 16.055C6.01005 15.5287 6.22475 15.0252 6.6 14.65L15.07 6.18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                        <button class="send-btn">
-                            <svg width="16" height="16" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M15.9006 8.95457L10.2934 14.4616M10.2934 14.4616L14.8101 22.1449C15.2412 22.8782 16.3329 22.7726 16.6154 21.9703L23.341 2.87133C23.6137 2.09687 22.8885 1.34195 22.1037 1.58338L2.16397 7.71785C1.33369 7.97328 1.20155 9.09305 1.94956 9.53473L10.2934 14.4616Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Auto-refresh disabled for better user experience
-        // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        //     // Check for file changes every 2 seconds
-        //     setInterval(() => {
-        //         fetch(window.location.href, { method: 'HEAD' })
-        //             .then(response => {
-        //                 if (response.headers.get('last-modified') !== window.lastModified) {
-        //                     window.location.reload();
-        //                 }
-        //             })
-        //             .catch(() => {});
-        //     }, 2000);
-        // }
-
-        // Add basic interactivity
-        document.addEventListener('DOMContentLoaded', function() {
-            const messageInput = document.querySelector('.message-input');
-            const sendBtn = document.querySelector('.send-btn');
-            const pdfUploadBtn = document.getElementById('pdfUploadBtn');
-            const pdfFileInput = document.getElementById('pdfFileInput');
-            const chatHistory = document.querySelector('.chat-history');
-            const welcomeSection = document.getElementById('welcomeSection');
-            const chatConversation = document.getElementById('chatConversation');
-
-            // Send message functionality
-            function sendMessage() {
-                const message = messageInput.value.trim();
-                if (message) {
-                    // Hide welcome section and medical data, show chat conversation
-                    hideWelcomeSection();
-                    hideMedicalData();
-                    showChatConversation();
-
-                    // Add user message to right container
-                    addMessageToConversation(message, 'user');
-
-                    // Add to left chat history as well
-                    addMessageToHistory(message);
-
-                    // Generate AI response
-                    setTimeout(() => {
-                        const aiResponse = generateAIResponse(message);
-                        addMessageToConversation(aiResponse, 'assistant');
-                    }, 1000);
-
-                    // Clear input
-                    messageInput.value = '';
-                }
-            }
-
-            function addMessageToConversation(message, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${sender}`;
+                    `, 'assistant');
+                }, 1500);
                 
-                messageDiv.innerHTML = `
-                    <div class="message-bubble">${message}</div>
-                `;
-                
-                chatConversation.appendChild(messageDiv);
-                
-                // Scroll to bottom with smooth animation
+                // Add follow-up message
                 setTimeout(() => {
-                    chatConversation.scrollTo({
-                        top: chatConversation.scrollHeight,
-                        behavior: 'smooth'
-                    });
-                }, 100);
-            }
-
-            function addMessageToHistory(message) {
-                const chatItem = document.createElement('div');
-                chatItem.className = 'chat-item';
-                
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', { 
-                    hour: 'numeric', 
-                    minute: '2-digit',
-                    hour12: true 
-                });
-                
-                chatItem.innerHTML = `
-                    <div class="chat-header">
-                        <div class="chat-date">Now</div>
-                        <div class="chat-time">${timeString}</div>
-                    </div>
-                    <div class="chat-message">${message}</div>
-                `;
-                
-                // Remove active class from all existing chat items
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Add active class to new chat item
-                chatItem.classList.add('active');
-                
-                // Add to top of chat history
-                chatHistory.insertBefore(chatItem, chatHistory.firstChild);
-                
-                // Add click functionality
-                chatItem.addEventListener('click', () => {
-                    // Remove active class from all chat items
-                    document.querySelectorAll('.chat-item').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked item
-                    chatItem.classList.add('active');
-                    
-                    // Show the conversation for this chat item
-                    showConversationForChatItem(chatItem);
-                });
-                
-                // Scroll to top
-                chatHistory.scrollTop = 0;
-            }
-
-            function generateAIResponse(userMessage) {
-                const responses = [
-                    "I understand your concern. Let me help you with that.",
-                    "That's a great question. Based on the symptoms you've described, I'd recommend...",
-                    "I can see you're looking for information about blood test results. Let me assist you.",
-                    "Thank you for sharing that information. Here's what I suggest...",
-                    "I understand you need help with patient management. Let me guide you through the process.",
-                    "That's an interesting case. Let me analyze this for you.",
-                    "I can help you with the diagnosis process. What specific information do you need?",
-                    "Based on your input, I recommend reviewing the patient's medical history first."
-                ];
-                
-                // Simple keyword-based responses
-                if (userMessage.toLowerCase().includes('blood')) {
-                    return "I can help you analyze blood test results. Please share the specific values you'd like me to review.";
-                } else if (userMessage.toLowerCase().includes('patient')) {
-                    return "I'm here to help with patient management. What specific information do you need about the patient?";
-                } else if (userMessage.toLowerCase().includes('diagnosis')) {
-                    return "I can assist with the diagnosis process. Please provide the symptoms and test results for analysis.";
-                } else {
-                    return responses[Math.floor(Math.random() * responses.length)];
-                }
-            }
-
-            function showConversationForChatItem(chatItem) {
-                // Clear existing conversation
-                chatConversation.innerHTML = '';
-                
-                // Get the message from the chat item
-                const message = chatItem.querySelector('.chat-message').textContent;
-                
-                // Add user message
-                addMessageToConversation(message, 'user');
-                
-                // Generate and add AI response
-                setTimeout(() => {
-                    const aiResponse = generateAIResponse(message);
-                    addMessageToConversation(aiResponse, 'assistant');
-                }, 500);
-                
-                // Hide welcome section if it's visible
-                hideWelcomeSection();
-            }
-
-            // Event listeners
-            sendBtn.addEventListener('click', sendMessage);
-            
-            messageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-
-            // PDF upload functionality
-            pdfUploadBtn.addEventListener('click', () => {
-                pdfFileInput.click();
-            });
-
-            pdfFileInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file && file.type === 'application/pdf') {
-                    processPDFUpload(file);
-                } else {
-                    alert('Please select a valid PDF file.');
-                }
-            });
-
-            function processPDFUpload(file) {
-                // Simulate PDF processing
-                showProcessingMessage();
-                
-                setTimeout(() => {
-                    // Create new chat entry in left sidebar
-                    addPDFChatEntry(file.name);
-                    
-                    // Show medical data in chat conversation
-                    showMedicalDataInChat();
-                    
-                    // Hide welcome section
-                    hideWelcomeSection();
+                    addMessageToConversation('You can click on any diagnosis card above to see detailed information, or ask me questions about these results.', 'assistant');
                 }, 2000);
+
+                // Add click handlers to diagnosis cards
+                addDiagnosisClickHandlers();
             }
 
-            function showProcessingMessage() {
-                addMessageToConversation('Processing blood report PDF...', 'assistant');
-            }
 
-            function addPDFChatEntry(fileName) {
-                const chatItem = document.createElement('div');
-                chatItem.className = 'chat-item';
-                
-                const now = new Date();
-                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                
-                chatItem.innerHTML = `
-                    <div class="chat-header">
-                        <div class="chat-date">PDF Upload</div>
-                        <div class="chat-time">${timeString}</div>
-                    </div>
-                    <div class="chat-message">${fileName}</div>
-                `;
-                
-                // Add to top of chat history
-                chatHistory.insertBefore(chatItem, chatHistory.firstChild);
-                
-                // Add click functionality
-                chatItem.addEventListener('click', () => {
-                    // Remove active class from all chat items
-                    document.querySelectorAll('.chat-item').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked item
-                    chatItem.classList.add('active'); 
-                    
-                    // Show conversation for this chat item
-                    showConversationForChatItem(chatItem);
-                });
-            }
-
-            function showMedicalDataInChat() {
-                // Hide welcome section and chat conversation, show medical data
-                const welcomeSection = document.getElementById('welcomeSection');
-                const chatConversation = document.getElementById('chatConversation');
-                const medicalData = document.getElementById('medicalData');
-                
-                welcomeSection.style.display = 'none';
-                chatConversation.classList.remove('active');
-                medicalData.style.display = 'block';
-                
-                // Set medical records item as active
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                document.querySelector('.medical-records-item').classList.add('active');
-            }
 
             function createPatientInfoMessage() {
                 return `
@@ -1716,20 +2480,32 @@
                             <div class="diagnosis-cards">
                                 <div class="diagnosis-card">
                                     <div class="diagnosis-rank">1</div>
-                                    <div class="diagnosis-name">Acute Coronary Syndrome</div>
-                                    <div class="confidence-score">85% confidence</div>
+                                    <div class="diagnosis-header-row">
+                                        <div class="diagnosis-name">Acute Coronary Syndrome</div>
+                                        <div class="diagnosis-confidence">
+                                            <div class="confidence-score high-confidence">85% confidence</div>
+                                        </div>
+                                    </div>
                                     <div class="diagnosis-reasoning">Significantly elevated troponin (2.5 ng/mL) with supporting cardiac biomarkers and clinical presentation consistent with acute myocardial injury.</div>
                                 </div>
                                 <div class="diagnosis-card">
                                     <div class="diagnosis-rank">2</div>
-                                    <div class="diagnosis-name">Myocarditis</div>
-                                    <div class="confidence-score">60% confidence</div>
+                                    <div class="diagnosis-header-row">
+                                        <div class="diagnosis-name">Myocarditis</div>
+                                        <div class="diagnosis-confidence">
+                                            <div class="confidence-score">60% confidence</div>
+                                        </div>
+                                    </div>
                                     <div class="diagnosis-reasoning">Troponin elevation in younger patient with possible viral prodrome. Less likely given age and risk factors but requires exclusion.</div>
                                 </div>
                                 <div class="diagnosis-card">
                                     <div class="diagnosis-rank">3</div>
-                                    <div class="diagnosis-name">Pulmonary Embolism with RV Strain</div>
-                                    <div class="confidence-score">30% confidence</div>
+                                    <div class="diagnosis-header-row">
+                                        <div class="diagnosis-name">Pulmonary Embolism with RV Strain</div>
+                                        <div class="diagnosis-confidence">
+                                            <div class="confidence-score">30% confidence</div>
+                                        </div>
+                                    </div>
                                     <div class="diagnosis-reasoning">Troponin can be elevated with right heart strain from massive PE. Consider given tachycardia and dyspnea.</div>
                                 </div>
                             </div>
@@ -1823,25 +2599,16 @@
 
             // Hide welcome section only when there are chat messages
             function hideWelcomeSection() {
-                if (!welcomeSection.classList.contains('hidden')) {
-                    welcomeSection.classList.add('hidden');
-                }
+                welcomeSection.style.display = 'none';
             }
 
-            function hideMedicalData() {
-                const medicalData = document.getElementById('medicalData');
-                if (medicalData) {
-                    medicalData.style.display = 'none';
-                }
+            function showWelcomeSection() {
+                welcomeSection.style.display = 'flex';
             }
 
             function showChatConversation() {
-                const medicalData = document.getElementById('medicalData');
                 if (chatConversation) {
                     chatConversation.classList.add('active');
-                }
-                if (medicalData) {
-                    medicalData.style.display = 'none';
                 }
             }
 
@@ -1857,208 +2624,16 @@
                     // Add active class to clicked item
                     chatItem.classList.add('active');
                     
-                // Check if it's a medical records item
-                if (chatItem.classList.contains('medical-records-item')) {
-                    showMedicalDataInChat();
-                } else {
-                    // Handle regular chat items
-                    console.log('Regular chat item clicked');
-                }
+                    // Show the conversation
+                    showChatConversation();
                 }
             });
 
-            // Function to show medical data
-            function showMedicalData(type) {
-                const medicalData = document.getElementById('medicalData');
-                const welcomeSection = document.getElementById('welcomeSection');
-                const chatConversation = document.getElementById('chatConversation');
-                
-                // Hide welcome and chat, show medical data
-                welcomeSection.style.display = 'none';
-                chatConversation.style.display = 'none';
-                medicalData.style.display = 'block';
-                
-                if (type === 'patient-info') {
-                    medicalData.innerHTML = `
-                        <div class="patient-card">
-                            <div class="patient-header">
-                                <div class="patient-info">
-                                    <div class="patient-avatar">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
-                                    </div>
-                                    <div class="patient-details">
-                                        <h3>John Smith</h3>
-                                        <div class="patient-meta">
-                                            <span>54 years old</span>
-                                            <span>MRN-2024-001</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <span class="patient-gender">Male</span>
-                            </div>
-                        </div>
-                    `;
-                } else if (type === 'lab-results') {
-                    medicalData.innerHTML = `
-                        <div class="lab-results">
-                            <div class="lab-header">
-                                <h3>Lab Results</h3>
-                                <p class="lab-summary">6 of 6 values abnormal</p>
-                            </div>
-                            <div class="lab-grid">
-                                <div class="lab-item">
-                                    <div class="lab-item-left">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
-                                            <path d="M16 7h6v6"></path>
-                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
-                                        </svg>
-                                        <div>
-                                            <div class="lab-name">Troponin I</div>
-                                            <div class="lab-normal">Normal: &lt;0.04 ng/mL</div>
-                                        </div>
-                                    </div>
-                                    <div class="lab-item-right">
-                                        <div class="lab-value high">2.5 ng/mL</div>
-                                        <span class="lab-severity severity-severe">Severe</span>
-                                    </div>
-                                </div>
-                                <div class="lab-item">
-                                    <div class="lab-item-left">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #F59E0B;">
-                                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
-                                            <path d="M12 9v4"></path>
-                                            <path d="M12 17h.01"></path>
-                                        </svg>
-                                        <div>
-                                            <div class="lab-name">CK-MB</div>
-                                            <div class="lab-normal">Normal: 0.0-6.3 ng/mL</div>
-                                        </div>
-                                    </div>
-                                    <div class="lab-item-right">
-                                        <div class="lab-value high">8.2 ng/mL</div>
-                                        <span class="lab-severity severity-moderate">Moderate</span>
-                                    </div>
-                                </div>
-                                <div class="lab-item">
-                                    <div class="lab-item-left">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
-                                            <path d="M16 7h6v6"></path>
-                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
-                                        </svg>
-                                        <div>
-                                            <div class="lab-name">BNP</div>
-                                            <div class="lab-normal">Normal: &lt;100 pg/mL</div>
-                                        </div>
-                                    </div>
-                                    <div class="lab-item-right">
-                                        <div class="lab-value high">450 pg/mL</div>
-                                        <span class="lab-severity severity-moderate">Moderate</span>
-                                    </div>
-                                </div>
-                                <div class="lab-item">
-                                    <div class="lab-item-left">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
-                                            <path d="M16 7h6v6"></path>
-                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
-                                        </svg>
-                                        <div>
-                                            <div class="lab-name">Total Cholesterol</div>
-                                            <div class="lab-normal">Normal: &lt;200 mg/dL</div>
-                                        </div>
-                                    </div>
-                                    <div class="lab-item-right">
-                                        <div class="lab-value high">240 mg/dL</div>
-                                        <span class="lab-severity severity-mild">Mild</span>
-                                    </div>
-                                </div>
-                                <div class="lab-item">
-                                    <div class="lab-item-left">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
-                                            <path d="M16 17h6v-6"></path>
-                                            <path d="m22 17-8.5-8.5-5 5L2 7"></path>
-                                        </svg>
-                                        <div>
-                                            <div class="lab-name">HDL Cholesterol</div>
-                                            <div class="lab-normal">Normal: &gt;40 mg/dL</div>
-                                        </div>
-                                    </div>
-                                    <div class="lab-item-right">
-                                        <div class="lab-value low">35 mg/dL</div>
-                                        <span class="lab-severity severity-mild">Mild</span>
-                                    </div>
-                                </div>
-                                <div class="lab-item">
-                                    <div class="lab-item-left">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #EF4444;">
-                                            <path d="M16 7h6v6"></path>
-                                            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
-                                        </svg>
-                                        <div>
-                                            <div class="lab-name">LDL Cholesterol</div>
-                                            <div class="lab-normal">Normal: &lt;100 mg/dL</div>
-                                        </div>
-                                    </div>
-                                    <div class="lab-item-right">
-                                        <div class="lab-value high">165 mg/dL</div>
-                                        <span class="lab-severity severity-moderate">Moderate</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="diagnosis-section">
-                            <div class="diagnosis-header">
-                                <h3>Diagnostic Analysis</h3>
-                                <p class="diagnosis-description">3 differential diagnoses ranked by confidence</p>
-                            </div>
-                            <div class="diagnosis-grid">
-                                <div class="diagnosis-card">
-                                    <div class="diagnosis-rank">1</div>
-                                    <div class="diagnosis-confidence">
-                                        <div class="confidence-score">85%</div>
-                                        <div class="confidence-label">Confidence Level</div>
-                                    </div>
-                                    <div class="diagnosis-name">Acute Coronary Syndrome</div>
-                                    <div class="diagnosis-reasoning">Significantly elevated troponin (2.5 ng/mL) with supporting cardiac biomarkers and clinical presentation consistent with acute myocardial injury.</div>
-                                    <div class="diagnosis-badges">
-                                        <span class="badge">Troponin I</span>
-                                        <span class="badge">CK-MB</span>
-                                        <span class="badge">BNP</span>
-                                    </div>
-                                </div>
-                                <div class="diagnosis-card">
-                                    <div class="diagnosis-rank">2</div>
-                                    <div class="diagnosis-confidence">
-                                        <div class="confidence-score">60%</div>
-                                        <div class="confidence-label">Confidence Level</div>
-                                    </div>
-                                    <div class="diagnosis-name">Myocarditis</div>
-                                    <div class="diagnosis-reasoning">Troponin elevation in younger patient with possible viral prodrome. Less likely given age and risk factors but requires exclusion.</div>
-                                    <div class="diagnosis-badges">
-                                        <span class="badge">Troponin I</span>
-                                        <span class="badge">BNP</span>
-                                    </div>
-                                </div>
-                                <div class="diagnosis-card">
-                                    <div class="diagnosis-rank">3</div>
-                                    <div class="diagnosis-confidence">
-                                        <div class="confidence-score">30%</div>
-                                        <div class="confidence-label">Confidence Level</div>
-                                    </div>
-                                    <div class="diagnosis-name">Pulmonary Embolism with RV Strain</div>
-                                    <div class="diagnosis-reasoning">Troponin can be elevated with right heart strain from massive PE. Consider given tachycardia and dyspnea.</div>
-                                    <div class="diagnosis-badges">
-                                        <span class="badge">Troponin I</span>
-                                        <span class="badge">BNP</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
+            // Auto-generate medical data for testing
+            setTimeout(() => {
+                showWelcomeSection();
+            }, 500);
+
         });
     </script>
 </body>
