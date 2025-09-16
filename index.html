@@ -61,180 +61,16 @@
             background: var(--bg-main);
         }
 
-        /* Main page container */
+        /* Main container - Full screen chat interface */
         .main-container {
             display: flex;
+            flex-direction: column;
             width: 100vw;
             height: 100vh;
             min-height: 100vh;
             max-height: 100vh;
             background: var(--bg-main);
             padding: 16px;
-            gap: 16px;
-        }
-
-        /* Left container - Chat history */
-        .left-container {
-            flex: 0 0 330px;
-            display: flex;
-            flex-direction: column;
-            /* background: var(--bg-container); */
-            border-radius: 16px;
-            box-shadow: var(--shadow-medium);
-            overflow: hidden;
-        }
-
-        .top-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            /* background: var(--bg-left-top); */
-            padding: 0;
-            overflow-y: auto;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* Internet Explorer 10+ */
-        }
-
-        .top-container::-webkit-scrollbar {
-            display: none; /* WebKit */
-        }
-
-        .section-header {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            padding: 20px;
-            border-bottom: 1px solid rgba(32, 32, 32, 0.094);
-        }
-
-        .section-title {
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .chat-history {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-
-        .chat-item {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            padding: 20px;
-            border-bottom: 1px solid #d4d4d47a;
-        }
-
-        .chat-item:hover {
-            background: #f5f5f5;
-            transform: translateX(2px);
-        }
-
-        .chat-item.active {
-            background: #d2d2d2;
-            /* border-right: 1px solid var(--color-primary); */
-        }
-
-
-        .special-item {
-            background: linear-gradient(135deg, #19B76A, #16A085);
-            color: white;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            border: none;
-        }
-
-        .special-item .chat-date {
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 600;
-        }
-
-        .special-item .chat-message {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .special-item:hover {
-            background: linear-gradient(135deg, #16A085, #138D75);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(25, 183, 106, 0.3);
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        .chat-date {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-muted);
-        }
-
-        .chat-time {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .chat-message {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        .bottom-container {
-            /* background: var(--bg-left-bottom); */
-            padding: 20px;
-            border-top: 1px solid #c6c6c6;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: var(--avatar-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .user-info {
-            flex: 1;
-        }
-
-        .user-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2px;
-        }
-
-        .user-role {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        /* Right container - Chat interface */
-        .right-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* background: var(--bg-container); */
-            border-radius: 16px;
-            box-shadow: var(--shadow-medium);
-            overflow: visible;
         }
 
         .right-top-container {
@@ -244,8 +80,12 @@
             padding: 20px;
             position: relative;
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px;
+            margin: 0 auto;
             overflow-y: auto;
+            background: var(--bg-container);
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
         }
 
         .chat-container {
@@ -1425,10 +1265,7 @@
         .right-bottom-container {
             padding: 20px;
             width: 100%;
-            max-width: 800px;
-            position: sticky;
-            bottom: 0;
-            z-index: 100;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: center;
@@ -1444,7 +1281,7 @@
             position: relative;
             transition: all 0.3s ease;
             width: 100%;
-            max-width: 800px;
+            max-width: 1000px;
         }
 
         .input-section:hover {
@@ -1575,39 +1412,21 @@
         /* Mobile and tablet responsive design */
         @media (max-width: 1024px) {
             .main-container {
-                flex-direction: column;
-                height: 100vh;
-                min-height: 100vh;
-                max-height: 100vh;
                 padding: 12px;
             }
 
-            .left-container {
-                flex: 0 0 200px;
-            }
-
-            .right-container {
-                flex: 1;
-                min-width: 0;
+            .right-top-container {
+                padding: 16px;
             }
         }
 
         @media (max-width: 768px) {
             .main-container {
                 padding: 8px;
-                gap: 8px;
-            }
-            
-            .left-container {
-                flex: 0 0 180px;
-            }
-            
-            .top-container {
-                padding: 16px;
             }
             
             .right-top-container {
-                padding: 20px;
+                padding: 16px;
             }
             
             .right-top-container p {
@@ -1618,19 +1437,10 @@
         @media (max-width: 480px) {
             .main-container {
                 padding: 4px;
-                gap: 4px;
-            }
-            
-            .left-container {
-                flex: 0 0 160px;
-            }
-            
-            .top-container {
-                padding: 12px;
             }
             
             .right-top-container {
-                padding: 16px;
+                padding: 12px;
             }
             
             .right-top-container p {
@@ -1652,23 +1462,6 @@
             }
         }
 
-        /* Landscape orientation for tablets */
-        @media (max-height: 600px) and (orientation: landscape) {
-            .main-container {
-                flex-direction: row;
-                padding: 8px;
-                gap: 8px;
-            }
-            
-            .left-container {
-                flex: 0 0 300px;
-            }
-            
-            .right-container {
-                flex: 1;
-            }
-        }
-
         /* Touch device optimizations */
         @media (hover: none) and (pointer: coarse) {
             .chat-item:hover {
@@ -1687,28 +1480,6 @@
 </head>
 <body>
     <div class="main-container">
-        <div class="left-container">
-            <div class="top-container">
-                <div class="section-header">
-                    <span class="section-title">Previous Diagnosis</span>
-                </div>
-                <div class="chat-history">
-                    <!-- Chat items will be added dynamically -->
-                </div>
-            </div>
-            <div class="bottom-container">
-                <div class="user-profile">
-                    <div class="user-avatar-container">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT7ZW1MttWL5hg-E0pJuXIftWMBhUpcifEsA&s" alt="Mihir Shah" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
-                    </div>
-                    <div class="user-info">
-                        <div class="user-name">Dr. Mihir Shah</div>
-                        <div class="user-role">General Practitioner</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="right-container">
             <div class="right-top-container">
                 <div class="chat-container">
                     <div class="welcome-section" id="welcomeSection">
@@ -1743,7 +1514,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
     <script>
@@ -1768,7 +1538,7 @@
             const sendBtn = document.querySelector('.send-btn');
             const pdfUploadBtn = document.getElementById('pdfUploadBtn');
             const pdfFileInput = document.getElementById('pdfFileInput');
-            const chatHistory = document.querySelector('.chat-history');
+            // Chat history removed for single layout
             const welcomeSection = document.getElementById('welcomeSection');
             const chatConversation = document.getElementById('chatConversation');
 
@@ -1783,13 +1553,7 @@
                     // Add user message to right container
                     addMessageToConversation(message, 'user');
 
-                    // Only add to chat history if this is the first message in a conversation
-                    if (!document.querySelector('.chat-item.conversation-item')) {
-                        addConversationToHistory();
-                    } else {
-                        // Update the existing conversation item
-                        updateConversationInHistory(message);
-                    }
+                    // Chat history removed for single layout
 
                     // Generate AI response
                     setTimeout(() => {
@@ -1821,68 +1585,7 @@
                 }, 100);
             }
 
-            function addConversationToHistory() {
-                const chatItem = document.createElement('div');
-                chatItem.className = 'chat-item conversation-item';
-                
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', { 
-                    hour: 'numeric', 
-                    minute: '2-digit',
-                    hour12: true 
-                });
-                
-                    chatItem.innerHTML = `
-                        <div class="chat-header">
-                            <div class="chat-date">Chat Conversation</div>
-                        <div class="chat-time">${timeString}</div>
-                        </div>
-                        <div class="chat-message">Click to view conversation</div>
-                    `;
-                
-                // Remove active class from all existing chat items
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Add active class to new chat item
-                chatItem.classList.add('active');
-                    
-                    // Add to top of chat history
-                    chatHistory.insertBefore(chatItem, chatHistory.firstChild);
-                    
-                    // Add click functionality
-                    chatItem.addEventListener('click', () => {
-                        // Remove active class from all chat items
-                        document.querySelectorAll('.chat-item').forEach(item => {
-                            item.classList.remove('active');
-                        });
-                        
-                        // Add active class to clicked item
-                        chatItem.classList.add('active');
-                        
-                    // Show the conversation for this chat item
-                    showConversationForChatItem(chatItem);
-                    });
-                
-                // Scroll to top
-                chatHistory.scrollTop = 0;
-                }
-                
-            function updateConversationInHistory(message) {
-                const conversationItem = document.querySelector('.chat-item.conversation-item');
-                if (conversationItem) {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', { 
-                    hour: 'numeric', 
-                    minute: '2-digit',
-                    hour12: true 
-                });
-                
-                    conversationItem.querySelector('.chat-time').textContent = timeString;
-                    conversationItem.querySelector('.chat-message').textContent = `Last message: ${message.substring(0, 30)}${message.length > 30 ? '...' : ''}`;
-                }
-            }
+            // Chat history functions removed for single layout
 
             function generateAIResponse(userMessage) {
                 // Check if user has already uploaded a PDF in this conversation
@@ -1928,10 +1631,7 @@
                 }
             }
 
-            function showConversationForChatItem(chatItem) {
-                // Show the current conversation
-                    showChatConversation();
-            }
+            // Chat history functions removed for single layout
 
             // Event listeners
             sendBtn.addEventListener('click', sendMessage);
@@ -1967,10 +1667,7 @@
                 hideWelcomeSection();
                 showChatConversation();
                 
-                // If no conversation exists, create one
-                if (!document.querySelector('.chat-item.conversation-item')) {
-                    addConversationToHistory();
-                }
+                // Chat history removed for single layout
                 
                 // Add PDF document card to current conversation
                 addMessageToConversation(`
@@ -2612,22 +2309,7 @@
                 }
             }
 
-            // Chat item click functionality
-            chatHistory.addEventListener('click', function(e) {
-                const chatItem = e.target.closest('.chat-item');
-                if (chatItem) {
-                    // Remove active class from all chat items
-                    document.querySelectorAll('.chat-item').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked item
-                    chatItem.classList.add('active');
-                    
-                    // Show the conversation
-                    showChatConversation();
-                }
-            });
+            // Chat history functionality removed for single layout
 
             // Auto-generate medical data for testing
             setTimeout(() => {
