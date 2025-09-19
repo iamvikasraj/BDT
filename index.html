@@ -1116,6 +1116,32 @@
             font-weight: 600;
         }
 
+        /* Medical response formatting */
+        .message.assistant strong {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .message.assistant ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .message.assistant li {
+            margin: 4px 0;
+            line-height: 1.5;
+        }
+
+        .message.assistant a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .message.assistant a:hover {
+            text-decoration: underline;
+        }
+
         .patient-info-content p {
             margin: 4px 0;
             color: #475569;
@@ -2126,7 +2152,8 @@
                     let responseText = 'No response received';
                     
                     if (typeof responseData === 'string') {
-                        responseText = responseData;
+                        // Render markdown formatting for better display
+                        responseText = formatMarkdownResponse(responseData);
                     } else if (responseData && typeof responseData === 'object') {
                         // Format structured medical response
                         responseText = formatMedicalResponse(responseData);
@@ -2161,6 +2188,26 @@
         // ===========================================
         // RESPONSE FORMATTING
         // ===========================================
+        
+        function formatMarkdownResponse(text) {
+            // Convert markdown-like formatting to HTML
+            let html = text
+                // Bold text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Bullet points
+                .replace(/^• (.*$)/gm, '<li>$1</li>')
+                // Numbered lists
+                .replace(/^(\d+)\. (.*$)/gm, '<li>$1. $2</li>')
+                // Links
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+                // Line breaks
+                .replace(/\n/g, '<br>');
+            
+            // Wrap lists in proper HTML
+            html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+            
+            return html;
+        }
         
         function formatMedicalResponse(data) {
             let formatted = '';
