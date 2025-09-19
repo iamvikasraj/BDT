@@ -78,7 +78,7 @@
             flex: 0 0 330px;
             display: flex;
             flex-direction: column;
-            /* background: var(--bg-container); */
+            background: color(srgb 0.95 0.95 0.95 / 0.8);
             border-radius: 16px;
             box-shadow: var(--shadow-medium);
             overflow: hidden;
@@ -104,6 +104,7 @@
             top: 0;
             z-index: 10;
             padding: 20px;
+            background: color(srgb 0.95 0.95 0.95 / 1.0);
             border-bottom: 1px solid rgba(32, 32, 32, 0.094);
         }
 
@@ -134,7 +135,7 @@
         }
 
         .chat-item.active {
-            background: #d2d2d2;
+            background: #f2f2f2;
             /* border-right: 1px solid var(--color-primary); */
         }
 
@@ -231,7 +232,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* background: var(--bg-container); */
+            background: #f3f3f3;
             border-radius: 16px;
             box-shadow: var(--shadow-medium);
             overflow: visible;
@@ -322,13 +323,13 @@
             font-size: 14px;
             line-height: 1.4;
             word-wrap: break-word;
-            background: #dedede;
+            background: #ffffff;
             color: #2c2c2c;
             border: none;
         }
 
         .message.user .message-bubble {
-            background: #dedede;
+            background: #fff;
             color: #2c2c2c;
             border: none;
         }
@@ -1770,52 +1771,223 @@
     </div>
 
     <script>
+        // ===========================================
+        // COMPREHENSIVE API INTEGRATION SYSTEM
+        // ===========================================
+        
         // API Configuration
         const API_CONFIG = {
-            baseURL: 'https://blood-diagnostic-bot-7b4wpufaoq-el.a.run.app',
+            baseURL: 'http://localhost:8080/proxy/blood-diagnostic-bot-7b4wpufaoq-el.a.run.app',
+            apiKey: 'healthcare-llm-gateway-api-key',
             endpoints: {
-                createSession: '/api/v1/chat/sessions',
-                sendMessage: '/api/v1/chat/sessions'
-            },
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-API-Key': 'test_api_key_123' // Your actual API key
+                // Health endpoints
+                health: {
+                    basic: '/api/v1/health/',
+                    detailed: '/api/v1/health/detailed',
+                    ready: '/api/v1/health/ready',
+                    live: '/api/v1/health/live'
+                },
+                // Session management
+                sessions: {
+                    create: '/api/v1/chat/sessions',
+                    list: '/api/v1/chat/sessions',
+                    history: (sessionId) => `/api/v1/chat/sessions/${sessionId}/history`,
+                    export: (sessionId) => `/api/v1/chat/sessions/${sessionId}/export/bibliography`
+                },
+                // Messaging
+                messages: {
+                    send: (sessionId) => `/api/v1/chat/sessions/${sessionId}/messages`
+                },
+                // File operations
+                files: {
+                    uploadReport: '/api/v1/chat/upload/report',
+                    uploadDocument: '/api/v1/documents/upload',
+                    processDocument: '/api/v1/documents/process',
+                    getSources: '/api/v1/documents/sources'
+                }
             }
         };
 
-        // Global variables for session management
+        // Global state management
         let currentSessionId = null;
         let chatHistory = [];
+        let userSessions = [];
+        let isProcessing = false;
 
-        // Create a new session
+        // ===========================================
+        // API SERVICE LAYER
+        // ===========================================
+        
+        class BloodDiagnosticAPI {
+            // Health check methods
+            static async checkHealth(type = 'basic') {
+                try {
+                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.health[type]}`, {
+                        method: 'GET',
+                        headers: { 'X-API-Key': API_CONFIG.apiKey }
+                    });
+                    return await response.json();
+                } catch (error) {
+                    console.error(`Health check failed (${type}):`, error);
+                    throw error;
+                }
+            }
+
+            // Session management methods
+            static async createSession(userId = 'user_123', title = 'New Session', textInput = null, file = null) {
+                try {
+                    const formData = new FormData();
+                    formData.append('user_id', userId);
+                    formData.append('title', title);
+                    
+                    if (textInput) {
+                        formData.append('text_input', textInput);
+                    }
+                    
+                    if (file) {
+                        formData.append('report_file', file);
+                    }
+
+                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.create}`, {
+                        method: 'POST',
+                        headers: { 'X-API-Key': API_CONFIG.apiKey },
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error creating session:', error);
+                    throw error;
+                }
+            }
+
+            static async listSessions(userId = 'user_123', page = 1, limit = 50, sort = 'date_desc', filterUrgent = false) {
+                try {
+                    const params = new URLSearchParams({
+                        user_id: userId,
+                        page: page,
+                        limit: limit,
+                        sort: sort,
+                        filter_urgent: filterUrgent
+                    });
+
+                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.list}?${params}`, {
+                        method: 'GET',
+                        headers: { 'X-API-Key': API_CONFIG.apiKey }
+                    });
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error listing sessions:', error);
+                    throw error;
+                }
+            }
+
+            static async getSessionHistory(sessionId) {
+                try {
+                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.history(sessionId)}`, {
+                        method: 'GET',
+                        headers: { 'X-API-Key': API_CONFIG.apiKey }
+                    });
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error getting session history:', error);
+                    throw error;
+                }
+            }
+
+            // Messaging methods
+            static async sendMessage(sessionId, content, metadata = {}) {
+                try {
+                    const formData = new FormData();
+                    formData.append('content', content);
+                    formData.append('metadata', JSON.stringify(metadata));
+
+                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.messages.send(sessionId)}`, {
+                        method: 'POST',
+                        headers: { 'X-API-Key': API_CONFIG.apiKey },
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    throw error;
+                }
+            }
+
+            // File upload methods
+            static async uploadReport(userId, file, textInput = null) {
+                try {
+                    const formData = new FormData();
+                    formData.append('user_id', userId);
+                    formData.append('file', file);
+                    
+                    if (textInput) {
+                        formData.append('text_input', textInput);
+                    }
+
+                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.files.uploadReport}`, {
+                        method: 'POST',
+                        headers: { 'X-API-Key': API_CONFIG.apiKey },
+                        body: formData
+                    });
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error uploading report:', error);
+                    throw error;
+                }
+            }
+
+            // Export methods
+            static async exportBibliography(sessionId, format = 'json') {
+                try {
+                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.export(sessionId)}?format=${format}`, {
+                        method: 'GET',
+                        headers: { 'X-API-Key': API_CONFIG.apiKey }
+                    });
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error exporting bibliography:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // ===========================================
+        // SESSION MANAGEMENT
+        // ===========================================
+        
         async function createSession() {
             try {
-                const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.createSession}`, {
-                    method: 'POST',
-                    headers: API_CONFIG.headers,
-                    body: JSON.stringify({
-                        type: 'general_assessment',
-                        priority: 'normal'
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                currentSessionId = data.session_id || data.id;
-                console.log('Session created:', currentSessionId);
+                const data = await BloodDiagnosticAPI.createSession('user_123', 'Blood Diagnostic Session');
+                currentSessionId = data.data?.session_id || data.data?.id;
+                console.log('✅ Session created:', currentSessionId);
                 return currentSessionId;
             } catch (error) {
-                console.error('Error creating session:', error);
+                console.error('❌ Error creating session:', error);
+                showError('Failed to create session. Please try again.');
                 return null;
             }
         }
 
-        // Send message to the API
-        async function sendMessageToAPI(message, messageType = 'general_assessment') {
+        // ===========================================
+        // MESSAGING SYSTEM
+        // ===========================================
+        
+        async function sendMessageToAPI(message, messageType = 'clinical_assessment') {
             try {
                 // Create session if we don't have one
                 if (!currentSessionId) {
@@ -1825,31 +1997,17 @@
                 if (!currentSessionId) {
                     throw new Error('Failed to create session');
                 }
-                
-                // Prepare form data
-                const formData = new FormData();
-                formData.append('content', message);
-                formData.append('metadata', JSON.stringify({
+
+                const metadata = {
                     type: messageType,
                     priority: 'normal'
-                }));
-                
-                const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sendMessage}/${currentSessionId}/messages`, {
-                    method: 'POST',
-                    headers: {
-                        'X-API-Key': API_CONFIG.headers['X-API-Key']
-                    },
-                    body: formData
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                return data;
+                };
+
+                const response = await BloodDiagnosticAPI.sendMessage(currentSessionId, message, metadata);
+                return response;
             } catch (error) {
-                console.error('Error sending message:', error);
+                console.error('❌ Error sending message:', error);
+                showError('Failed to send message. Please try again.');
                 return null;
             }
         }
@@ -1919,62 +2077,146 @@
             const chatConversation = document.getElementById('chatConversation');
 
             // Send message functionality with API integration
-            async function sendMessage() {
-                const message = messageInput.value.trim();
-                if (!message) return;
+        // ===========================================
+        // MAIN MESSAGE HANDLING
+        // ===========================================
+        
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message || isProcessing) return;
 
-                // Hide welcome section and show chat conversation
-                hideWelcomeSection();
-                showChatConversation();
+            isProcessing = true;
+            
+            // Hide welcome section and show chat conversation
+            hideWelcomeSection();
+            showChatConversation();
 
-                // Add user message to chat
-                addMessageToConversation(message, 'user');
+            // Add user message to chat
+            addMessageToConversation(message, 'user');
 
-                // Only add to chat history if this is the first message in a conversation
-                if (!document.querySelector('.chat-item.conversation-item')) {
-                    addConversationToHistory();
-                } else {
-                    // Update the existing conversation item
-                    updateConversationInHistory(message);
-                }
+            // Only add to chat history if this is the first message in a conversation
+            if (!document.querySelector('.chat-item.conversation-item')) {
+                addConversationToHistory();
+            } else {
+                // Update the existing conversation item
+                updateConversationInHistory(message);
+            }
 
-                // Show loading state
-                const loadingId = addMessageToChat('Thinking...', 'assistant', true);
+            // Show loading state
+            const loadingId = addMessageToChat('Analyzing your request...', 'assistant', true);
 
-                try {
-                    // Send to API
-                    const response = await sendMessageToAPI(message);
-                    
-                    if (response) {
-                        // Remove loading message
-                        removeMessageFromChat(loadingId);
-                        
-                        // Add API response to chat
-                        const responseText = response.message || response.content || response.response || 'No response received';
-                        addMessageToConversation(responseText, 'assistant');
-                        
-                        // Store in chat history
-                        chatHistory.push({
-                            user: message,
-                            assistant: responseText,
-                            timestamp: new Date().toISOString()
-                        });
-                    } else {
-                        // Handle error - fallback to mock response
-                        removeMessageFromChat(loadingId);
-                        const aiResponse = generateAIResponse(message);
-                        addMessageToConversation(aiResponse, 'assistant');
-                    }
-                } catch (error) {
-                    // Handle error - fallback to mock response
+            try {
+                // Send to API
+                const response = await sendMessageToAPI(message);
+                
+                if (response && response.success) {
+                    // Remove loading message
                     removeMessageFromChat(loadingId);
-                    const aiResponse = generateAIResponse(message);
-                    addMessageToConversation(aiResponse, 'assistant');
+                    
+                    // Process and display API response
+                    const responseData = response.data?.content || response.data;
+                    let responseText = 'No response received';
+                    
+                    if (typeof responseData === 'string') {
+                        responseText = responseData;
+                    } else if (responseData && typeof responseData === 'object') {
+                        // Format structured medical response
+                        responseText = formatMedicalResponse(responseData);
+                    }
+                    
+                    addMessageToConversation(responseText, 'assistant');
+                    
+                    // Store in chat history
+                    chatHistory.push({
+                        user: message,
+                        assistant: responseText,
+                        timestamp: new Date().toISOString()
+                    });
+                } else {
+                    // Handle API error - show fallback
+                    removeMessageFromChat(loadingId);
+                    const fallbackResponse = generateFallbackResponse(message);
+                    addMessageToConversation(fallbackResponse, 'assistant');
                 }
-
+            } catch (error) {
+                // Handle error - show fallback
+                removeMessageFromChat(loadingId);
+                const fallbackResponse = generateFallbackResponse(message);
+                addMessageToConversation(fallbackResponse, 'assistant');
+            } finally {
+                isProcessing = false;
                 // Clear input
                 messageInput.value = '';
             }
+        }
+
+        // ===========================================
+        // RESPONSE FORMATTING
+        // ===========================================
+        
+        function formatMedicalResponse(data) {
+            let formatted = '';
+            
+            if (data.summary) {
+                formatted += `**Summary:** ${data.summary}\n\n`;
+            }
+            
+            if (data.key_findings && Array.isArray(data.key_findings)) {
+                formatted += `**Key Findings:**\n`;
+                data.key_findings.forEach(finding => {
+                    formatted += `• ${finding}\n`;
+                });
+                formatted += '\n';
+            }
+            
+            if (data.clinical_impression) {
+                formatted += `**Clinical Impression:** ${data.clinical_impression}\n\n`;
+            }
+            
+            if (data.immediate_actions && Array.isArray(data.immediate_actions)) {
+                formatted += `**Immediate Actions:**\n`;
+                data.immediate_actions.forEach(action => {
+                    formatted += `• ${action}\n`;
+                });
+                formatted += '\n';
+            }
+            
+            if (data.citations && Array.isArray(data.citations)) {
+                formatted += `**References:**\n`;
+                data.citations.forEach((citation, index) => {
+                    formatted += `${index + 1}. ${citation.source}`;
+                    if (citation.year) formatted += ` (${citation.year})`;
+                    if (citation.link) formatted += ` - [View Source](${citation.link})`;
+                    formatted += '\n';
+                });
+            }
+            
+            return formatted || 'Analysis completed. Please ask for more specific details.';
+        }
+
+        function generateFallbackResponse(message) {
+            const responses = [
+                "I understand your concern. Let me help you with that.",
+                "That's a great question. I'd be happy to assist you with that.",
+                "I can see you're looking for medical information. Let me help you with that.",
+                "Thank you for reaching out. I'm here to help you with your medical analysis needs.",
+                "I understand you need assistance. Let me guide you through the process.",
+                "That's an interesting question. I can definitely help you with that.",
+                "I'm here to help you with medical diagnosis and analysis. What would you like to know?",
+                "I can assist you with patient management and medical analysis. How can I help?"
+            ];
+            
+            // Simple keyword-based responses
+            if (message.toLowerCase().includes('blood')) {
+                return "I can help you analyze blood test results! For the most accurate analysis, please upload your blood test PDF using the paperclip icon. I can then provide detailed insights and diagnosis recommendations.";
+            } else if (message.toLowerCase().includes('patient')) {
+                return "I can help you with patient management and analysis. Please provide more details about the specific case or upload relevant medical documents for a comprehensive assessment.";
+            } else if (message.toLowerCase().includes('diagnosis')) {
+                return "I can assist with medical diagnosis based on symptoms, lab results, and clinical data. Please share the relevant information and I'll provide a detailed analysis.";
+            } else {
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+        }
 
             function addMessageToConversation(message, sender) {
                 const messageDiv = document.createElement('div');
@@ -2134,43 +2376,79 @@
                 }
             });
 
-            function processPDFUpload(file) {
-                console.log('PDF upload started:', file.name);
+        // ===========================================
+        // FILE UPLOAD SYSTEM
+        // ===========================================
+        
+        async function processPDFUpload(file) {
+            if (isProcessing) return;
+            
+            console.log('📄 PDF upload started:', file.name);
+            isProcessing = true;
+            
+            // Hide welcome section and show chat conversation
+            hideWelcomeSection();
+            showChatConversation();
+            
+            // If no conversation exists, create one
+            if (!document.querySelector('.chat-item.conversation-item')) {
+                addConversationToHistory();
+            }
+            
+            // Add PDF document card to current conversation
+            addMessageToConversation(`
+                <div class="pdf-document-card">
+                    <div class="pdf-file-name">${file.name}</div>
+                    <div class="pdf-icon-container">
+                        <div class="pdf-icon">PDF</div>
+                    </div>
+                </div>
+            `, 'user');
+            
+            // Show processing message
+            const processingId = showAnimatedProcessingMessage();
+            
+            try {
+                // Upload file to API
+                const response = await BloodDiagnosticAPI.uploadReport('user_123', file, 'Blood test report analysis');
                 
-                // Hide welcome section and show chat conversation
-                hideWelcomeSection();
-                showChatConversation();
-                
-                // If no conversation exists, create one
-                if (!document.querySelector('.chat-item.conversation-item')) {
-                    addConversationToHistory();
+                if (response && response.success) {
+                    // Hide processing message
+                    hideProcessingMessage(processingId);
+                    
+                    // Get session ID from upload response
+                    const sessionId = response.data?.session_id || response.data?.id;
+                    if (sessionId) {
+                        currentSessionId = sessionId;
+                        console.log('✅ PDF uploaded, session created:', sessionId);
+                    }
+                    
+                    // Show analysis results
+                    const analysisData = response.data?.content || response.data;
+                    let analysisText = 'PDF analysis completed successfully.';
+                    
+                    if (analysisData && typeof analysisData === 'object') {
+                        analysisText = formatMedicalResponse(analysisData);
+                    } else if (typeof analysisData === 'string') {
+                        analysisText = analysisData;
+                    }
+                    
+                    addMessageToConversation(analysisText, 'assistant');
+                    
+                } else {
+                    // Handle upload error
+                    hideProcessingMessage(processingId);
+                    addMessageToConversation('PDF upload failed. Please try again or contact support.', 'assistant');
                 }
                 
-                // Add PDF document card to current conversation
-                addMessageToConversation(`
-                    <div class="pdf-document-card">
-                        <div class="pdf-file-name">${file.name}</div>
-                        <div class="pdf-icon-container">
-                            <div class="pdf-icon">PDF</div>
-                        </div>
-                    </div>
-                `, 'user');
-                
-                // Show animated processing message
-                showAnimatedProcessingMessage();
-                
-                setTimeout(() => {
-                    console.log('Processing complete, showing medical data');
-                    
-                    // Hide processing message first
-                    hideProcessingMessage();
-                    
-                    // Show medical data after a short delay
-                    setTimeout(() => {
-                        showMedicalDataAsMessages();
-                    }, 300);
-                }, 3000);
+            } catch (error) {
+                console.error('❌ PDF upload error:', error);
+                hideProcessingMessage(processingId);
+                addMessageToConversation('Failed to process PDF. Please ensure the file is a valid blood test report and try again.', 'assistant');
+            } finally {
+                isProcessing = false;
             }
+        }
 
             function showAnimatedProcessingMessage() {
                 const processingId = 'processing-' + Date.now();
@@ -2809,6 +3087,215 @@
             }, 500);
 
         });
+
+        // ===========================================
+        // ERROR HANDLING & UTILITIES
+        // ===========================================
+        
+        function showError(message) {
+            console.error('❌ Error:', message);
+            
+            // Create error notification
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-notification';
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #fee2e2;
+                color: #dc2626;
+                padding: 12px 16px;
+                border-radius: 8px;
+                border: 1px solid #fecaca;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                max-width: 300px;
+                font-size: 14px;
+            `;
+            errorDiv.textContent = message;
+            
+            document.body.appendChild(errorDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.parentNode.removeChild(errorDiv);
+                }
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            console.log('✅ Success:', message);
+            
+            // Create success notification
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-notification';
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #d1fae5;
+                color: #059669;
+                padding: 12px 16px;
+                border-radius: 8px;
+                border: 1px solid #a7f3d0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                max-width: 300px;
+                font-size: 14px;
+            `;
+            successDiv.textContent = message;
+            
+            document.body.appendChild(successDiv);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (successDiv.parentNode) {
+                    successDiv.parentNode.removeChild(successDiv);
+                }
+            }, 3000);
+        }
+
+        // ===========================================
+        // INITIALIZATION
+        // ===========================================
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Blood Diagnostic Tool initialized');
+            
+            // Check API health on startup
+            BloodDiagnosticAPI.checkHealth('basic')
+                .then(health => {
+                    console.log('✅ API Health Check:', health);
+                    showSuccess('Connected to Blood Diagnostic API');
+                })
+                .catch(error => {
+                    console.warn('⚠️ API Health Check failed:', error);
+                    showError('API connection issue - some features may be limited');
+                });
+        });
+
+        // ===========================================
+        // EXPORT FUNCTIONALITY
+        // ===========================================
+        
+        async function exportBibliography(format = 'json') {
+            if (!currentSessionId) {
+                showError('No active session to export');
+                return;
+            }
+
+            try {
+                const response = await BloodDiagnosticAPI.exportBibliography(currentSessionId, format);
+                
+                if (response && response.success) {
+                    // Download the bibliography
+                    const data = response.data;
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `bibliography_${currentSessionId}.${format}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showSuccess('Bibliography exported successfully');
+                } else {
+                    showError('Failed to export bibliography');
+                }
+            } catch (error) {
+                console.error('❌ Export error:', error);
+                showError('Failed to export bibliography');
+            }
+        }
+
+        // ===========================================
+        // SESSION MANAGEMENT
+        // ===========================================
+        
+        async function loadUserSessions() {
+            try {
+                const response = await BloodDiagnosticAPI.listSessions('user_123');
+                
+                if (response && response.success) {
+                    userSessions = response.data?.sessions || [];
+                    updateSessionHistory();
+                }
+            } catch (error) {
+                console.error('❌ Failed to load sessions:', error);
+            }
+        }
+
+        function updateSessionHistory() {
+            const chatHistory = document.querySelector('.chat-history');
+            if (!chatHistory || !userSessions.length) return;
+
+            // Clear existing history
+            chatHistory.innerHTML = '';
+
+            // Add session header
+            const header = document.createElement('div');
+            header.className = 'section-header';
+            header.innerHTML = '<span class="section-title">Previous Sessions</span>';
+            chatHistory.appendChild(header);
+
+            // Add sessions
+            userSessions.forEach(session => {
+                const sessionDiv = document.createElement('div');
+                sessionDiv.className = 'chat-item';
+                sessionDiv.innerHTML = `
+                    <div class="chat-header">
+                        <div class="chat-date">${new Date(session.created_at).toLocaleDateString()}</div>
+                        <div class="chat-time">${new Date(session.created_at).toLocaleTimeString()}</div>
+                    </div>
+                    <div class="chat-message">${session.title || 'Blood Diagnostic Session'}</div>
+                `;
+                
+                sessionDiv.addEventListener('click', () => {
+                    loadSession(session.id);
+                });
+                
+                chatHistory.appendChild(sessionDiv);
+            });
+        }
+
+        async function loadSession(sessionId) {
+            try {
+                const response = await BloodDiagnosticAPI.getSessionHistory(sessionId);
+                
+                if (response && response.success) {
+                    currentSessionId = sessionId;
+                    const history = response.data?.history || [];
+                    
+                    // Clear current conversation
+                    const chatConversation = document.getElementById('chatConversation');
+                    if (chatConversation) {
+                        chatConversation.innerHTML = '';
+                    }
+                    
+                    // Load conversation history
+                    history.forEach(message => {
+                        if (message.sender === 'user' || message.sender === 'bot') {
+                            addMessageToConversation(message.content, message.sender);
+                        }
+                    });
+                    
+                    // Show chat conversation
+                    hideWelcomeSection();
+                    showChatConversation();
+                    
+                    showSuccess('Session loaded successfully');
+                }
+            } catch (error) {
+                console.error('❌ Failed to load session:', error);
+                showError('Failed to load session');
+            }
+        }
+
     </script>
 </body>
 </html>

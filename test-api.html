@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Blood Diagnostic API Test</h1>
+    
+    <div class="test-section">
+        <h3>Test 1: Health Check</h3>
+        <button onclick="testHealth()">Test Health Endpoint</button>
+        <div id="health-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 2: Create Session</h3>
+        <button onclick="testCreateSession()">Create Session</button>
+        <div id="session-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 3: Send Message</h3>
+        <button onclick="testSendMessage()">Send Test Message</button>
+        <div id="message-result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://blood-diagnostic-bot-7b4wpufaoq-el.a.run.app';
+        const API_KEY = 'healthcare-llm-gateway-api-key';
+        let sessionId = null;
+
+        async function testHealth() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/v1/health/`, {
+                    method: 'GET',
+                    headers: { 'X-API-Key': API_KEY }
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>✅ Health Check Success!</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">
+                    <h4>❌ Health Check Failed</h4>
+                    <p>Error: ${error.message}</p>
+                    <p><strong>CORS Issue Detected!</strong> Try Solution 1 or 2 above.</p>
+                </div>`;
+            }
+        }
+
+        async function testCreateSession() {
+            const resultDiv = document.getElementById('session-result');
+            resultDiv.innerHTML = 'Creating session...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('user_id', 'test_user_123');
+                formData.append('title', 'API Test Session');
+                formData.append('text_input', 'Testing API integration');
+
+                const response = await fetch(`${API_URL}/api/v1/chat/sessions`, {
+                    method: 'POST',
+                    headers: { 'X-API-Key': API_KEY },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                sessionId = data.data?.session_id || data.data?.id;
+                
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>✅ Session Created!</h4>
+                    <p>Session ID: ${sessionId}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">
+                    <h4>❌ Session Creation Failed</h4>
+                    <p>Error: ${error.message}</p>
+                </div>`;
+            }
+        }
+
+        async function testSendMessage() {
+            if (!sessionId) {
+                document.getElementById('message-result').innerHTML = '<div class="error">Please create a session first!</div>';
+                return;
+            }
+            
+            const resultDiv = document.getElementById('message-result');
+            resultDiv.innerHTML = 'Sending message...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('content', 'Test message for API integration');
+                formData.append('metadata', JSON.stringify({
+                    type: 'clinical_assessment',
+                    priority: 'normal'
+                }));
+
+                const response = await fetch(`${API_URL}/api/v1/chat/sessions/${sessionId}/messages`, {
+                    method: 'POST',
+                    headers: { 'X-API-Key': API_KEY },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `<div class="success">
+                    <h4>✅ Message Sent!</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">
+                    <h4>❌ Message Send Failed</h4>
+                    <p>Error: ${error.message}</p>
+                </div>`;
+            }
+        }
+    </script>
+</body>
+</html>

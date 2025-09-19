@@ -135,7 +135,7 @@
     <script>
         // Simple API Configuration
         const API_URL = 'https://blood-diagnostic-bot-7b4wpufaoq-el.a.run.app/api/v1/chat/sessions';
-        const API_KEY = 'test_api_key_123';
+        const API_KEY = 'healthcare-llm-gateway-api-key';
 
         // Get DOM elements
         const chatArea = document.getElementById('chatArea');
@@ -160,24 +160,64 @@
             chatArea.scrollTop = chatArea.scrollHeight;
         }
 
-        // Simple API call
-        async function callAPI(message) {
+        // Simple API call - First create session, then send message
+        let currentSessionId = null;
+        
+        async function createSession() {
             try {
-                console.log('🚀 Calling API with message:', message);
+                const formData = new FormData();
+                formData.append('user_id', 'test-user-123');
+                formData.append('text_input', 'Initial session');
                 
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-API-Key': API_KEY
                     },
-                    body: JSON.stringify({
-                        message: message,
-                        type: 'general_assessment',
-                        priority: 'normal'
-                    })
+                    body: formData
                 });
-
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                currentSessionId = data.data?.session_id || data.data?.id;
+                console.log('✅ Session created:', currentSessionId);
+                return currentSessionId;
+            } catch (error) {
+                console.error('❌ Session creation error:', error);
+                throw error;
+            }
+        }
+        
+        async function sendMessageToAPI(message) {
+            try {
+                if (!currentSessionId) {
+                    await createSession();
+                }
+                
+                if (!currentSessionId) {
+                    throw new Error('Failed to create session');
+                }
+                
+                console.log('🚀 Sending message to session:', currentSessionId);
+                
+                const formData = new FormData();
+                formData.append('content', message);
+                formData.append('metadata', JSON.stringify({
+                    type: 'clinical_assessment',
+                    priority: 'normal'
+                }));
+                
+                const response = await fetch(`${API_URL}/${currentSessionId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'X-API-Key': API_KEY
+                    },
+                    body: formData
+                });
+                
                 console.log('📡 Response status:', response.status);
                 
                 if (!response.ok) {
@@ -209,10 +249,29 @@
 
             try {
                 // Call API
-                const response = await callAPI(message);
+                const response = await sendMessageToAPI(message);
                 
-                // Add bot response
-                const botMessage = response.message || response.response || 'I received your message but couldn\'t generate a response.';
+                // Extract the response content
+                let botMessage = 'I received your message but couldn\'t generate a response.';
+                
+                if (response.success && response.data && response.data.content) {
+                    const content = response.data.content;
+                    if (typeof content === 'string') {
+                        botMessage = content;
+                    } else if (content.summary) {
+                        botMessage = `**Summary:** ${content.summary}\n\n`;
+                        if (content.key_findings) {
+                            botMessage += `**Key Findings:**\n${content.key_findings.map(f => `• ${f}`).join('\n')}\n\n`;
+                        }
+                        if (content.clinical_impression) {
+                            botMessage += `**Clinical Impression:** ${content.clinical_impression}\n\n`;
+                        }
+                        if (content.immediate_actions) {
+                            botMessage += `**Immediate Actions:**\n${content.immediate_actions.map(a => `• ${a}`).join('\n')}`;
+                        }
+                    }
+                }
+                
                 addMessage(botMessage);
                 
             } catch (error) {
@@ -238,3 +297,4 @@
     </script>
 </body>
 </html>
+
