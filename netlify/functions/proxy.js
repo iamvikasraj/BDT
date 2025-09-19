@@ -38,9 +38,46 @@ exports.handler = async (event, context) => {
     let requestBody = body;
     
     if (httpMethod !== 'GET' && body) {
-      if (headers['content-type'] && headers['content-type'].includes('multipart/form-data')) {
-        // For multipart/form-data, pass the raw body and let fetch handle it
-        requestBody = body;
+      if (headers['content-type'] && headers['content-type'].includes('application/json')) {
+        // For JSON data, parse and reconstruct as FormData if it contains base64 file
+        try {
+          const jsonData = JSON.parse(body);
+          
+          if (jsonData.file && jsonData.filename) {
+            // This is a file upload with base64 data - convert to FormData
+            const formData = new FormData();
+            
+            // Convert base64 to blob
+            const binaryString = atob(jsonData.file);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            const blob = new Blob([bytes], { type: jsonData.content_type || 'application/pdf' });
+            
+            // Add fields to FormData
+            formData.append('user_id', jsonData.user_id);
+            formData.append('file', blob, jsonData.filename);
+            
+            if (jsonData.text_input) {
+              formData.append('text_input', jsonData.text_input);
+            }
+            
+            requestBody = formData;
+            // Don't set Content-Type - let fetch set the boundary
+          } else {
+            // Regular JSON data
+            requestBody = body;
+            apiHeaders['Content-Type'] = 'application/json';
+          }
+        } catch (e) {
+          // If JSON parsing fails, treat as regular JSON
+          requestBody = body;
+          apiHeaders['Content-Type'] = 'application/json';
+        }
+      } else if (headers['content-type'] && headers['content-type'].includes('multipart/form-data')) {
+        // For multipart/form-data, pass the raw body as buffer
+        requestBody = Buffer.from(body, 'base64');
         // Don't set Content-Type - let fetch set the boundary
       } else if (headers['content-type'] && headers['content-type'].includes('application/x-www-form-urlencoded')) {
         // For URL-encoded data, parse and reconstruct
@@ -52,7 +89,7 @@ exports.handler = async (event, context) => {
         requestBody = formData.toString();
         apiHeaders['Content-Type'] = 'application/x-www-form-urlencoded';
       } else {
-        // For JSON or other types, set the content type
+        // For other types, set the content type
         apiHeaders['Content-Type'] = headers['content-type'] || 'application/json';
       }
     }
