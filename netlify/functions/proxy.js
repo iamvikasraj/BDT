@@ -51,8 +51,9 @@ exports.handler = async (event, context) => {
           }
           requestBody = formData.toString();
         } else if (headers['content-type'] && headers['content-type'].includes('multipart/form-data')) {
-          // For multipart/form-data, pass the raw body
+          // For multipart/form-data, pass the raw body and don't set Content-Type
           requestBody = body;
+          delete apiHeaders['Content-Type']; // Let fetch set the boundary
         }
       } catch (e) {
         console.log('Body parsing error:', e);

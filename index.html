@@ -1971,13 +1971,25 @@
                         formData.append('text_input', textInput);
                     }
 
+                    console.log('📤 Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type);
+
                     const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.files.uploadReport}`, {
                         method: 'POST',
                         headers: { 'X-API-Key': API_CONFIG.apiKey },
                         body: formData
                     });
 
-                    return await response.json();
+                    console.log('📡 Upload response status:', response.status);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Upload API Error Response:', errorText);
+                        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('✅ Upload successful:', data);
+                    return data;
                 } catch (error) {
                     console.error('Error uploading report:', error);
                     throw error;
