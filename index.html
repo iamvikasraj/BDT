@@ -1777,7 +1777,9 @@
         
         // API Configuration
         const API_CONFIG = {
-            baseURL: 'http://localhost:8080/proxy/blood-diagnostic-bot-7b4wpufaoq-el.a.run.app',
+            baseURL: window.location.hostname === 'localhost' 
+                ? 'http://localhost:8080/proxy/blood-diagnostic-bot-7b4wpufaoq-el.a.run.app'
+                : '/.netlify/functions/proxy',
             apiKey: 'healthcare-llm-gateway-api-key',
             endpoints: {
                 // Health endpoints
