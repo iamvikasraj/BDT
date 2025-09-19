@@ -1760,7 +1760,7 @@
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT7ZW1MttWL5hg-E0pJuXIftWMBhUpcifEsA&s" alt="Mihir Shah" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
                     </div>
                     <div class="user-info">
-                        <div class="user-name">Dr. Mihir Shah</div>
+                        <div class="user-name">Dr. <span id="sessionDisplayName">Loading...</span></div>
                         <div class="user-role">General Practitioner</div>
                     </div>
                 </div>
@@ -3405,6 +3405,8 @@
         
         function updateSessionDisplay() {
             const sessionDisplay = document.getElementById('sessionDisplay');
+            const sessionDisplayName = document.getElementById('sessionDisplayName');
+            
             if (sessionDisplay) {
                 if (currentSessionId) {
                     // Show the actual session ID from API
@@ -3413,6 +3415,17 @@
                     // Show a generated session ID for display
                     const displayId = generateSessionId();
                     sessionDisplay.textContent = displayId;
+                }
+            }
+            
+            if (sessionDisplayName) {
+                if (currentSessionId) {
+                    // Show the actual session ID from API
+                    sessionDisplayName.textContent = currentSessionId;
+                } else {
+                    // Show a generated session ID for display
+                    const displayId = generateSessionId();
+                    sessionDisplayName.textContent = displayId;
                 }
             }
         }
