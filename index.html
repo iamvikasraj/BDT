@@ -1872,30 +1872,67 @@
             // Session management methods
             static async createSession(userId = 'user_123', title = 'New Session', textInput = null, file = null) {
                 try {
-                    const formData = new FormData();
-                    formData.append('user_id', userId);
-                    formData.append('title', title);
-                    
-                    if (textInput) {
-                        formData.append('text_input', textInput);
-                    }
-                    
-                    if (file) {
-                        formData.append('report_file', file);
-                    }
+                    // Use different approaches for localhost vs Netlify
+                    if (window.location.hostname === 'localhost') {
+                        // Localhost: Use FormData
+                        const formData = new FormData();
+                        formData.append('user_id', userId);
+                        formData.append('title', title);
+                        
+                        if (textInput) {
+                            formData.append('text_input', textInput);
+                        }
+                        
+                        if (file) {
+                            formData.append('report_file', file);
+                        }
 
-                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.create}`, {
-                        method: 'POST',
-                        headers: { 'X-API-Key': API_CONFIG.apiKey },
-                        body: formData
-                    });
+                        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.create}`, {
+                            method: 'POST',
+                            headers: { 'X-API-Key': API_CONFIG.apiKey },
+                            body: formData
+                        });
 
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Session creation API Error Response:', errorText);
+                            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                        }
+
+                        const data = await response.json();
+                        return data;
+                    } else {
+                        // Netlify: Use URLSearchParams for application/x-www-form-urlencoded
+                        const formData = new URLSearchParams();
+                        formData.append('user_id', userId);
+                        formData.append('title', title);
+                        
+                        if (textInput) {
+                            formData.append('text_input', textInput);
+                        }
+                        
+                        if (file) {
+                            formData.append('report_file', file);
+                        }
+
+                        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.create}`, {
+                            method: 'POST',
+                            headers: { 
+                                'X-API-Key': API_CONFIG.apiKey,
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Session creation API Error Response:', errorText);
+                            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                        }
+
+                        const data = await response.json();
+                        return data;
                     }
-
-                    const data = await response.json();
-                    return data;
                 } catch (error) {
                     console.error('Error creating session:', error);
                     throw error;
