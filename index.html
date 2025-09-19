@@ -1422,6 +1422,29 @@
             }
         }
 
+        /* Loading animation for API calls */
+        .loading-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-primary);
+            animation: loading 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes loading {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
         .right-bottom-container {
             padding: 20px;
             width: 100%;
@@ -1747,6 +1770,129 @@
     </div>
 
     <script>
+        // API Configuration
+        const API_CONFIG = {
+            baseURL: 'https://blood-diagnostic-bot-7b4wpufaoq-el.a.run.app',
+            endpoints: {
+                createSession: '/api/v1/chat/sessions',
+                sendMessage: '/api/v1/chat/sessions'
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-API-Key': 'test_api_key_123' // Your actual API key
+            }
+        };
+
+        // Global variables for session management
+        let currentSessionId = null;
+        let chatHistory = [];
+
+        // Create a new session
+        async function createSession() {
+            try {
+                const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.createSession}`, {
+                    method: 'POST',
+                    headers: API_CONFIG.headers,
+                    body: JSON.stringify({
+                        type: 'general_assessment',
+                        priority: 'normal'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                currentSessionId = data.session_id || data.id;
+                console.log('Session created:', currentSessionId);
+                return currentSessionId;
+            } catch (error) {
+                console.error('Error creating session:', error);
+                return null;
+            }
+        }
+
+        // Send message to the API
+        async function sendMessageToAPI(message, messageType = 'general_assessment') {
+            try {
+                // Create session if we don't have one
+                if (!currentSessionId) {
+                    await createSession();
+                }
+                
+                if (!currentSessionId) {
+                    throw new Error('Failed to create session');
+                }
+                
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('content', message);
+                formData.append('metadata', JSON.stringify({
+                    type: messageType,
+                    priority: 'normal'
+                }));
+                
+                const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sendMessage}/${currentSessionId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'X-API-Key': API_CONFIG.headers['X-API-Key']
+                    },
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error sending message:', error);
+                return null;
+            }
+        }
+
+        // Add message to chat with loading state support
+        function addMessageToChat(message, sender, isLoading = false) {
+            const chatConversation = document.getElementById('chatConversation');
+            const messageId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.id = messageId;
+            
+            if (isLoading) {
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="loading-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+            
+            chatConversation.appendChild(messageDiv);
+            chatConversation.scrollTop = chatConversation.scrollHeight;
+            
+            return messageId;
+        }
+
+        // Remove message from chat
+        function removeMessageFromChat(messageId) {
+            const messageElement = document.getElementById(messageId);
+            if (messageElement) {
+                messageElement.remove();
+            }
+        }
+
         // Auto-refresh disabled for better user experience
         // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         //     // Check for file changes every 2 seconds
@@ -1772,34 +1918,62 @@
             const welcomeSection = document.getElementById('welcomeSection');
             const chatConversation = document.getElementById('chatConversation');
 
-            // Send message functionality
-            function sendMessage() {
+            // Send message functionality with API integration
+            async function sendMessage() {
                 const message = messageInput.value.trim();
-                if (message) {
-                    // Hide welcome section and show chat conversation
-                    hideWelcomeSection();
-                    showChatConversation();
+                if (!message) return;
 
-                    // Add user message to right container
-                    addMessageToConversation(message, 'user');
+                // Hide welcome section and show chat conversation
+                hideWelcomeSection();
+                showChatConversation();
 
-                    // Only add to chat history if this is the first message in a conversation
-                    if (!document.querySelector('.chat-item.conversation-item')) {
-                        addConversationToHistory();
+                // Add user message to chat
+                addMessageToConversation(message, 'user');
+
+                // Only add to chat history if this is the first message in a conversation
+                if (!document.querySelector('.chat-item.conversation-item')) {
+                    addConversationToHistory();
+                } else {
+                    // Update the existing conversation item
+                    updateConversationInHistory(message);
+                }
+
+                // Show loading state
+                const loadingId = addMessageToChat('Thinking...', 'assistant', true);
+
+                try {
+                    // Send to API
+                    const response = await sendMessageToAPI(message);
+                    
+                    if (response) {
+                        // Remove loading message
+                        removeMessageFromChat(loadingId);
+                        
+                        // Add API response to chat
+                        const responseText = response.message || response.content || response.response || 'No response received';
+                        addMessageToConversation(responseText, 'assistant');
+                        
+                        // Store in chat history
+                        chatHistory.push({
+                            user: message,
+                            assistant: responseText,
+                            timestamp: new Date().toISOString()
+                        });
                     } else {
-                        // Update the existing conversation item
-                        updateConversationInHistory(message);
-                    }
-
-                    // Generate AI response
-                    setTimeout(() => {
+                        // Handle error - fallback to mock response
+                        removeMessageFromChat(loadingId);
                         const aiResponse = generateAIResponse(message);
                         addMessageToConversation(aiResponse, 'assistant');
-                    }, 1000);
-
-                    // Clear input
-                    messageInput.value = '';
+                    }
+                } catch (error) {
+                    // Handle error - fallback to mock response
+                    removeMessageFromChat(loadingId);
+                    const aiResponse = generateAIResponse(message);
+                    addMessageToConversation(aiResponse, 'assistant');
                 }
+
+                // Clear input
+                messageInput.value = '';
             }
 
             function addMessageToConversation(message, sender) {
