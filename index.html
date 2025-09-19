@@ -1707,9 +1707,43 @@
                 -webkit-tap-highlight-color: transparent;
             }
         }
+
+        /* Connection status indicator */
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .connection-status.connected {
+            background: #d1fae5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .connection-status.disconnected {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .connection-status.unknown {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
     </style>
 </head>
 <body>
+    <!-- Connection Status Indicator -->
+    <div id="connectionStatus" class="connection-status unknown">Connecting...</div>
+    
     <div class="main-container">
         <div class="left-container">
             <div class="top-container">
@@ -1931,6 +1965,19 @@
             // File upload methods
             static async uploadReport(userId, file, textInput = null) {
                 try {
+                    // Validate file
+                    if (!file) {
+                        throw new Error('No file provided');
+                    }
+                    
+                    if (file.type !== 'application/pdf') {
+                        throw new Error('Only PDF files are supported');
+                    }
+                    
+                    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                        throw new Error('File too large. Maximum size is 10MB');
+                    }
+
                     const formData = new FormData();
                     formData.append('user_id', userId);
                     formData.append('file', file);
@@ -2458,7 +2505,10 @@
             } catch (error) {
                 console.error('❌ PDF upload error:', error);
                 hideProcessingMessage(processingId);
-                addMessageToConversation('Failed to process PDF. Please ensure the file is a valid blood test report and try again.', 'assistant');
+                
+                // Use improved error handling
+                const errorMessage = handleAPIError(error, 'PDF upload');
+                addMessageToConversation(`❌ ${errorMessage}`, 'assistant');
             } finally {
                 isProcessing = false;
             }
@@ -3106,8 +3156,8 @@
         // ERROR HANDLING & UTILITIES
         // ===========================================
         
-        function showError(message) {
-            console.error('❌ Error:', message);
+        function showError(message, details = null) {
+            console.error('❌ Error:', message, details);
             
             // Create error notification
             const errorDiv = document.createElement('div');
@@ -3123,19 +3173,57 @@
                 border: 1px solid #fecaca;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                 z-index: 1000;
-                max-width: 300px;
+                max-width: 350px;
                 font-size: 14px;
+                line-height: 1.4;
             `;
-            errorDiv.textContent = message;
+            
+            let errorContent = message;
+            if (details) {
+                errorContent += `<br><small style="opacity: 0.8;">${details}</small>`;
+            }
+            errorDiv.innerHTML = errorContent;
             
             document.body.appendChild(errorDiv);
             
-            // Auto remove after 5 seconds
+            // Auto remove after 8 seconds
             setTimeout(() => {
                 if (errorDiv.parentNode) {
                     errorDiv.parentNode.removeChild(errorDiv);
                 }
-            }, 5000);
+            }, 8000);
+        }
+
+        function handleAPIError(error, context = 'API call') {
+            console.error(`❌ ${context} error:`, error);
+            
+            let userMessage = 'An error occurred. Please try again.';
+            let details = null;
+            
+            if (error.message.includes('Failed to fetch')) {
+                if (window.location.hostname === 'localhost') {
+                    userMessage = 'Connection failed. Please check if the CORS proxy is running.';
+                    details = 'Run: python3 cors-proxy.py 8080';
+                } else {
+                    userMessage = 'Network error. Please check your connection.';
+                    details = 'The server may be temporarily unavailable.';
+                }
+            } else if (error.message.includes('422')) {
+                userMessage = 'Invalid request format. Please try a different file.';
+                details = 'The file may not be supported or corrupted.';
+            } else if (error.message.includes('401')) {
+                userMessage = 'Authentication failed. Please refresh the page.';
+                details = 'The API key may have expired.';
+            } else if (error.message.includes('500')) {
+                userMessage = 'Server error. Please try again in a moment.';
+                details = 'The server is experiencing issues.';
+            } else if (error.message.includes('CORS')) {
+                userMessage = 'CORS error. Please try refreshing the page.';
+                details = 'Cross-origin request blocked.';
+            }
+            
+            showError(userMessage, details);
+            return userMessage;
         }
 
         function showSuccess(message) {
@@ -3171,23 +3259,55 @@
         }
 
         // ===========================================
+        // CONNECTION MANAGEMENT
+        // ===========================================
+        
+        let connectionStatus = 'unknown';
+        let retryCount = 0;
+        const maxRetries = 3;
+
+        function updateConnectionStatus(status, message) {
+            const statusElement = document.getElementById('connectionStatus');
+            if (statusElement) {
+                statusElement.className = `connection-status ${status}`;
+                statusElement.textContent = message;
+            }
+        }
+
+        async function checkConnection() {
+            try {
+                const health = await BloodDiagnosticAPI.checkHealth('basic');
+                connectionStatus = 'connected';
+                retryCount = 0;
+                console.log('✅ API Health Check:', health);
+                updateConnectionStatus('connected', 'Connected');
+                showSuccess('Connected to Blood Diagnostic API');
+                return true;
+            } catch (error) {
+                connectionStatus = 'disconnected';
+                console.warn('⚠️ API Health Check failed:', error);
+                
+                if (retryCount < maxRetries) {
+                    retryCount++;
+                    console.log(`🔄 Retrying connection (${retryCount}/${maxRetries})...`);
+                    updateConnectionStatus('unknown', `Retrying... (${retryCount}/${maxRetries})`);
+                    setTimeout(checkConnection, 2000 * retryCount); // Exponential backoff
+                } else {
+                    updateConnectionStatus('disconnected', 'Disconnected');
+                    handleAPIError(error, 'API connection');
+                }
+                return false;
+            }
+        }
+
+        // ===========================================
         // INITIALIZATION
         // ===========================================
         
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Blood Diagnostic Tool initialized');
-            
-            // Check API health on startup
-            BloodDiagnosticAPI.checkHealth('basic')
-                .then(health => {
-                    console.log('✅ API Health Check:', health);
-                    showSuccess('Connected to Blood Diagnostic API');
-                })
-                .catch(error => {
-                    console.warn('⚠️ API Health Check failed:', error);
-                    showError('API connection issue - some features may be limited');
-                });
+            checkConnection();
         });
 
         // ===========================================
