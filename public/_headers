@@ -1,0 +1,11 @@
+/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Headers: Content-Type, X-API-Key, Authorization, Accept, Origin, X-Requested-With
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
+  Access-Control-Allow-Credentials: true
+
+/.netlify/functions/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Headers: Content-Type, X-API-Key, Authorization, Accept, Origin, X-Requested-With
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
+  Access-Control-Allow-Credentials: true

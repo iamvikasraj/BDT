@@ -5,8 +5,9 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type, X-API-Key, Authorization',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, X-API-Key, Authorization, Accept, Origin, X-Requested-With',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
+        'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Max-Age': '86400',
       },
       body: '',
@@ -71,6 +72,9 @@ exports.handler = async (event, context) => {
       statusCode: response.status,
       headers: {
         'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, X-API-Key, Authorization, Accept, Origin, X-Requested-With',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
+        'Access-Control-Allow-Credentials': 'true',
         'Content-Type': response.headers.get('content-type') || 'application/json',
       },
       body: responseData,
@@ -82,6 +86,9 @@ exports.handler = async (event, context) => {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, X-API-Key, Authorization, Accept, Origin, X-Requested-With',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
+        'Access-Control-Allow-Credentials': 'true',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ error: error.message }),
