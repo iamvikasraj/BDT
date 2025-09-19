@@ -1931,26 +1931,20 @@
             // File upload methods
             static async uploadReport(userId, file, textInput = null) {
                 try {
-                    // Convert file to base64 for easier handling through proxy
-                    const base64File = await this.fileToBase64(file);
+                    const formData = new FormData();
+                    formData.append('user_id', userId);
+                    formData.append('file', file);
                     
-                    const requestBody = {
-                        user_id: userId,
-                        file_name: file.name,
-                        file_content: base64File,
-                        file_type: file.type,
-                        text_input: textInput || null
-                    };
+                    if (textInput) {
+                        formData.append('text_input', textInput);
+                    }
 
                     console.log('📤 Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type);
 
                     const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.files.uploadReport}`, {
                         method: 'POST',
-                        headers: { 
-                            'X-API-Key': API_CONFIG.apiKey,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(requestBody)
+                        headers: { 'X-API-Key': API_CONFIG.apiKey },
+                        body: formData
                     });
 
                     console.log('📡 Upload response status:', response.status);
@@ -1968,20 +1962,6 @@
                     console.error('Error uploading report:', error);
                     throw error;
                 }
-            }
-
-            // Helper method to convert file to base64
-            static fileToBase64(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => {
-                        // Remove the data:application/pdf;base64, prefix
-                        const base64 = reader.result.split(',')[1];
-                        resolve(base64);
-                    };
-                    reader.onerror = error => reject(error);
-                });
             }
 
             // Export methods
