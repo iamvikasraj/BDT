@@ -242,7 +242,10 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding-top: 0px;
+            padding-right: 20px;
+            padding-bottom: 0px;
+            padding-left: 20px;
             position: relative;
             width: 100%;
             max-width: 800px;
@@ -304,7 +307,7 @@
         .message {
             display: flex;
             flex-direction: column;
-            max-width: 80%;
+            max-width: 100%;
             animation: slideInUp 0.3s ease;
             margin: 8px 0;
         }
@@ -333,6 +336,134 @@
             color: #2c2c2c;
             border: none;
         }
+
+        /* Structured Message Card Styling */
+        .message-card {
+            background: #ffffff;
+            border-radius: 12px;
+            margin: 8px 0;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .message-card-header {
+            font-size: 16px;
+            font-weight: 400;
+            margin: 0;
+            padding: 16px 20px 16px 20px;
+            color: #374151;
+        }
+
+        .message-card-content {
+            color: #3A3C54;
+            font-family: var(--font-family-Font-1, "Work Sans");
+            font-size: var(--font-size-16, 16px);
+            font-style: normal;
+            font-weight: var(--font-weight-600, 600);
+            line-height: var(--line-height-19_6, 19.6px);
+            padding: 0px 20px 20px 20px;
+        }
+
+        /* Special styling for Clinical Impression card */
+        .message-card[data-section="Clinical Impression"] {
+            border: 2px solid #10B981;
+            border-radius: 12px;
+        }
+
+        .message-card[data-section="Clinical Impression"] .message-card-header {
+            color: #065F46;
+        }
+
+        /* Special styling for Immediate Actions card */
+        .message-card[data-section="Immediate Actions"] .message-card-content {
+            padding-left: 40px;
+        }
+
+        .message-card[data-section="Immediate Actions"] .finding-item {
+            position: relative;
+        }
+
+        .message-card[data-section="Immediate Actions"] .finding-item:before {
+            content: "⚠️";
+            position: absolute;
+            left: -24px;
+            top: 0;
+            font-size: 16px;
+        }
+
+        .finding-item {
+            margin: 8px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .finding-label {
+            font-weight: 600;
+            color: #3A3C54;
+            font-family: var(--font-family-Font-1, "Work Sans");
+            font-size: 16px;
+        }
+
+        .finding-description {
+            color: #3A3C54;
+            font-family: var(--font-family-Font-1, "Work Sans");
+            font-size: 16px;
+            font-weight: 400;
+            font-style: italic;
+            margin-left: 0;
+        }
+
+        .numbered-list {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .numbered-list li {
+            margin: 4px 0;
+            color: #374151;
+        }
+
+        .reference-link {
+            color: #0066CC;
+            text-decoration: underline;
+            font-weight: 400;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .reference-link:hover {
+            color: #004499;
+            text-decoration: underline;
+        }
+
+        .reference-item {
+            transition: all 0.2s ease;
+        }
+
+        .reference-item:hover {
+            transform: translateY(-1px);
+        }
+
+        .reference-item .reference-link {
+            display: block;
+            width: 100%;
+            color: #0066CC;
+            text-decoration: underline;
+            font-family: var(--font-family-Font-1, "Work Sans");
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.5;
+            transition: all 0.2s ease;
+        }
+
+        .reference-item .reference-link:hover {
+            color: #004499;
+            text-decoration: underline;
+        }
+
 
 
         .medical-data {
@@ -2252,7 +2383,7 @@
             const sendBtn = document.querySelector('.send-btn');
             const pdfUploadBtn = document.getElementById('pdfUploadBtn');
             const pdfFileInput = document.getElementById('pdfFileInput');
-            const chatHistory = document.querySelector('.chat-history');
+            const chatHistoryElement = document.querySelector('.chat-history');
             const welcomeSection = document.getElementById('welcomeSection');
             const chatConversation = document.getElementById('chatConversation');
 
@@ -2289,19 +2420,25 @@
                 // Send to API
                 const response = await sendMessageToAPI(message);
                 
-                if (response && response.success) {
+                console.log('API Response received:', response);
+                
+                if (response) {
                     // Remove loading message
                     removeMessageFromChat(loadingId);
                     
                     // Process and display API response
-                    const responseData = response.data?.content || response.data;
+                    const responseData = response.data?.content || response.data || response;
+                    console.log('Response data:', responseData);
+                    
                     let responseText = 'No response received';
                     
                     if (typeof responseData === 'string') {
                         responseText = responseData;
+                        console.log('Using string response:', responseText);
                     } else if (responseData && typeof responseData === 'object') {
                         // Format structured medical response
                         responseText = formatMedicalResponse(responseData);
+                        console.log('Using formatted response:', responseText);
                     }
                     
                     addMessageToConversation(responseText, 'assistant');
@@ -2314,15 +2451,26 @@
                     });
                 } else {
                     // Handle API error - show fallback
+                    console.log('No response received from API');
                     removeMessageFromChat(loadingId);
                     const fallbackResponse = generateFallbackResponse(message);
                     addMessageToConversation(fallbackResponse, 'assistant');
                 }
             } catch (error) {
-                // Handle error - show fallback
+                // Handle error - only show fallback if API is completely unavailable
                 removeMessageFromChat(loadingId);
-                const fallbackResponse = generateFallbackResponse(message);
-                addMessageToConversation(fallbackResponse, 'assistant');
+                console.error('API Error:', error);
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+                
+                // Check if it's a network error or API unavailable
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    const fallbackResponse = generateFallbackResponse(message);
+                    addMessageToConversation(fallbackResponse, 'assistant');
+                } else {
+                    // For other errors, show a more specific message with error details
+                    addMessageToConversation(`I encountered an error processing your request: ${error.message}. Please try again.`, 'assistant');
+                }
             } finally {
                 isProcessing = false;
                 // Clear input
@@ -2333,6 +2481,95 @@
         // ===========================================
         // RESPONSE FORMATTING
         // ===========================================
+        
+        // Parse structured text into HTML
+        function parseStructuredMessage(text) {
+            if (!text || typeof text !== 'string') return text;
+            
+            // Split by sections using ** markers
+            const sections = text.split(/\*\*(.*?)\*\*/g);
+            let html = '';
+            
+            for (let i = 0; i < sections.length; i++) {
+                if (i % 2 === 1) { // Odd indices are section headers
+                    const header = sections[i].trim().replace(/:$/, ''); // Remove trailing colon
+                    const nextContent = sections[i + 1] ? sections[i + 1].trim() : '';
+                    
+                    if (nextContent) {
+                        html += `<div class="message-card" data-section="${header}">
+                            <div class="message-card-header">${header}</div>
+                            <div class="message-card-content">${formatContent(nextContent)}</div>
+                        </div>`;
+                    }
+                }
+            }
+            
+            // If no ** markers found, return original text
+            return html || text;
+        }
+        
+        // Format content within sections
+        function formatContent(content) {
+            if (!content) return content;
+            
+            // Handle bullet points - format as bold labels with descriptions
+            if (content.includes('•')) {
+                const items = content.split('•').filter(item => item.trim());
+                let html = '';
+                items.forEach(item => {
+                    const trimmed = item.trim();
+                    // Check if item has bold text pattern (text followed by description)
+                    if (trimmed.includes(' - ')) {
+                        const [label, description] = trimmed.split(' - ', 2);
+                        html += `<div class="finding-item">
+                            <span class="finding-label">${label.trim()}</span>
+                            <span class="finding-description">${description.trim()}</span>
+                        </div>`;
+                    } else {
+                        html += `<div class="finding-item">
+                            <span class="finding-label">${trimmed}</span>
+                        </div>`;
+                    }
+                });
+                return html;
+            }
+            
+            // Handle numbered lists - but format references differently
+            if (content.match(/^\d+\./m)) {
+                const items = content.split(/\n/).filter(item => item.trim() && item.match(/^\d+\./));
+                
+                // Check if this is a references section by looking for [View Source] pattern
+                if (content.includes('[View Source]')) {
+                    let html = '';
+                    items.forEach(item => {
+                        const cleanedItem = item.replace(/^\d+\.\s*/, '').trim();
+                        // Extract the link from [View Source](url) pattern
+                        const linkMatch = cleanedItem.match(/\[View Source\]\(([^)]+)\)/);
+                        if (linkMatch) {
+                            const url = linkMatch[1];
+                            const text = cleanedItem.replace(/\[View Source\]\([^)]+\)/, '').trim();
+                            html += `<div class="reference-item">
+                                <a href="${url}" target="_blank" class="reference-link">${text}</a>
+                            </div>`;
+                        } else {
+                            html += `<div class="reference-item">${cleanedItem}</div>`;
+                        }
+                    });
+                    return html;
+                } else {
+                    // Regular numbered list
+                    return `<ol class="numbered-list">${items.map(item => `<li>${item.replace(/^\d+\.\s*/, '').trim()}</li>`).join('')}</ol>`;
+                }
+            }
+            
+            // Handle links [text](url)
+            content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="reference-link">$1</a>');
+            
+            // Handle line breaks
+            content = content.replace(/\n/g, '<br>');
+            
+            return content;
+        }
         
         function formatMedicalResponse(data) {
             let formatted = '';
@@ -2399,12 +2636,28 @@
         }
 
             function addMessageToConversation(message, sender) {
+                const chatConversation = document.getElementById('chatConversation');
+                if (!chatConversation) {
+                    console.error('❌ chatConversation element not found');
+                    return;
+                }
+                
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${sender}`;
                 
+                // Parse structured content for assistant messages
+                let content;
+                if (sender === 'assistant' && message.includes('**')) {
+                    // For API responses with structured content, render directly without message-bubble
+                    content = parseStructuredMessage(message);
+                    messageDiv.innerHTML = content;
+                } else {
+                    // For regular messages, use message-bubble wrapper
+                    content = message;
                     messageDiv.innerHTML = `
-                        <div class="message-bubble">${message}</div>
+                        <div class="message-bubble">${content}</div>
                     `;
+                }
                 
                 chatConversation.appendChild(messageDiv);
                 
@@ -2445,7 +2698,7 @@
                 chatItem.classList.add('active');
                     
                     // Add to top of chat history
-                    chatHistory.insertBefore(chatItem, chatHistory.firstChild);
+                    chatHistoryElement.insertBefore(chatItem, chatHistoryElement.firstChild);
                     
                     // Add click functionality
                     chatItem.addEventListener('click', () => {
@@ -2462,7 +2715,7 @@
                     });
                 
                 // Scroll to top
-                chatHistory.scrollTop = 0;
+                chatHistoryElement.scrollTop = 0;
                 }
                 
             function updateConversationInHistory(message) {
@@ -3249,7 +3502,7 @@
             }
 
             // Chat item click functionality
-            chatHistory.addEventListener('click', function(e) {
+            chatHistoryElement.addEventListener('click', function(e) {
                 const chatItem = e.target.closest('.chat-item');
                 if (chatItem) {
                     // Remove active class from all chat items
@@ -3420,6 +3673,8 @@
             }
         }
 
+
+
         // ===========================================
         // SESSION ID MANAGEMENT
         // ===========================================
@@ -3519,17 +3774,17 @@
         }
 
         function updateSessionHistory() {
-            const chatHistory = document.querySelector('.chat-history');
-            if (!chatHistory || !userSessions.length) return;
+            const chatHistoryElement = document.querySelector('.chat-history');
+            if (!chatHistoryElement || !userSessions.length) return;
 
             // Clear existing history
-            chatHistory.innerHTML = '';
+            chatHistoryElement.innerHTML = '';
 
             // Add session header
             const header = document.createElement('div');
             header.className = 'section-header';
             header.innerHTML = '<span class="section-title">Previous Sessions</span>';
-            chatHistory.appendChild(header);
+            chatHistoryElement.appendChild(header);
 
             // Add sessions
             userSessions.forEach(session => {
@@ -3547,7 +3802,7 @@
                     loadSession(session.id);
                 });
                 
-                chatHistory.appendChild(sessionDiv);
+                chatHistoryElement.appendChild(sessionDiv);
             });
         }
 

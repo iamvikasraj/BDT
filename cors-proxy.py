@@ -34,11 +34,13 @@ class CORSProxyHandler(BaseHTTPRequestHandler):
 
     def proxy_request(self, method):
         try:
+            # Handle static file serving first
+            if not self.path.startswith('/proxy/'):
+                self.serve_static_file()
+                return
+            
             # Extract the target URL from the path
-            if self.path.startswith('/proxy/'):
-                target_url = self.path[7:]  # Remove '/proxy/' prefix
-            else:
-                target_url = self.path[1:]  # Remove leading '/'
+            target_url = self.path[7:]  # Remove '/proxy/' prefix
             
             # Add https:// if no protocol specified
             if not target_url.startswith('http'):
@@ -84,6 +86,44 @@ class CORSProxyHandler(BaseHTTPRequestHandler):
         except Exception as e:
             print(f"Error proxying request: {e}")
             self.send_error(500, f"Proxy error: {str(e)}")
+
+    def serve_static_file(self):
+        """Serve static files from the current directory"""
+        import os
+        import mimetypes
+        
+        # Map root to index.html
+        if self.path == '/':
+            file_path = 'index.html'
+        else:
+            file_path = self.path[1:]  # Remove leading '/'
+        
+        # Security check - prevent directory traversal
+        if '..' in file_path or file_path.startswith('/'):
+            self.send_error(403, "Forbidden")
+            return
+        
+        try:
+            if os.path.exists(file_path) and os.path.isfile(file_path):
+                # Get MIME type
+                mime_type, _ = mimetypes.guess_type(file_path)
+                if mime_type is None:
+                    mime_type = 'application/octet-stream'
+                
+                # Read and serve the file
+                with open(file_path, 'rb') as f:
+                    content = f.read()
+                
+                self.send_response(200)
+                self.send_header('Content-Type', mime_type)
+                self.send_header('Content-Length', str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+            else:
+                self.send_error(404, "File not found")
+        except Exception as e:
+            print(f"Error serving file {file_path}: {e}")
+            self.send_error(500, "Internal server error")
 
     def log_message(self, format, *args):
         # Suppress default logging
