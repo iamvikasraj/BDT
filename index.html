@@ -250,6 +250,7 @@
             width: 100%;
             max-width: 800px;
             overflow-y: auto;
+            scroll-behavior: smooth;
         }
 
         .chat-container {
@@ -294,6 +295,7 @@
             /* min-height: 0; */
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none; /* Internet Explorer 10+ */
+            scroll-behavior: smooth;
         }
 
         .chat-conversation::-webkit-scrollbar {
@@ -366,8 +368,23 @@
 
         /* Special styling for Clinical Impression card */
         .message-card[data-section="Clinical Impression"] {
-            border: 2px solid #10B981;
+            background: linear-gradient(90deg, #BCDD33 0%, #FDD506 25%, #FF8080 50%, #36D6C3 75%, #BCDD33 100%);
+            padding: 2px;
             border-radius: 12px;
+        }
+
+        .message-card[data-section="Clinical Impression"] .message-card-header,
+        .message-card[data-section="Clinical Impression"] .message-card-content {
+            background: #ffffff;
+            border-radius: 10px;
+        }
+
+        .message-card[data-section="Clinical Impression"] .message-card-header {
+            border-radius: 10px 10px 0 0;
+        }
+
+        .message-card[data-section="Clinical Impression"] .message-card-content {
+            border-radius: 0 0 10px 10px;
         }
 
         .message-card[data-section="Clinical Impression"] .message-card-header {
@@ -1850,6 +1867,7 @@
             font-weight: 500;
             z-index: 1000;
             transition: all 0.3s ease;
+            display: none; /* Hidden from deployment */
         }
 
         .connection-status.connected {
@@ -1891,7 +1909,7 @@
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT7ZW1MttWL5hg-E0pJuXIftWMBhUpcifEsA&s" alt="Mihir Shah" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
                     </div>
                     <div class="user-info">
-                        <div class="user-name">Dr. Viraj <span id="sessionDisplayName">(Session: Loading...)</span></div>
+                        <div class="user-name">Dr. Viraj</div>
                         <div class="user-role">General Practitioner</div>
                     </div>
                 </div>
@@ -1904,7 +1922,7 @@
                         <svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.0129 2.67236C12.9723 -0.890788 18.0277 -0.890787 18.9871 2.67236L20.3219 7.62994C20.6565 8.87273 21.6273 9.8435 22.8701 10.1781L27.8276 11.5129C31.3908 12.4723 31.3908 17.5277 27.8276 18.4871L22.8701 19.8219C21.6273 20.1565 20.6565 21.1273 20.3219 22.3701L18.9871 27.3276C18.0277 30.8908 12.9723 30.8908 12.0129 27.3276L10.6781 22.3701C10.3435 21.1273 9.37273 20.1565 8.12994 19.8219L3.17236 18.4871C-0.390788 17.5277 -0.390787 12.4723 3.17236 11.5129L8.12994 10.1781C9.37273 9.8435 10.3435 8.87273 10.6781 7.62994L12.0129 2.67236Z" fill="#19B76A"/>
                         </svg>
-                        <p>Hello, Viraj <span id="sessionDisplay">(Session: Loading...)</span>!<br>
+                        <p>Hello, Viraj!<br>
                         How can I help you today?</p>
                     </div>
                     <div class="chat-conversation" id="chatConversation">
@@ -3602,6 +3620,12 @@
         function showSuccess(message) {
             console.log('✅ Success:', message);
             
+            // Hide connection-related success messages from deployment
+            if (message.includes('Connected to Blood Diagnostic API') || 
+                message.includes('Session loaded successfully')) {
+                return; // Don't show these messages in deployment
+            }
+            
             // Create success notification
             const successDiv = document.createElement('div');
             successDiv.className = 'success-notification';
@@ -3644,6 +3668,15 @@
             if (statusElement) {
                 statusElement.className = `connection-status ${status}`;
                 statusElement.textContent = message;
+                
+                // Hide connection status after successful connection
+                if (status === 'connected') {
+                    setTimeout(() => {
+                        statusElement.style.display = 'none';
+                    }, 2000); // Hide after 2 seconds
+                } else {
+                    statusElement.style.display = 'block';
+                }
             }
         }
 
@@ -3699,13 +3732,7 @@
                 sessionId = generateSessionId();
             }
             
-            if (sessionDisplay) {
-                sessionDisplay.textContent = `(Session: ${sessionId})`;
-            }
-            
-            if (sessionDisplayName) {
-                sessionDisplayName.textContent = `(Session: ${sessionId})`;
-            }
+            // Session display removed - no longer showing session IDs in UI
         }
 
         // ===========================================
