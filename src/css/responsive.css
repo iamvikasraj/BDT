@@ -1,0 +1,228 @@
+/* Responsive Design */
+
+/* Tablet and smaller desktop */
+@media (max-width: 1024px) {
+    .main-container {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .left-container {
+        flex: 0 0 280px;
+    }
+    
+    .right-top-container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    .right-bottom-container {
+        padding: 16px;
+    }
+}
+
+/* Mobile landscape */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        padding: 8px;
+        gap: 8px;
+        height: 100vh;
+    }
+    
+    .left-container {
+        flex: 0 0 200px;
+        order: 2;
+    }
+    
+    .right-container {
+        flex: 1;
+        order: 1;
+    }
+    
+    .right-top-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    .right-bottom-container {
+        padding: 12px;
+    }
+    
+    .lab-results {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .diagnosis-details {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .evidence-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .diagnosis-title {
+        font-size: 24px;
+    }
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+    .main-container {
+        padding: 4px;
+        gap: 4px;
+    }
+    
+    .left-container {
+        flex: 0 0 150px;
+    }
+    
+    .right-top-container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    
+    .right-bottom-container {
+        padding: 8px;
+    }
+    
+    .lab-results {
+        grid-template-columns: 1fr;
+    }
+    
+    .input-section {
+        max-width: 100%;
+    }
+    
+    .message-input {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+    
+    .pdf-btn, .send-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .section-header {
+        padding: 12px;
+    }
+    
+    .chat-item {
+        padding: 12px;
+    }
+    
+    .session-title {
+        font-size: 13px;
+    }
+    
+    .diagnosis-name {
+        font-size: 16px;
+    }
+    
+    .confidence-score {
+        font-size: 20px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+    .main-container {
+        padding: 2px;
+        gap: 2px;
+    }
+    
+    .left-container {
+        flex: 0 0 120px;
+    }
+    
+    .right-top-container {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+    
+    .right-bottom-container {
+        padding: 4px;
+    }
+    
+    .section-header {
+        padding: 8px;
+    }
+    
+    .chat-item {
+        padding: 8px;
+    }
+    
+    .session-title {
+        font-size: 12px;
+    }
+    
+    .message-bubble {
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .status-indicator {
+        border: 0.5px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .urgent-badge {
+        border: 0.5px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles can be added here */
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .chat-item:hover {
+        transform: none;
+    }
+    
+    .message {
+        animation: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .main-container {
+        display: block;
+        height: auto;
+        padding: 0;
+    }
+    
+    .left-container {
+        display: none;
+    }
+    
+    .right-container {
+        display: block;
+        background: white;
+        box-shadow: none;
+        border-radius: 0;
+    }
+    
+    .right-bottom-container {
+        display: none;
+    }
+    
+    .message-bubble {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #ccc;
+    }
+}

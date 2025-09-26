@@ -148,13 +148,12 @@
         .chat-item {
             display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: 8px;
             transition: all 0.3s ease;
             cursor: pointer;
-            padding: 16px 20px;
+            padding: 20px;
             background: color(srgb 0.95 0.95 0.95 / 1.0);
             border-bottom: 1px solid rgba(32, 32, 32, 0.094);
-            position: relative;
         }
 
         .chat-item:hover {
@@ -165,7 +164,6 @@
         .chat-item.active {
             background: color(srgb 0.92 0.92 0.92 / 1.0);
             border-left: 3px solid var(--color-primary);
-            box-shadow: inset 0 0 0 1px rgba(25, 183, 106, 0.1);
         }
 
         /* Enhanced Session List Styles */
@@ -208,23 +206,28 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
-        }
-
-        /* Apply chat-header styling to session header */
-        .session-header-info .session-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            margin-bottom: 8px;
         }
 
         .session-status {
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-wrap: wrap;
         }
 
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-indicator.status-active {
+            background: #10B981;
+        }
+
+        .status-indicator.status-completed {
+            background: #6B7280;
+        }
 
         .status-text {
             font-size: 12px;
@@ -236,62 +239,75 @@
         .urgent-badge {
             background: linear-gradient(135deg, #EF4444, #DC2626);
             color: white;
-            font-size: 12px;
+            font-size: 9px;
             font-weight: 700;
-            padding: 6px;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            flex-shrink: 0;
-        }
-
-        .urgent-badge::before {
-            content: "⚠";
-            font-size: 14px;
         }
 
         .session-time {
-            font-size: 12px;
-            color: var(--text-muted);
+            font-size: 11px;
+            color: var(--text-placeholder);
         }
 
         .session-title {
             font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.4;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
 
         .session-diagnosis {
-            display: none; /* Hide diagnosis details */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
         }
 
         .diagnosis-label {
-            display: none;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
         }
 
         .diagnosis-text {
-            display: none;
+            font-size: 12px;
+            color: var(--text-secondary);
+            flex: 1;
+            min-width: 0;
         }
 
         .confidence-badge {
-            display: none; /* Hide confidence badge */
+            background: #F3F4F6;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
         }
 
         .session-meta {
-            display: none; /* Hide message count and date */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-placeholder);
         }
 
         .message-count {
-            display: none;
+            font-weight: 500;
         }
 
         .session-date {
-            display: none;
+            font-weight: 400;
         }
 
         .empty-sessions {
@@ -324,7 +340,7 @@
         /* Urgent session styling */
         .chat-item.urgent {
             border-left: 3px solid #EF4444;
-            background: linear-gradient(90deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.03) 0%, rgba(239, 68, 68, 0.01) 100%);
             position: relative;
         }
 
@@ -348,17 +364,6 @@
         .chat-item.urgent:hover::before {
             opacity: 1;
         }
-
-        /* Error state for unavailable sessions */
-        .chat-item.error {
-            opacity: 0.6;
-            border-left: 3px solid #EF4444;
-        }
-
-        .chat-item.error .session-title {
-            color: var(--text-muted);
-        }
-
 
         .chat-conversation {
             display: none;
@@ -2373,7 +2378,7 @@
 
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout for session creation
-
+                        
                         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.create}`, {
                             method: 'POST',
                             headers: { 'X-API-Key': API_CONFIG.apiKey },
@@ -2407,7 +2412,7 @@
 
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout for session creation
-
+                        
                         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.create}`, {
                             method: 'POST',
                             headers: { 
@@ -2447,7 +2452,7 @@
 
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout for session listing
-
+                    
                     const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.list}?${params}`, {
                         method: 'GET',
                         headers: { 'X-API-Key': API_CONFIG.apiKey },
@@ -2476,22 +2481,6 @@
                     
                     clearTimeout(timeoutId);
 
-                    // Check if response is ok
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            console.log(`Session ${sessionId} not found (404)`);
-                            return { success: false, error: 'Session not found', data: null };
-                        }
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    // Check if response is JSON
-                    const contentType = response.headers.get('content-type');
-                    if (!contentType || !contentType.includes('application/json')) {
-                        console.log(`Session ${sessionId} returned non-JSON response`);
-                        return { success: false, error: 'Invalid response format', data: null };
-                    }
-
                     return await response.json();
                 } catch (error) {
                     console.error('Error getting session history:', error);
@@ -2511,7 +2500,7 @@
 
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-
+                        
                         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.messages.send(sessionId)}`, {
                             method: 'POST',
                             headers: { 'X-API-Key': API_CONFIG.apiKey },
@@ -2536,7 +2525,7 @@
 
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-
+                        
                         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.messages.send(sessionId)}`, {
                             method: 'POST',
                             headers: { 
@@ -2594,7 +2583,7 @@
 
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout for file uploads
-
+                        
                         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.files.uploadReport}`, {
                             method: 'POST',
                             headers: { 'X-API-Key': API_CONFIG.apiKey },
@@ -2632,7 +2621,7 @@
 
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout for file uploads
-
+                        
                         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.files.uploadReport}`, {
                             method: 'POST',
                             headers: { 
@@ -4220,7 +4209,7 @@
             limit: 20,
             sort: 'date_desc'
         };
-        
+
         async function loadUserSessions() {
             try {
                 const response = await BloodDiagnosticAPI.listSessions(
@@ -4255,7 +4244,7 @@
             if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
             if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
             
-            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+            return date.toLocaleDateString();
         }
 
         function updatePaginationInfo(pagination) {
@@ -4314,7 +4303,6 @@
                 const createdDate = new Date(session.created_at);
                 const lastMessageDate = new Date(session.last_message_at);
                 const timeAgo = getTimeAgo(lastMessageDate);
-                const formattedCreatedDate = createdDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
                 
                 // Status indicator
                 const statusClass = session.status === 'active' ? 'status-active' : 'status-completed';
@@ -4323,8 +4311,10 @@
                 sessionDiv.innerHTML = `
                     <div class="session-header-info">
                         <div class="session-status">
+                            <span class="status-indicator ${statusClass}"></span>
                             <span class="status-text">${session.status}</span>
-                    </div>
+                            ${session.urgent ? '<span class="urgent-badge">URGENT</span>' : ''}
+                        </div>
                         <div class="session-time">${timeAgo}</div>
                     </div>
                     <div class="session-title">${session.title || 'Blood Diagnostic Session'}</div>
@@ -4335,7 +4325,7 @@
                     </div>
                     <div class="session-meta">
                         <span class="message-count">${session.message_count || 0} messages</span>
-                        <span class="session-date">${createdDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+                        <span class="session-date">${createdDate.toLocaleDateString()}</span>
                     </div>
                 `;
                 
@@ -4377,24 +4367,6 @@
                 showChatConversation();
                 
                 const response = await BloodDiagnosticAPI.getSessionHistory(sessionId);
-                
-                // Handle different response types
-                if (response && response.success === false) {
-                    // Clear loading message
-                    if (chatConversation) {
-                        chatConversation.innerHTML = '';
-                    }
-                    
-                    if (response.error === 'Session not found') {
-                        addMessageToConversation('This session no longer exists or has been deleted.', 'assistant');
-                    } else {
-                        addMessageToConversation('Unable to load session history. The session may be unavailable.', 'assistant');
-                    }
-                    
-                    // Update session list to show active session
-                    updateSessionListActiveState(sessionId);
-                    return;
-                }
                 
                 if (response && response.success) {
                     currentSessionId = sessionId;

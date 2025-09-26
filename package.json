@@ -1,0 +1,31 @@
+{
+  "name": "blood-diagnostic-tool",
+  "version": "1.0.0",
+  "description": "AI-powered blood diagnostic tool for medical professionals",
+  "main": "public/index.html",
+  "scripts": {
+    "start": "python3 cors-proxy.py",
+    "dev": "python3 cors-proxy.py",
+    "build": "echo 'Build process would go here'",
+    "test": "echo 'Tests would go here'"
+  },
+  "keywords": [
+    "medical",
+    "diagnosis",
+    "blood-test",
+    "ai",
+    "healthcare"
+  ],
+  "author": "Blood Diagnostic Tool Team",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/blood-diagnostic-tool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/blood-diagnostic-tool/issues"
+  },
+  "homepage": "https://github.com/your-username/blood-diagnostic-tool#readme"
+}
