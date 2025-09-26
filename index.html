@@ -158,7 +158,184 @@
 
         .chat-item.active {
             background: #f2f2f2;
-            /* border-right: 1px solid var(--color-primary); */
+            border-left: 3px solid var(--color-primary);
+        }
+
+        /* Enhanced Session List Styles */
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .session-filters {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 4px 12px;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background: #F3F4F6;
+            border-color: var(--color-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .session-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .session-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-indicator.status-active {
+            background: #10B981;
+        }
+
+        .status-indicator.status-completed {
+            background: #6B7280;
+        }
+
+        .status-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: capitalize;
+        }
+
+        .urgent-badge {
+            background: #EF4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 8px;
+            margin-left: 8px;
+        }
+
+        .session-time {
+            font-size: 11px;
+            color: var(--text-placeholder);
+        }
+
+        .session-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .session-diagnosis {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .diagnosis-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .diagnosis-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            flex: 1;
+            min-width: 0;
+        }
+
+        .confidence-badge {
+            background: #F3F4F6;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .session-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-placeholder);
+        }
+
+        .message-count {
+            font-weight: 500;
+        }
+
+        .session-date {
+            font-weight: 400;
+        }
+
+        .empty-sessions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .empty-subtext {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Urgent session styling */
+        .chat-item.urgent {
+            border-left: 3px solid #EF4444;
+            background: rgba(239, 68, 68, 0.02);
+        }
+
+        .chat-item.urgent:hover {
+            background: rgba(239, 68, 68, 0.05);
         }
 
 
@@ -1983,7 +2160,7 @@
         // API Configuration
         const API_CONFIG = {
             baseURL: window.location.hostname === 'localhost' 
-                ? 'http://localhost:8081/proxy/blood-diagnostic-bot-7b4wpufaoq-el.a.run.app'
+                ? 'http://localhost:5000/proxy/blood-diagnostic-bot-7b4wpufaoq-el.a.run.app'
                 : '/.netlify/functions/proxy',
             apiKey: 'healthcare-llm-gateway-api-key',
             endpoints: {
@@ -3694,7 +3871,7 @@
             } else if (error.message.includes('Failed to fetch')) {
                 if (window.location.hostname === 'localhost') {
                     userMessage = 'Connection failed. Please check if the CORS proxy is running.';
-                    details = 'Run: python3 cors-proxy.py 8081';
+                    details = 'Run: python3 cors-proxy.py 5000';
                 } else {
                     userMessage = 'Network error. Please check your connection.';
                     details = 'The server may be temporarily unavailable.';
@@ -3844,6 +4021,9 @@
             console.log('🚀 Blood Diagnostic Tool initialized');
             updateSessionDisplay();
             checkConnection();
+            
+            // Load user sessions
+            loadUserSessions();
         });
 
         // ===========================================
@@ -3887,46 +4067,135 @@
         // SESSION MANAGEMENT
         // ===========================================
         
+        // Session filter state
+        let sessionFilter = {
+            urgent: false,
+            page: 1,
+            limit: 20,
+            sort: 'date_desc'
+        };
+
         async function loadUserSessions() {
             try {
-                const response = await BloodDiagnosticAPI.listSessions('user_123');
+                const response = await BloodDiagnosticAPI.listSessions(
+                    'user_123', 
+                    sessionFilter.page, 
+                    sessionFilter.limit, 
+                    sessionFilter.sort, 
+                    sessionFilter.urgent
+                );
                 
                 if (response && response.success) {
                     userSessions = response.data?.sessions || [];
                     updateSessionHistory();
+                    
+                    // Update pagination info if available
+                    if (response.data?.pagination) {
+                        updatePaginationInfo(response.data.pagination);
+                    }
                 }
             } catch (error) {
                 console.error('❌ Failed to load sessions:', error);
+                showError('Failed to load sessions');
             }
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) return 'Just now';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+            if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        function updatePaginationInfo(pagination) {
+            // Could add pagination controls here if needed
+            console.log('Pagination info:', pagination);
         }
 
         function updateSessionHistory() {
             const chatHistoryElement = document.querySelector('.chat-history');
-            if (!chatHistoryElement || !userSessions.length) return;
+            if (!chatHistoryElement) return;
 
             // Clear existing history
             chatHistoryElement.innerHTML = '';
 
-            // Add session header
+            // Add session header with filters
             const header = document.createElement('div');
             header.className = 'section-header';
-            header.innerHTML = '<span class="section-title">Previous Sessions</span>';
+            header.innerHTML = `
+                <div class="session-header">
+                    <span class="section-title">Previous Sessions</span>
+                    <div class="session-filters">
+                        <button class="filter-btn ${!sessionFilter.urgent ? 'active' : ''}" data-filter="all">All</button>
+                        <button class="filter-btn ${sessionFilter.urgent ? 'active' : ''}" data-filter="urgent">Urgent</button>
+                    </div>
+                </div>
+            `;
             chatHistoryElement.appendChild(header);
+
+            // Add filter event listeners
+            header.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const filter = e.target.dataset.filter;
+                    sessionFilter.urgent = filter === 'urgent';
+                    loadUserSessions(); // Reload with new filter
+                });
+            });
+
+            if (!userSessions.length) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-sessions';
+                emptyState.innerHTML = `
+                    <div class="empty-icon">📋</div>
+                    <div class="empty-text">No sessions found</div>
+                    <div class="empty-subtext">Start a new conversation to see it here</div>
+                `;
+                chatHistoryElement.appendChild(emptyState);
+                return;
+            }
 
             // Add sessions
             userSessions.forEach(session => {
                 const sessionDiv = document.createElement('div');
-                sessionDiv.className = 'chat-item';
+                sessionDiv.className = `chat-item ${session.session_id === currentSessionId ? 'active' : ''}`;
+                
+                // Format dates
+                const createdDate = new Date(session.created_at);
+                const lastMessageDate = new Date(session.last_message_at);
+                const timeAgo = getTimeAgo(lastMessageDate);
+                
+                // Status indicator
+                const statusClass = session.status === 'active' ? 'status-active' : 'status-completed';
+                const urgentClass = session.urgent ? 'urgent' : '';
+                
                 sessionDiv.innerHTML = `
-                    <div class="chat-header">
-                        <div class="chat-date">${new Date(session.created_at).toLocaleDateString()}</div>
-                        <div class="chat-time">${new Date(session.created_at).toLocaleTimeString()}</div>
+                    <div class="session-header-info">
+                        <div class="session-status">
+                            <span class="status-indicator ${statusClass}"></span>
+                            <span class="status-text">${session.status}</span>
+                            ${session.urgent ? '<span class="urgent-badge">URGENT</span>' : ''}
+                        </div>
+                        <div class="session-time">${timeAgo}</div>
                     </div>
-                    <div class="chat-message">${session.title || 'Blood Diagnostic Session'}</div>
+                    <div class="session-title">${session.title || 'Blood Diagnostic Session'}</div>
+                    <div class="session-diagnosis">
+                        <span class="diagnosis-label">Diagnosis:</span>
+                        <span class="diagnosis-text">${session.primary_diagnosis || 'Pending analysis'}</span>
+                        <span class="confidence-badge">${session.confidence || 0}%</span>
+                    </div>
+                    <div class="session-meta">
+                        <span class="message-count">${session.message_count || 0} messages</span>
+                        <span class="session-date">${createdDate.toLocaleDateString()}</span>
+                    </div>
                 `;
                 
                 sessionDiv.addEventListener('click', () => {
-                    loadSession(session.id);
+                    loadSession(session.session_id);
                 });
                 
                 chatHistoryElement.appendChild(sessionDiv);
