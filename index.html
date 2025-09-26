@@ -232,13 +232,17 @@
         }
 
         .urgent-badge {
-            background: #EF4444;
+            background: linear-gradient(135deg, #EF4444, #DC2626);
             color: white;
-            font-size: 10px;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
             margin-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .session-time {
@@ -331,11 +335,29 @@
         /* Urgent session styling */
         .chat-item.urgent {
             border-left: 3px solid #EF4444;
-            background: rgba(239, 68, 68, 0.02);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.03) 0%, rgba(239, 68, 68, 0.01) 100%);
+            position: relative;
+        }
+
+        .chat-item.urgent::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
         }
 
         .chat-item.urgent:hover {
-            background: rgba(239, 68, 68, 0.05);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.03) 100%);
+        }
+
+        .chat-item.urgent:hover::before {
+            opacity: 1;
         }
 
         /* Conversation Display Styles - Hidden by default */
