@@ -2160,7 +2160,7 @@
         // API Configuration
         const API_CONFIG = {
             baseURL: window.location.hostname === 'localhost' 
-                ? 'http://localhost:5000/proxy/blood-diagnostic-bot-7b4wpufaoq-el.a.run.app'
+                ? 'http://localhost:4000/proxy/blood-diagnostic-bot-7b4wpufaoq-el.a.run.app'
                 : '/.netlify/functions/proxy',
             apiKey: 'healthcare-llm-gateway-api-key',
             endpoints: {
@@ -3871,7 +3871,7 @@
             } else if (error.message.includes('Failed to fetch')) {
                 if (window.location.hostname === 'localhost') {
                     userMessage = 'Connection failed. Please check if the CORS proxy is running.';
-                    details = 'Run: python3 cors-proxy.py 5000';
+                    details = 'Run: python3 cors-proxy.py 4000';
                 } else {
                     userMessage = 'Network error. Please check your connection.';
                     details = 'The server may be temporarily unavailable.';
