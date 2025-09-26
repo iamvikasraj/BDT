@@ -338,6 +338,125 @@
             background: rgba(239, 68, 68, 0.05);
         }
 
+        /* Conversation Display Styles */
+        .chat-conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px;
+            height: 100%;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #E5E7EB transparent;
+        }
+
+        .chat-conversation::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-conversation::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-conversation::-webkit-scrollbar-thumb {
+            background: #E5E7EB;
+            border-radius: 2px;
+        }
+
+        .chat-conversation::-webkit-scrollbar-thumb:hover {
+            background: #D1D5DB;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 16px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--color-primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            background: #F3F4F6;
+            color: var(--text-primary);
+            border: 1px solid #E5E7EB;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-content {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.user .message-content {
+            color: white;
+        }
+
+        .message.assistant .message-content {
+            color: var(--text-primary);
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            align-self: flex-end;
+        }
+
+        .message.user .message-time {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .message.assistant .message-time {
+            color: var(--text-muted);
+        }
+
+        /* Medical response formatting */
+        .summary, .findings, .impression, .actions {
+            margin-bottom: 12px;
+        }
+
+        .summary strong, .findings strong, .impression strong, .actions strong {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .findings ul, .actions ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .findings li, .actions li {
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .loading-message, .empty-conversation, .error-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            font-size: 16px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .error-message {
+            color: #EF4444;
+        }
+
+        .loading-message {
+            color: var(--color-primary);
+        }
+
 
         .special-item {
             background: linear-gradient(135deg, #19B76A, #16A085);
@@ -4194,6 +4313,9 @@
                     </div>
                 `;
                 
+                // Add session ID as data attribute for easy access
+                sessionDiv.setAttribute('data-session-id', session.session_id);
+                
                 sessionDiv.addEventListener('click', () => {
                     loadSession(session.session_id);
                 });
@@ -4204,35 +4326,162 @@
 
         async function loadSession(sessionId) {
             try {
+                console.log('🔄 Loading session:', sessionId);
+                
+                // Show loading state
+                const chatConversation = document.getElementById('chatConversation');
+                const welcomeSection = document.getElementById('welcomeSection');
+                
+                if (chatConversation) {
+                    chatConversation.innerHTML = '<div class="loading-message">Loading session...</div>';
+                }
+                
+                // Hide welcome section and show conversation area
+                hideWelcomeSection();
+                showChatConversation();
+                
                 const response = await BloodDiagnosticAPI.getSessionHistory(sessionId);
                 
                 if (response && response.success) {
                     currentSessionId = sessionId;
                     const history = response.data?.history || [];
                     
-                    // Clear current conversation
-                    const chatConversation = document.getElementById('chatConversation');
+                    console.log('📋 Session history loaded:', history);
+                    
+                    // Clear loading message
                     if (chatConversation) {
                         chatConversation.innerHTML = '';
                     }
                     
                     // Load conversation history
-                    history.forEach(message => {
-                        if (message.sender === 'user' || message.sender === 'bot') {
-                            addMessageToConversation(message.content, message.sender);
-                        }
-                    });
+                    if (history.length > 0) {
+                        history.forEach((message, index) => {
+                            // Handle different message formats
+                            const content = message.content || message.message || message.text || '';
+                            const sender = message.sender || message.role || (message.user ? 'user' : 'assistant');
+                            
+                            if (content && (sender === 'user' || sender === 'assistant' || sender === 'bot')) {
+                                addMessageToConversation(content, sender === 'bot' ? 'assistant' : sender);
+                            }
+                        });
+                        
+                        // Scroll to bottom
+                        setTimeout(() => {
+                            chatConversation.scrollTop = chatConversation.scrollHeight;
+                        }, 100);
+                    } else {
+                        // No messages in this session
+                        chatConversation.innerHTML = '<div class="empty-conversation">No messages in this session yet.</div>';
+                    }
                     
-                    // Show chat conversation
-                    hideWelcomeSection();
-                    showChatConversation();
+                    // Update session list to show active session
+                    updateSessionListActiveState(sessionId);
                     
                     showSuccess('Session loaded successfully');
+                } else {
+                    throw new Error('Failed to load session history');
                 }
             } catch (error) {
                 console.error('❌ Failed to load session:', error);
+                
+                // Show error in conversation area
+                if (chatConversation) {
+                    chatConversation.innerHTML = '<div class="error-message">Failed to load session. Please try again.</div>';
+                }
+                
                 showError('Failed to load session');
             }
+        }
+
+        function hideWelcomeSection() {
+            const welcomeSection = document.getElementById('welcomeSection');
+            if (welcomeSection) {
+                welcomeSection.style.display = 'none';
+            }
+        }
+
+        function showWelcomeSection() {
+            const welcomeSection = document.getElementById('welcomeSection');
+            if (welcomeSection) {
+                welcomeSection.style.display = 'flex';
+            }
+        }
+
+        function showChatConversation() {
+            const chatConversation = document.getElementById('chatConversation');
+            if (chatConversation) {
+                chatConversation.style.display = 'flex';
+            }
+        }
+
+        function hideChatConversation() {
+            const chatConversation = document.getElementById('chatConversation');
+            if (chatConversation) {
+                chatConversation.style.display = 'none';
+            }
+        }
+
+        function updateSessionListActiveState(activeSessionId) {
+            // Update all session items to show which one is active
+            const sessionItems = document.querySelectorAll('.chat-item');
+            sessionItems.forEach(item => {
+                item.classList.remove('active');
+                // Check if this item corresponds to the active session
+                const sessionId = item.dataset.sessionId || item.getAttribute('data-session-id');
+                if (sessionId === activeSessionId) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        function addMessageToConversation(content, sender) {
+            const chatConversation = document.getElementById('chatConversation');
+            if (!chatConversation) return;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            // Format message content
+            const formattedContent = formatMessageContent(content);
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${formattedContent}
+                </div>
+                <div class="message-time">${new Date().toLocaleTimeString()}</div>
+            `;
+            
+            chatConversation.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            setTimeout(() => {
+                chatConversation.scrollTop = chatConversation.scrollHeight;
+            }, 50);
+        }
+
+        function formatMessageContent(content) {
+            // Handle different content types
+            if (typeof content === 'string') {
+                // Basic formatting for medical responses
+                return content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>')
+                    .replace(/•/g, '&bull;');
+            } else if (typeof content === 'object') {
+                // Handle structured medical responses
+                let formatted = '';
+                if (content.summary) formatted += `<div class="summary"><strong>Summary:</strong> ${content.summary}</div>`;
+                if (content.key_findings && Array.isArray(content.key_findings)) {
+                    formatted += `<div class="findings"><strong>Key Findings:</strong><ul>${content.key_findings.map(f => `<li>${f}</li>`).join('')}</ul></div>`;
+                }
+                if (content.clinical_impression) formatted += `<div class="impression"><strong>Clinical Impression:</strong> ${content.clinical_impression}</div>`;
+                if (content.immediate_actions && Array.isArray(content.immediate_actions)) {
+                    formatted += `<div class="actions"><strong>Immediate Actions:</strong><ul>${content.immediate_actions.map(a => `<li>${a}</li>`).join('')}</ul></div>`;
+                }
+                return formatted || JSON.stringify(content);
+            }
+            return content;
         }
 
     </script>
