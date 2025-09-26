@@ -7,20 +7,20 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://your-domain.com/">
+    <meta property="og:url" content="https://bdt-blood-diagnostic.netlify.app/">
     <meta property="og:title" content="Blood Diagnostic Tool - AI-Powered Medical Diagnosis">
     <meta property="og:description" content="Advanced AI-powered blood diagnostic tool for medical professionals. Get instant analysis and clinical insights for better patient care.">
-    <meta property="og:image" content="https://your-domain.com/assets/images/doctor-1.png">
+    <meta property="og:image" content="https://bdt-blood-diagnostic.netlify.app/assets/images/social-preview.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Blood Diagnostic Tool">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://your-domain.com/">
+    <meta property="twitter:url" content="https://bdt-blood-diagnostic.netlify.app/">
     <meta property="twitter:title" content="Blood Diagnostic Tool - AI-Powered Medical Diagnosis">
     <meta property="twitter:description" content="Advanced AI-powered blood diagnostic tool for medical professionals. Get instant analysis and clinical insights for better patient care.">
-    <meta property="twitter:image" content="https://your-domain.com/assets/images/doctor-1.png">
+    <meta property="twitter:image" content="https://bdt-blood-diagnostic.netlify.app/assets/images/social-preview.png">
     
     <!-- Additional SEO -->
     <meta name="description" content="Advanced AI-powered blood diagnostic tool for medical professionals. Get instant analysis and clinical insights for better patient care.">
@@ -529,6 +529,254 @@
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+
+        .shimmer-test-section {
+            margin-top: 16px;
+            display: none; /* Hidden for now */
+            justify-content: center;
+        }
+
+        .shimmer-test-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #6B7280;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(107, 114, 128, 0.2);
+        }
+
+        .shimmer-test-btn:hover {
+            background: #4B5563;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(107, 114, 128, 0.3);
+        }
+
+        .shimmer-test-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+
+        /* ===========================================
+           SHIMMER LOADING ANIMATIONS (IMPROVED)
+           =========================================== */
+        
+        /* ---------- Animation (shared) ---------- */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* ---------- Base shimmer helper ---------- */
+        /* Apply this to any "skeleton" block you want to shimmer */
+        .shimmer {
+            position: relative;          /* for ::before layering */
+            overflow: hidden;            /* keep the moving gradient inside */
+            background-color: #f4f5f634;   /* neutral base matching your UI */
+            --shimmer-duration: 0.5s;
+            --shimmer-ease: cubic-bezier(.25,.8,.25,1);
+            /* keep existing border-radius/size rules on the element itself */
+        }
+
+        /* The actual animated highlight lives in ::before so borders/separators stay sharp */
+        .shimmer::before {
+            content: "";
+            position: absolute;
+            inset: 0; /* top/right/bottom/left: 0 */
+            pointer-events: none;
+            background-image: linear-gradient(180deg, #BFC3C8 0%, #DAD9DA 100%);
+            background-size: 250% 100%; /* wide for a smooth sweep */
+            background-repeat: no-repeat;
+            will-change: background-position;
+            animation: shimmer var(--shimmer-duration) var(--shimmer-ease) infinite;
+            border-radius: inherit; /* match parent rounding */
+        }
+
+        /* ---------- Example: tweak intensity/duration per use ---------- */
+        /* slower, more subtle */
+        .shimmer.slow::before { --shimmer-duration: 2.2s; }
+        .shimmer.subtle::before {
+            background-image: linear-gradient(
+                90deg,
+                rgba(255,255,255,0) 100%,
+                rgba(255,255,255,0.28) 44%,
+                rgba(255,255,255,0.7) 50%,
+                rgba(255,255,255,0.28) 56%,
+                rgba(255,255,255,0) 100%
+            );
+        }
+
+        /* ---------- Keep your skeleton element sizes (examples) ---------- */
+        .shimmer-title,
+        .shimmer-filter,
+        .shimmer-status,
+        .shimmer-time,
+        .shimmer-title-text,
+        .shimmer-diagnosis-label,
+        .shimmer-diagnosis-text,
+        .shimmer-confidence,
+        .shimmer-message-count,
+        .shimmer-date,
+        .shimmer-empty-icon,
+        .shimmer-empty-text,
+        .shimmer-empty-subtext {
+            /* these already have widths/heights in your CSS — keep them */
+            background-color: transparent; /* base is provided by .shimmer background-color */
+        }
+
+        /* Small perf nicety for some browsers */
+        .shimmer, .shimmer::before {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        .shimmer-container {
+            /* No padding - matches chat-item container */
+        }
+
+        .shimmer-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 20px;
+
+            border-bottom: 1px solid rgba(32, 32, 32, 0.094);
+            order: -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shimmer-title {
+            width: 120px;
+            height: 20px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .shimmer-filters {
+            display: flex;
+            gap: 8px;
+        }
+
+        .shimmer-filter {
+            width: 40px;
+            height: 24px;
+            border-radius: 12px;
+        }
+
+        .shimmer-session-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgb(128 128 128 / 9%);
+            margin-bottom: 0;
+        }
+
+        .shimmer-session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            gap: 6px;
+        }
+
+        .shimmer-status {
+            width: 50px;
+            height: 12px;
+            border-radius: 6px;
+        }
+
+        .shimmer-time {
+            width: 40px;
+            height: 12px;
+            border-radius: 6px;
+        }
+
+        .shimmer-title-text {
+            width: 85%;
+            height: 14px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        .shimmer-diagnosis {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .shimmer-diagnosis-label {
+            width: 60px;
+            height: 12px;
+            border-radius: 6px;
+        }
+
+        .shimmer-diagnosis-text {
+            width: 100px;
+            height: 12px;
+            border-radius: 6px;
+        }
+
+        .shimmer-confidence {
+            width: 30px;
+            height: 12px;
+            border-radius: 6px;
+        }
+
+        .shimmer-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shimmer-message-count {
+            width: 70px;
+            height: 12px;
+            border-radius: 6px;
+        }
+
+        .shimmer-date {
+            width: 60px;
+            height: 12px;
+            border-radius: 6px;
+        }
+
+        .shimmer-empty {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .shimmer-empty-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+        }
+
+        .shimmer-empty-text {
+            width: 120px;
+            height: 16px;
+            border-radius: 4px;
+            margin: 0 auto 8px;
+        }
+
+        .shimmer-empty-subtext {
+            width: 160px;
+            height: 14px;
+            border-radius: 4px;
+            margin: 0 auto;
         }
 
         .user-avatar-container {
@@ -2242,6 +2490,16 @@
                         <div class="user-role">General Practitioner</div>
                     </div>
                 </div>
+                <div class="shimmer-test-section">
+                    <button class="shimmer-test-btn" id="shimmerTestBtn" title="Test shimmer effect">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Test Shimmer
+                    </button>
+                </div>
             </div>
         </div>
         <div class="right-container">
@@ -2327,6 +2585,189 @@
         let chatHistory = [];
         let userSessions = [];
         let isProcessing = false;
+
+        // ===========================================
+        // SHIMMER LOADING FUNCTIONALITY
+        // ===========================================
+        
+        function showShimmerLoading() {
+            const chatHistoryElement = document.querySelector('.chat-history');
+            if (!chatHistoryElement) return;
+            
+            // Create shimmer skeleton with improved layering
+            const shimmerHTML = `
+                <div class="shimmer-container">
+                    <div class="shimmer-header">
+                        <div class="shimmer shimmer-title"></div>
+                        <div class="shimmer-filters">
+                            <div class="shimmer shimmer-filter"></div>
+                            <div class="shimmer shimmer-filter"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Shimmer session items - using improved layering approach -->
+                    <div class="shimmer-session-item">
+                        <div class="shimmer shimmer-session-header">
+                            <div class="shimmer shimmer-status"></div>
+                            <div class="shimmer shimmer-time"></div>
+                        </div>
+                        <div class="shimmer shimmer-title-text"></div>
+                    </div>
+                    
+                    <div class="shimmer-session-item">
+                        <div class="shimmer shimmer-session-header">
+                            <div class="shimmer shimmer-status"></div>
+                            <div class="shimmer shimmer-time"></div>
+                        </div>
+                        <div class="shimmer shimmer-title-text"></div>
+                    </div>
+                    
+                    <div class="shimmer-session-item">
+                        <div class="shimmer shimmer-session-header">
+                            <div class="shimmer shimmer-status"></div>
+                            <div class="shimmer shimmer-time"></div>
+                        </div>
+                        <div class="shimmer shimmer-title-text"></div>
+                    </div>
+                    
+                    <div class="shimmer-session-item">
+                        <div class="shimmer shimmer-session-header">
+                            <div class="shimmer shimmer-status"></div>
+                            <div class="shimmer shimmer-time"></div>
+                        </div>
+                        <div class="shimmer shimmer-title-text"></div>
+                    </div>
+                    
+                    <div class="shimmer-session-item">
+                        <div class="shimmer shimmer-session-header">
+                            <div class="shimmer shimmer-status"></div>
+                            <div class="shimmer shimmer-time"></div>
+                        </div>
+                        <div class="shimmer shimmer-title-text"></div>
+                    </div>
+                </div>
+            `;
+            
+            chatHistoryElement.innerHTML = shimmerHTML;
+        }
+        
+        function hideShimmerLoading() {
+            const chatHistoryElement = document.querySelector('.chat-history');
+            if (chatHistoryElement) {
+                // Clear shimmer content
+                chatHistoryElement.innerHTML = '';
+            }
+        }
+        
+        function showEmptySessionsState() {
+            const chatHistoryElement = document.querySelector('.chat-history');
+            if (!chatHistoryElement) return;
+            
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-sessions';
+            emptyState.innerHTML = `
+                <div class="empty-icon">💬</div>
+                <div class="empty-text">No sessions yet</div>
+                <div class="empty-subtext">Start a new chat to see it here.</div>
+            `;
+            chatHistoryElement.appendChild(emptyState);
+        }
+
+        // ===========================================
+        // SHIMMER TESTING FUNCTIONALITY
+        // ===========================================
+        
+        // Store original content for restoration
+        let originalChatHistoryContent = null;
+        
+        function testShimmerEffect(autoRestore = false) {
+            console.log('🎨 Testing shimmer effect...');
+            const chatHistoryElement = document.querySelector('.chat-history');
+            if (!chatHistoryElement) {
+                console.error('❌ Chat history element not found');
+                return;
+            }
+            
+            // Store current content
+            originalChatHistoryContent = chatHistoryElement.innerHTML;
+            
+            // Show shimmer
+            showShimmerLoading();
+            
+            // Auto-restore after 5 seconds only if autoRestore is true
+            if (autoRestore) {
+                setTimeout(() => {
+                    restoreOriginalContent();
+                    updateShimmerButtonText(false);
+                    console.log('✅ Shimmer test completed - content restored');
+                }, 5000);
+                console.log('✨ Shimmer effect active for 5 seconds...');
+            } else {
+                console.log('✨ Shimmer effect enabled - use toggle to disable');
+            }
+        }
+        
+        function restoreOriginalContent() {
+            const chatHistoryElement = document.querySelector('.chat-history');
+            if (chatHistoryElement && originalChatHistoryContent) {
+                chatHistoryElement.innerHTML = originalChatHistoryContent;
+                originalChatHistoryContent = null;
+            }
+        }
+        
+        function toggleShimmerTest() {
+            const chatHistoryElement = document.querySelector('.chat-history');
+            const shimmerTestBtn = document.getElementById('shimmerTestBtn');
+            if (!chatHistoryElement || !shimmerTestBtn) return;
+            
+            // Check if shimmer is currently active
+            const hasShimmer = chatHistoryElement.querySelector('.shimmer-container');
+            
+            if (hasShimmer) {
+                // Restore original content
+                restoreOriginalContent();
+                updateShimmerButtonText(false);
+                console.log('🔄 Shimmer disabled - original content restored');
+            } else {
+                // Show shimmer
+                testShimmerEffect();
+                updateShimmerButtonText(true);
+                console.log('✨ Shimmer enabled - test mode active');
+            }
+        }
+        
+        function updateShimmerButtonText(isEnabled) {
+            const shimmerTestBtn = document.getElementById('shimmerTestBtn');
+            if (!shimmerTestBtn) return;
+            
+            if (isEnabled) {
+                shimmerTestBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Disable Shimmer
+                `;
+                shimmerTestBtn.style.background = '#10B981';
+                shimmerTestBtn.title = 'Disable shimmer effect';
+            } else {
+                shimmerTestBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Enable Shimmer
+                `;
+                shimmerTestBtn.style.background = '#6B7280';
+                shimmerTestBtn.title = 'Enable shimmer effect';
+            }
+        }
+        
+        // Make functions globally available for console testing
+        window.testShimmer = () => testShimmerEffect(true); // Auto-restore version
+        window.toggleShimmer = toggleShimmerTest;
+        window.restoreContent = restoreOriginalContent;
+
 
         // ===========================================
         // API SERVICE LAYER
@@ -4170,7 +4611,20 @@
             
             // Load user sessions
             loadUserSessions();
+            
+            // Setup shimmer test button
+            setupShimmerTestButton();
         });
+
+        function setupShimmerTestButton() {
+            const shimmerTestBtn = document.getElementById('shimmerTestBtn');
+            if (shimmerTestBtn) {
+                shimmerTestBtn.addEventListener('click', function() {
+                    toggleShimmerTest();
+                });
+            }
+        }
+
 
         // ===========================================
         // EXPORT FUNCTIONALITY
@@ -4223,6 +4677,9 @@
         
         async function loadUserSessions() {
             try {
+                // Show shimmer loading immediately
+                showShimmerLoading();
+                
                 const response = await BloodDiagnosticAPI.listSessions(
                     'user_123', 
                     sessionFilter.page, 
@@ -4239,9 +4696,14 @@
                     if (response.data?.pagination) {
                         updatePaginationInfo(response.data.pagination);
                     }
+                } else {
+                    // Show empty state if no sessions
+                    hideShimmerLoading();
+                    showEmptySessionsState();
                 }
             } catch (error) {
                 console.error('❌ Failed to load sessions:', error);
+                hideShimmerLoading();
                 showError('Failed to load sessions');
             }
         }
@@ -4267,7 +4729,8 @@
             const chatHistoryElement = document.querySelector('.chat-history');
             if (!chatHistoryElement) return;
 
-            // Clear existing history
+            // Hide shimmer loading and clear existing history
+            hideShimmerLoading();
             chatHistoryElement.innerHTML = '';
 
             // Add session header with filters
