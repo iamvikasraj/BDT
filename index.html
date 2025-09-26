@@ -360,112 +360,97 @@
             opacity: 1;
         }
 
-        /* Conversation Display Styles - Hidden by default, clean centered design */
         .chat-conversation {
-            display: none; /* Hidden by default, shown only when session is loaded */
+            display: none;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
+            gap: 8px;
             height: 100%;
             overflow-y: auto;
-            text-align: center;
-            scrollbar-width: thin;
-            scrollbar-color: #E5E7EB transparent;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            scroll-behavior: smooth;
         }
 
         .chat-conversation::-webkit-scrollbar {
-            width: 4px;
+            display: none; /* WebKit */
         }
 
-        .chat-conversation::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-conversation::-webkit-scrollbar-thumb {
-            background: #E5E7EB;
-            border-radius: 2px;
-        }
-
-        .chat-conversation::-webkit-scrollbar-thumb:hover {
-            background: #D1D5DB;
+        .chat-conversation.active {
+            display: flex;
         }
 
         .message {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
             max-width: 100%;
-            width: 100%;
-            background: transparent;
+            animation: slideInUp 0.3s ease;
+            margin: 8px 0;
         }
 
         .message.user {
-            background: transparent;
+            align-self: flex-end;
         }
 
         .message.assistant {
-            background: transparent;
+            align-self: flex-start;
         }
 
-        .message-content {
-            font-size: 16px;
-            line-height: 1.5;
-            color: var(--text-secondary);
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
+        .message-bubble {
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            background: #ffffff;
+            color: #2c2c2c;
+            border: none;
         }
 
-        .message.user .message-content {
+        .message.user .message-bubble {
+            background: var(--color-primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant .message-bubble {
+            background: #f8f9fa;
             color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .message.assistant .message-content {
-            color: var(--text-secondary);
+            border-bottom-left-radius: 4px;
         }
 
         .message-time {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
+            margin-top: 4px;
             opacity: 0.7;
         }
 
-        /* Medical response formatting - clean centered design */
-        .summary, .findings, .impression, .actions {
-            margin-bottom: 16px;
+        .message.user .message-time {
+            text-align: right;
+        }
+
+        .message.assistant .message-time {
             text-align: left;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+        }
+
+        /* Medical response formatting */
+        .summary, .findings, .impression, .actions {
+            margin-bottom: 12px;
         }
 
         .summary strong, .findings strong, .impression strong, .actions strong {
             color: var(--color-primary);
             font-weight: 600;
-            display: block;
-            margin-bottom: 8px;
         }
 
         .findings ul, .actions ul {
             margin: 8px 0;
             padding-left: 20px;
-            text-align: left;
         }
 
         .findings li, .actions li {
-            margin-bottom: 6px;
-            line-height: 1.5;
-        }
-
-        /* Clean separator between messages */
-        .message:not(:last-child) {
-            border-bottom: 1px solid rgba(229, 231, 235, 0.3);
-            padding-bottom: 32px;
+            margin-bottom: 4px;
+            line-height: 1.4;
         }
 
         .loading-message, .empty-conversation, .error-message {
@@ -4474,7 +4459,7 @@
             const formattedContent = formatMessageContent(content);
             
             messageDiv.innerHTML = `
-                <div class="message-content">
+                <div class="message-bubble">
                     ${formattedContent}
                 </div>
                 <div class="message-time">${new Date().toLocaleTimeString()}</div>
