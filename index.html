@@ -360,14 +360,16 @@
             opacity: 1;
         }
 
-        /* Conversation Display Styles - Hidden by default */
+        /* Conversation Display Styles - Hidden by default, clean centered design */
         .chat-conversation {
             display: none; /* Hidden by default, shown only when session is loaded */
             flex-direction: column;
-            gap: 16px;
-            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
             height: 100%;
             overflow-y: auto;
+            text-align: center;
             scrollbar-width: thin;
             scrollbar-color: #E5E7EB transparent;
         }
@@ -392,156 +394,78 @@
         .message {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            padding: 18px 20px;
-            border-radius: 16px;
-            max-width: 85%;
-            word-wrap: break-word;
-            position: relative;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.2s ease;
-        }
-
-        .message:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            max-width: 100%;
+            width: 100%;
+            background: transparent;
         }
 
         .message.user {
-            align-self: flex-end;
-            background: linear-gradient(135deg, var(--color-primary) 0%, #2563eb 100%);
-            color: white;
-            border-bottom-right-radius: 6px;
-            margin-left: auto;
-        }
-
-        .message.user::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: -8px;
-            width: 0;
-            height: 0;
-            border-left: 8px solid #2563eb;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
+            background: transparent;
         }
 
         .message.assistant {
-            align-self: flex-start;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            color: var(--text-primary);
-            border: 1px solid #e2e8f0;
-            border-bottom-left-radius: 6px;
-            margin-right: auto;
-        }
-
-        .message.assistant::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -8px;
-            width: 0;
-            height: 0;
-            border-right: 8px solid #e2e8f0;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
+            background: transparent;
         }
 
         .message-content {
-            font-size: 15px;
-            line-height: 1.6;
-            font-weight: 400;
-            position: relative;
-            z-index: 1;
+            font-size: 16px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .message.user .message-content {
-            color: white;
+            color: var(--text-primary);
             font-weight: 500;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .message.assistant .message-content {
-            color: var(--text-primary);
-            font-weight: 400;
+            color: var(--text-secondary);
         }
 
         .message-time {
-            font-size: 11px;
-            opacity: 0.8;
-            align-self: flex-end;
-            font-weight: 400;
-            margin-top: 4px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .message.user .message-time {
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        .message.assistant .message-time {
+            font-size: 12px;
             color: var(--text-muted);
-            font-weight: 500;
+            opacity: 0.7;
         }
 
-        /* Medical response formatting */
+        /* Medical response formatting - clean centered design */
         .summary, .findings, .impression, .actions {
-            margin-bottom: 14px;
-            padding: 8px 0;
+            margin-bottom: 16px;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .summary strong, .findings strong, .impression strong, .actions strong {
             color: var(--color-primary);
             font-weight: 600;
-            font-size: 14px;
             display: block;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .findings ul, .actions ul {
-            margin: 6px 0;
-            padding-left: 18px;
-            list-style: none;
+            margin: 8px 0;
+            padding-left: 20px;
+            text-align: left;
         }
 
         .findings li, .actions li {
             margin-bottom: 6px;
             line-height: 1.5;
-            position: relative;
         }
 
-        .findings li::before, .actions li::before {
-            content: '•';
-            color: var(--color-primary);
-            font-weight: bold;
-            position: absolute;
-            left: -12px;
-        }
-
-        .summary {
-            background: rgba(25, 183, 106, 0.05);
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 3px solid var(--color-primary);
-        }
-
-        .impression {
-            background: rgba(59, 130, 246, 0.05);
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 3px solid #3b82f6;
-        }
-
-        .actions {
-            background: rgba(239, 68, 68, 0.05);
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 3px solid #ef4444;
+        /* Clean separator between messages */
+        .message:not(:last-child) {
+            border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+            padding-bottom: 32px;
         }
 
         .loading-message, .empty-conversation, .error-message {
@@ -552,49 +476,6 @@
             font-size: 16px;
             color: var(--text-muted);
             text-align: center;
-        }
-
-        /* Responsive design for messages */
-        @media (max-width: 768px) {
-            .message {
-                max-width: 95%;
-                padding: 16px 18px;
-                border-radius: 14px;
-            }
-
-            .message-content {
-                font-size: 14px;
-                line-height: 1.5;
-            }
-
-            .message-time {
-                font-size: 10px;
-            }
-
-            .summary, .impression, .actions {
-                padding: 10px;
-                margin-bottom: 12px;
-            }
-
-            .summary strong, .findings strong, .impression strong, .actions strong {
-                font-size: 13px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .message {
-                max-width: 98%;
-                padding: 14px 16px;
-                border-radius: 12px;
-            }
-
-            .message-content {
-                font-size: 13px;
-            }
-
-            .summary, .impression, .actions {
-                padding: 8px;
-            }
         }
 
         .error-message {
