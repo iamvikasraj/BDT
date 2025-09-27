@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Preview Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Work Sans', sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .preview-container {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #19B76A 0%, #059669 100%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+        
+        .logo-text {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .main-title {
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+        
+        .subtitle {
+            font-size: 28px;
+            font-weight: 400;
+            opacity: 0.9;
+            line-height: 1.3;
+            margin-bottom: 40px;
+        }
+        
+        .features {
+            display: flex;
+            gap: 40px;
+            margin-top: auto;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+        
+        .feature-text {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+        
+        .download-btn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #19B76A;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container" id="previewContainer">
+        <div class="background-pattern"></div>
+        <div class="preview-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4ZM11 11H13V17H11V11ZM11 7H13V9H11V7Z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="logo-text">Blood Diagnostic Tool</div>
+            </div>
+            
+            <h1 class="main-title">AI-Powered Medical Diagnosis</h1>
+            <p class="subtitle">Advanced blood diagnostic tool for medical professionals.<br>Get instant analysis and clinical insights for better patient care.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="feature-text">Instant Analysis</span>
+                </div>
+                <div class="feature">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="feature-text">Clinical Insights</span>
+                </div>
+                <div class="feature">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="feature-text">Professional Grade</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="download-btn" onclick="downloadPreview()">Download Social Preview Image</button>
+    
+    <script>
+        function downloadPreview() {
+            const container = document.getElementById('previewContainer');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size to 1200x630
+            canvas.width = 1200;
+            canvas.height = 630;
+            
+            // Use html2canvas to convert the preview to image
+            html2canvas(container, {
+                width: 1200,
+                height: 630,
+                scale: 1,
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                // Create download link
+                const link = document.createElement('a');
+                link.download = 'social-preview.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+        
+        // Load html2canvas library
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>
