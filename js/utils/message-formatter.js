@@ -1,8 +1,5 @@
-// ===========================================
-// MESSAGE FORMATTING UTILITIES
-// ===========================================
-
-class MessageFormatter {
+// Message Formatting Utilities
+export class MessageFormatter {
     // Parse structured text into HTML
     static parseStructuredMessage(text) {
         if (!text || typeof text !== 'string') return text;
@@ -96,6 +93,31 @@ class MessageFormatter {
     static formatMedicalResponse(data) {
         let formatted = '';
         
+        // Handle diagnostic analysis with diagnosis cards
+        if (data.diagnostic_analysis && Array.isArray(data.diagnostic_analysis)) {
+            formatted += `<div class="medical-message">
+                <h4>Diagnostic Analysis</h4>
+                <div class="diagnosis-cards-container">
+                    ${data.diagnostic_analysis.map((diagnosis, index) => `
+                        <div class="diagnosis-card" style="cursor: pointer;">
+                            <span class="diagnosis-rank">${index + 1}</span>
+                            <div class="diagnosis-header-row">
+                                <span class="diagnosis-name">${diagnosis.name}</span>
+                                <div class="diagnosis-confidence">
+                                    <span class="confidence-score ${diagnosis.confidence >= 70 ? 'high-confidence' : ''}">${diagnosis.confidence}%</span>
+                                    <span class="confidence-label">Confidence</span>
+                                </div>
+                            </div>
+                            <span class="diagnosis-reasoning">${diagnosis.reasoning}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+            
+            return formatted;
+        }
+        
+        // Handle regular medical response format
         if (data.summary) {
             formatted += `**Summary:** ${data.summary}\n\n`;
         }
@@ -250,9 +272,4 @@ class MessageFormatter {
             return responses[Math.floor(Math.random() * responses.length)];
         }
     }
-}
-
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = MessageFormatter;
 }

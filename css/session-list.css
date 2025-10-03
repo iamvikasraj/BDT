@@ -1,37 +1,14 @@
-/* Section Header */
-.section-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    padding: 20px;
-    background: color(srgb 0.95 0.95 0.95 / 1.0);
-    border-bottom: 1px solid rgba(32, 32, 32, 0.094);
-    order: -1;
-}
-
-.section-title {
-    font-size: 14px;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-/* Chat History */
-.chat-history {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
+/* Session List Styles */
 .chat-item {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
     transition: all 0.3s ease;
     cursor: pointer;
-    padding: 20px;
+    padding: 16px 20px;
     background: color(srgb 0.95 0.95 0.95 / 1.0);
     border-bottom: 1px solid rgba(32, 32, 32, 0.094);
+    position: relative;
 }
 
 .chat-item:hover {
@@ -42,9 +19,10 @@
 .chat-item.active {
     background: color(srgb 0.92 0.92 0.92 / 1.0);
     border-left: 3px solid var(--color-primary);
+    box-shadow: inset 0 0 0 1px rgba(25, 183, 106, 0.1);
 }
 
-/* Session List Styles */
+/* Enhanced Session List Styles */
 .session-header {
     display: flex;
     justify-content: space-between;
@@ -83,27 +61,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+}
+
+/* Apply chat-header styling to session header */
+.session-header-info .session-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .session-status {
     display: flex;
     align-items: center;
     gap: 6px;
-}
-
-.status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-
-.status-indicator.status-active {
-    background: #10B981;
-}
-
-.status-indicator.status-completed {
-    background: #6B7280;
+    flex-wrap: wrap;
 }
 
 .status-text {
@@ -116,75 +88,62 @@
 .urgent-badge {
     background: linear-gradient(135deg, #EF4444, #DC2626);
     color: white;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 12px;
-    margin-left: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+    padding: 6px;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.urgent-badge::before {
+    content: "⚠";
+    font-size: 14px;
 }
 
 .session-time {
-    font-size: 11px;
-    color: var(--text-placeholder);
+    font-size: 12px;
+    color: var(--text-muted);
 }
 
 .session-title {
     font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-    line-height: 1.3;
+    color: var(--text-secondary);
+    line-height: 1.4;
 }
 
 .session-diagnosis {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
+    display: none; /* Hide diagnosis details */
 }
 
 .diagnosis-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-muted);
+    display: none;
 }
 
 .diagnosis-text {
-    font-size: 12px;
-    color: var(--text-secondary);
-    flex: 1;
-    min-width: 0;
+    display: none;
 }
 
 .confidence-badge {
-    background: #F3F4F6;
-    color: var(--text-secondary);
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 8px;
-    border: 1px solid #E5E7EB;
+    display: none; /* Hide confidence badge */
 }
 
 .session-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-    color: var(--text-placeholder);
+    display: none; /* Hide message count and date */
 }
 
 .message-count {
-    font-weight: 500;
+    display: none;
 }
 
 .session-date {
-    font-weight: 400;
+    display: none;
 }
 
 .empty-sessions {
@@ -217,7 +176,7 @@
 /* Urgent session styling */
 .chat-item.urgent {
     border-left: 3px solid #EF4444;
-    background: linear-gradient(90deg, rgba(239, 68, 68, 0.03) 0%, rgba(239, 68, 68, 0.01) 100%);
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%);
     position: relative;
 }
 
@@ -242,36 +201,12 @@
     opacity: 1;
 }
 
-/* User Profile */
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* Error state for unavailable sessions */
+.chat-item.error {
+    opacity: 0.6;
+    border-left: 3px solid #EF4444;
 }
 
-.user-avatar-container {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: var(--avatar-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.user-info {
-    flex: 1;
-}
-
-.user-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 2px;
-}
-
-.user-role {
-    font-size: 12px;
+.chat-item.error .session-title {
     color: var(--text-muted);
 }

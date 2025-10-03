@@ -1,0 +1,34 @@
+/* CSS Variables for Color Palette */
+:root {
+    /* Primary Colors */
+    --color-primary: #19B76A;
+    --color-primary-dark: #16A085;
+    
+    /* Background Colors */
+    --bg-main: linear-gradient(180deg, #BFC3C8 0%, #DAD9DA 100%);
+    --bg-container: #F8F8F8;
+    --bg-left-top: rgba(245, 245, 245, 0.9);
+    --bg-left-bottom: rgba(255, 255, 255, 0.9);
+    --bg-input: rgba(255, 255, 255, 0.95);
+    
+    /* Text Colors */
+    --text-primary: #202020;
+    --text-secondary: #343434;
+    --text-muted: #6B7280;
+    --text-placeholder: #9CA3AF;
+    --text-disabled: #D1D5DB;
+    
+    /* Border Colors */
+    --border-light: #EAEAEA;
+    --border-medium: #E5E7EB;
+    --border-glass: rgba(255, 255, 255, 0.3);
+    
+    /* Shadow Colors */
+    --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    
+    /* Avatar Colors */
+    --avatar-bg: #dbdbdb;
+}

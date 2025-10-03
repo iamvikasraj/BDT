@@ -60,10 +60,11 @@ class CORSProxyHandler(BaseHTTPRequestHandler):
             if content_length > 0:
                 post_data = self.rfile.read(content_length)
             
-            # Make the request to the target server
+            # Make the request to the target server with timeout
             req = urllib.request.Request(target_url, data=post_data, headers=headers, method=method)
             
-            with urllib.request.urlopen(req) as response:
+            # Set timeout for the request (30 seconds)
+            with urllib.request.urlopen(req, timeout=30) as response:
                 # Read response
                 response_data = response.read()
                 
@@ -117,6 +118,10 @@ class CORSProxyHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-Type', mime_type)
                 self.send_header('Content-Length', str(len(content)))
+                # Add cache-busting headers for development
+                self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                self.send_header('Pragma', 'no-cache')
+                self.send_header('Expires', '0')
                 self.end_headers()
                 self.wfile.write(content)
             else:

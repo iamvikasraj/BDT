@@ -1,0 +1,271 @@
+/* Shimmer Loading Styles */
+.shimmer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+}
+
+.shimmer-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.shimmer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.shimmer-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.shimmer-line {
+    height: 12px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+}
+
+.shimmer-line.short {
+    width: 60%;
+}
+
+.shimmer-line.medium {
+    width: 80%;
+}
+
+.shimmer-line.long {
+    width: 100%;
+}
+
+.shimmer-badge {
+    width: 60px;
+    height: 20px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 10px;
+}
+
+.shimmer-button {
+    width: 80px;
+    height: 32px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 16px;
+}
+
+.shimmer-card {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 16px;
+}
+
+.shimmer-card-header {
+    height: 20px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    width: 40%;
+}
+
+.shimmer-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.shimmer-card-line {
+    height: 14px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 7px;
+}
+
+.shimmer-card-line:nth-child(1) {
+    width: 100%;
+}
+
+.shimmer-card-line:nth-child(2) {
+    width: 85%;
+}
+
+.shimmer-card-line:nth-child(3) {
+    width: 70%;
+}
+
+.shimmer-card-line:nth-child(4) {
+    width: 90%;
+}
+
+.shimmer-diagnosis-card {
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 12px;
+}
+
+.shimmer-diagnosis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.shimmer-diagnosis-title {
+    height: 18px;
+    width: 60%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 9px;
+}
+
+.shimmer-confidence {
+    height: 16px;
+    width: 50px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.shimmer-diagnosis-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.shimmer-diagnosis-line {
+    height: 12px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+}
+
+.shimmer-diagnosis-line:nth-child(1) {
+    width: 100%;
+}
+
+.shimmer-diagnosis-line:nth-child(2) {
+    width: 75%;
+}
+
+.shimmer-diagnosis-line:nth-child(3) {
+    width: 90%;
+}
+
+.shimmer-diagnosis-line:nth-child(4) {
+    width: 65%;
+}
+
+.shimmer-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.shimmer-message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.shimmer-message-bubble {
+    flex: 1;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+}
+
+.shimmer-message-line {
+    height: 14px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 7px;
+    margin-bottom: 8px;
+}
+
+.shimmer-message-line:last-child {
+    margin-bottom: 0;
+    width: 60%;
+}
+
+.shimmer-message-line:nth-child(1) {
+    width: 100%;
+}
+
+.shimmer-message-line:nth-child(2) {
+    width: 80%;
+}
+
+.shimmer-message-line:nth-child(3) {
+    width: 90%;
+}
+
+.shimmer-message-line:nth-child(4) {
+    width: 70%;
+}
+
+.shimmer-message-line:nth-child(5) {
+    width: 85%;
+}
+
+.shimmer-message-line:nth-child(6) {
+    width: 60%;
+}
+
+/* Shimmer test button */
+.shimmer-test-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.shimmer-test-btn:hover {
+    background: var(--bg-input);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.shimmer-test-btn svg {
+    width: 16px;
+    height: 16px;
+}
