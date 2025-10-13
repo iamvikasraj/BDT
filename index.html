@@ -9,39 +9,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS Variables for Color Palette */
+        /* CSS Variables for Color Palette - Updated Design System */
         :root {
-            /* Primary Colors */
-            --color-primary: #19B76A;
-            --color-primary-dark: #16A085;
+            /* Brand Colors */
+            --brand-primary: #14b8a6;         /* Teal - primary brand color */
+            --brand-secondary: #f59e0b;        /* Orange - secondary brand color */
+            --brand-gradient: linear-gradient(90deg, #14b8a6 0%, #f59e0b 100%);
             
-            /* Background Colors */
-            --bg-main: linear-gradient(180deg, #BFC3C8 0%, #DAD9DA 100%);
-            --bg-container: #F8F8F8;
-            --bg-left-top: rgba(245, 245, 245, 0.9);
-            --bg-left-bottom: rgba(255, 255, 255, 0.9);
+            /* Semantic Colors */
+            --semantic-warning: #fbbf24;      /* Yellow for urgent actions */
+            --semantic-critical: #ef4444;     /* Red for critical conditions */
+            --semantic-info: #3b82f6;         /* Blue for informational content */
+            
+            /* Background System */
+            --bg-primary: #1a1a1a;            /* Dark background */
+            --bg-card: #ffffff;              /* Card background */
+            --bg-overlay: rgba(0, 0, 0, 0.8); /* Dark overlay */
+            --bg-main: linear-gradient(180deg, #BFC3C8 0%, #DAD9DA 100%); /* Original gradient background */
+            --bg-container: #ffffff;          /* Container background */
+            --bg-left-top: rgba(255, 255, 255, 0.95);
+            --bg-left-bottom: rgba(255, 255, 255, 0.95);
             --bg-input: rgba(255, 255, 255, 0.95);
             
-            /* Text Colors */
-            --text-primary: #202020;
-            --text-secondary: #343434;
-            --text-muted: #6B7280;
-            --text-placeholder: #9CA3AF;
-            --text-disabled: #D1D5DB;
+            /* Text Hierarchy */
+            --text-primary: #1f2937;         /* Main content */
+            --text-secondary: #6b7280;       /* Labels and descriptions */
+            --text-muted: #9ca3af;           /* Secondary information */
+            --text-placeholder: #9ca3af;      /* Placeholder text */
+            --text-disabled: #d1d5db;        /* Disabled text */
             
             /* Border Colors */
-            --border-light: #EAEAEA;
-            --border-medium: #E5E7EB;
+            --border-gradient: linear-gradient(90deg, #14b8a6 0%, #f59e0b 100%);
+            --border-light: #e5e7eb;         /* Light borders */
+            --border-medium: #d1d5db;        /* Medium borders */
             --border-glass: rgba(255, 255, 255, 0.3);
             
             /* Shadow Colors */
-            --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.08);
-            --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --shadow-strong: 0 16px 64px rgba(0, 0, 0, 0.2);
             --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.6);
             
             /* Avatar Colors */
-            --avatar-bg: #dbdbdb;
+            --avatar-bg: #f3f4f6;
         }
 
         /* Reset all default styles */
@@ -59,6 +69,7 @@
             overflow: hidden;
             font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-main);
+            color: var(--text-primary);
         }
 
         /* Main page container */
@@ -232,7 +243,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: #f3f3f3;
+            background: rgba(255, 255, 255, 0.861);
             border-radius: 16px;
             box-shadow: var(--shadow-medium);
             overflow: visible;
@@ -914,13 +925,13 @@
         }
 
         .detailed-diagnosis .detail-card.danger {
-            /* border-left: 3px solid #dc2626; */
-            /* background: #fef2f2; */
+            border-left: 3px solid var(--semantic-critical);
+            background: rgba(239, 68, 68, 0.05);
         }
 
         .detailed-diagnosis .detail-card.success {
-            /* border-left: 3px solid #059669; */
-            /* background: #f0fdf4; */
+            border-left: 3px solid var(--brand-primary);
+            background: rgba(20, 184, 166, 0.05);
         }
 
         .card-header {
@@ -1733,6 +1744,255 @@
                 -webkit-tap-highlight-color: transparent;
             }
         }
+
+        /* =========================================== */
+        /* MEDICAL ANALYSIS CARDS - NEW DESIGN SYSTEM */
+        /* =========================================== */
+        
+        .medical-analysis-container {
+            margin: 8px 0;
+        }
+        
+        .medical-analysis-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            border: 3px solid transparent;
+            background-clip: padding-box;
+        }
+        
+        .medical-analysis-card::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: var(--border-gradient);
+            border-radius: 19px;
+            z-index: -1;
+        }
+        
+        /* Summary Statement */
+        .summary-statement {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        /* Key Findings Section */
+        .key-findings {
+            margin-bottom: 24px;
+        }
+        
+        .finding-item {
+            margin-bottom: 12px;
+            padding: 8px 0;
+            line-height: 1.5;
+        }
+        
+        .finding-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .lab-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+        
+        .lab-value {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+        
+        .lab-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 400;
+        }
+        
+        /* Clinical Section */
+        .clinical-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: lowercase;
+        }
+        
+        .diagnosis-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        
+        .diagnosis-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--border-gradient);
+            border-radius: 14px;
+            z-index: -1;
+        }
+        
+        .diagnosis-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+            line-height: 1.5;
+        }
+        
+        /* Actions Section */
+        .actions-section {
+            margin-bottom: 0;
+        }
+        
+        .actions-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        
+        .actions-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--border-gradient);
+            border-radius: 14px;
+            z-index: -1;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            padding: 4px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .action-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .warning-icon {
+            font-size: 16px;
+            color: var(--semantic-warning);
+        }
+        
+        .action-text {
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+        
+        /* References Section */
+        .references-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .reference-item {
+            margin-bottom: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .reference-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .reference-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .reference-number {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 20px;
+        }
+        
+        .reference-source {
+            color: var(--text-primary);
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .reference-year {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .evidence-level {
+            background: var(--brand-gradient);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .reference-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+        
+        .reference-link {
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 12px;
+            background: rgba(20, 184, 166, 0.1);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+        
+        .reference-link:hover {
+            background: rgba(20, 184, 166, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -1812,8 +2072,8 @@
                 health: {
                     basic: '/api/v1/health/',
                     detailed: '/api/v1/health/detailed',
-                    ready: '/api/v1/health/ready',
-                    live: '/api/v1/health/live'
+                    readiness: '/api/v1/health/readiness',
+                    liveness: '/api/v1/health/liveness'
                 },
                 // Session management
                 sessions: {
@@ -1856,7 +2116,7 @@
                     });
                     return await response.json();
                 } catch (error) {
-                    console.error(`Health check failed (${type}):`, error);
+                    console.error(`Health check failed (${type}):`, error); 
                     throw error;
                 }
             }
@@ -1865,35 +2125,35 @@
             static async createSession(userId = 'user_123', title = 'New Session', textInput = null, file = null) {
                 try {
                     // Use URLSearchParams for form data instead of FormData
-                    const formData = new URLSearchParams();
-                    formData.append('user_id', userId);
-                    formData.append('title', title);
-                    
-                    if (textInput) {
-                        formData.append('text_input', textInput);
-                    }
-                    
-                    if (file) {
-                        formData.append('report_file', file);
-                    }
+                        const formData = new URLSearchParams();
+                        formData.append('user_id', userId);
+                        formData.append('title', title);
+                        
+                        if (textInput) {
+                            formData.append('text_input', textInput);
+                        }
+                        
+                        if (file) {
+                            formData.append('report_file', file);
+                        }
 
-                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.create}`, {
-                        method: 'POST',
-                        headers: { 
-                            'X-API-Key': API_CONFIG.apiKey,
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
+                        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sessions.create}`, {
+                            method: 'POST',
+                            headers: { 
+                                'X-API-Key': API_CONFIG.apiKey,
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
                         body: formData
-                    });
+                        });
 
-                    if (!response.ok) {
-                        const errorText = await response.text();
+                        if (!response.ok) {
+                            const errorText = await response.text();
                         console.error('API Error Response:', errorText);
-                        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-                    }
+                            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                        }
 
-                    const data = await response.json();
-                    return data;
+                        const data = await response.json();
+                        return data;
                 } catch (error) {
                     console.error('Error creating session:', error);
                     throw error;
@@ -1939,21 +2199,21 @@
             // Messaging methods
             static async sendMessage(sessionId, content, metadata = {}) {
                 try {
-                    const formData = new FormData();
-                    formData.append('content', content);
-                    formData.append('metadata', JSON.stringify(metadata));
+                        const formData = new FormData();
+                        formData.append('content', content);
+                        formData.append('metadata', JSON.stringify(metadata));
 
-                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.messages.send(sessionId)}`, {
-                        method: 'POST',
-                        headers: { 'X-API-Key': API_CONFIG.apiKey },
+                        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.messages.send(sessionId)}`, {
+                            method: 'POST',
+                            headers: { 'X-API-Key': API_CONFIG.apiKey },
                         body: formData
-                    });
+                        });
 
-                    if (!response.ok) {
+                        if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                        }
 
-                    return await response.json();
+                        return await response.json();
                 } catch (error) {
                     console.error('Error sending message:', error);
                     throw error;
@@ -1963,33 +2223,33 @@
             // File upload methods
             static async uploadReport(userId, file, textInput = null) {
                 try {
-                    const formData = new FormData();
-                    formData.append('user_id', userId);
-                    formData.append('file', file);
-                    
-                    if (textInput) {
-                        formData.append('text_input', textInput);
-                    }
+                        const formData = new FormData();
+                        formData.append('user_id', userId);
+                        formData.append('file', file);
+                        
+                        if (textInput) {
+                            formData.append('text_input', textInput);
+                        }
 
                     console.log('📤 Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type);
 
-                    const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.files.uploadReport}`, {
-                        method: 'POST',
-                        headers: { 'X-API-Key': API_CONFIG.apiKey },
+                        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.files.uploadReport}`, {
+                            method: 'POST',
+                            headers: { 'X-API-Key': API_CONFIG.apiKey },
                         body: formData
-                    });
+                        });
 
-                    console.log('📡 Upload response status:', response.status);
+                        console.log('📡 Upload response status:', response.status);
 
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error('Upload API Error Response:', errorText);
-                        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-                    }
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Upload API Error Response:', errorText);
+                            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                        }
 
-                    const data = await response.json();
-                    console.log('✅ Upload successful:', data);
-                    return data;
+                        const data = await response.json();
+                        console.log('✅ Upload successful:', data);
+                        return data;
                 } catch (error) {
                     console.error('Error uploading report:', error);
                     throw error;
@@ -2188,8 +2448,8 @@
             } catch (error) {
                 // Handle error - show fallback
                 removeMessageFromChat(loadingId);
-                const fallbackResponse = generateFallbackResponse(message);
-                addMessageToConversation(fallbackResponse, 'assistant');
+                    const fallbackResponse = generateFallbackResponse(message);
+                    addMessageToConversation(fallbackResponse, 'assistant');
             } finally {
                 isProcessing = false;
                 // Clear input
@@ -2218,47 +2478,115 @@
             // Wrap lists in proper HTML
             html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
             
-            return html;
+                return html;
         }
         
         function formatMedicalResponse(data) {
-            let formatted = '';
+            let html = '<div class="medical-analysis-container">';
+            html += '<div class="medical-analysis-card">';
             
+            // Summary Statement
             if (data.summary) {
-                formatted += `**Summary:** ${data.summary}\n\n`;
+                html += `<div class="summary-statement">${data.summary}</div>`;
             }
             
+            // Key Findings Section
             if (data.key_findings && Array.isArray(data.key_findings)) {
-                formatted += `**Key Findings:**\n`;
+                html += '<div class="key-findings">';
                 data.key_findings.forEach(finding => {
-                    formatted += `• ${finding}\n`;
+                    // Parse finding text to extract lab name, value, and description
+                    const parts = finding.split(' - ');
+                    const labPart = parts[0];
+                    const description = parts[1] || '';
+                    
+                    // Extract lab name and value - improved regex
+                    const labMatch = labPart.match(/^([A-Za-z\s]+)\s+([0-9.]+\s*[a-zA-Z\/%]*)\s*(.*)$/);
+                    if (labMatch) {
+                        const labName = labMatch[1].trim();
+                        const labValue = labMatch[2].trim();
+                        const additionalInfo = labMatch[3].trim();
+                        
+                        html += `
+                            <div class="finding-item">
+                                <span class="lab-name">${labName}</span>
+                                <span class="lab-value">${labValue}</span>
+                                ${additionalInfo ? `<span class="lab-description">${additionalInfo}</span>` : ''}
+                                ${description ? `<span class="lab-description">${description}</span>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        // Fallback for non-standard format
+                        html += `
+                            <div class="finding-item">
+                                <span class="lab-name">Finding</span>
+                                <span class="lab-value">${finding}</span>
+                            </div>
+                        `;
+                    }
                 });
-                formatted += '\n';
+                html += '</div>';
             }
             
+            // Clinical Impression Section
             if (data.clinical_impression) {
-                formatted += `**Clinical Impression:** ${data.clinical_impression}\n\n`;
+                html += `
+                    <div class="clinical-section">
+                        <div class="section-label">Clinical impression</div>
+                        <div class="diagnosis-container">
+                            <div class="diagnosis-text">${data.clinical_impression}</div>
+                        </div>
+                    </div>
+                `;
             }
             
+            // Immediate Actions Section
             if (data.immediate_actions && Array.isArray(data.immediate_actions)) {
-                formatted += `**Immediate Actions:**\n`;
+                html += `
+                    <div class="actions-section">
+                        <div class="section-label">Immediate actions</div>
+                        <div class="actions-container">
+                `;
                 data.immediate_actions.forEach(action => {
-                    formatted += `• ${action}\n`;
+                    html += `
+                        <div class="action-item">
+                            <span class="warning-icon">⚠️</span>
+                            <span class="action-text">${action}</span>
+                        </div>
+                    `;
                 });
-                formatted += '\n';
+                html += '</div></div>';
             }
             
+            // References Section
             if (data.citations && Array.isArray(data.citations)) {
-                formatted += `**References:**\n`;
+                html += `
+                    <div class="references-section">
+                        <div class="section-label">References</div>
+                        <ul class="references-list">
+                `;
                 data.citations.forEach((citation, index) => {
-                    formatted += `${index + 1}. ${citation.source}`;
-                    if (citation.year) formatted += ` (${citation.year})`;
-                    if (citation.link) formatted += ` - [View Source](${citation.link})`;
-                    formatted += '\n';
+                    // Enhanced citation structure with evidence level and description
+                    const evidenceLevel = citation.evidence_level ? `<span class="evidence-level">Level ${citation.evidence_level}</span>` : '';
+                    const description = citation.description ? `<div class="reference-description">${citation.description}</div>` : '';
+                    
+                    html += `
+                        <li class="reference-item">
+                            <div class="reference-header">
+                                <span class="reference-number">${index + 1}.</span>
+                                <span class="reference-source">${citation.source}</span>
+                                ${citation.year ? `<span class="reference-year">(${citation.year})</span>` : ''}
+                                ${evidenceLevel}
+                            </div>
+                            ${description}
+                            ${citation.link ? `<a href="${citation.link}" target="_blank" class="reference-link">View Source</a>` : ''}
+                        </li>
+                    `;
                 });
+                html += '</ul></div>';
             }
             
-            return formatted || 'Analysis completed. Please ask for more specific details.';
+            html += '</div></div>';
+            return html || '<div class="medical-analysis-card"><div class="summary-statement">Analysis completed. Please ask for more specific details.</div></div>';
         }
 
         function generateFallbackResponse(message) {
@@ -2401,11 +2729,11 @@
                     } else {
                         return "I can assist with the diagnosis process! For comprehensive diagnostic analysis, please upload the patient's test results PDF using the paperclip icon. I can then provide detailed diagnosis recommendations and supporting evidence.";
                     }
-                } else {
-                    // General response with PDF upload guidance
-                    if (hasUploadedPDF) {
-                        return responses[Math.floor(Math.random() * responses.length)] + " I can see you've uploaded test results - feel free to ask me any questions about the analysis or upload additional files if needed.";
                     } else {
+                    // General response with PDF upload guidance
+                if (hasUploadedPDF) {
+                        return responses[Math.floor(Math.random() * responses.length)] + " I can see you've uploaded test results - feel free to ask me any questions about the analysis or upload additional files if needed.";
+                } else {
                         return responses[Math.floor(Math.random() * responses.length)] + " For detailed medical analysis, I recommend uploading your test results PDF using the paperclip icon. I can then provide comprehensive insights and recommendations.";
                     }
                 }
