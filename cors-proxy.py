@@ -34,6 +34,11 @@ class CORSProxyHandler(BaseHTTPRequestHandler):
 
     def proxy_request(self, method):
         try:
+            # Handle static file requests
+            if self.path == '/' or self.path == '/index.html':
+                self.serve_static_file('index.html')
+                return
+            
             # Extract the target URL from the path
             if self.path.startswith('/proxy/'):
                 target_url = self.path[7:]  # Remove '/proxy/' prefix
@@ -84,6 +89,21 @@ class CORSProxyHandler(BaseHTTPRequestHandler):
         except Exception as e:
             print(f"Error proxying request: {e}")
             self.send_error(500, f"Proxy error: {str(e)}")
+
+    def serve_static_file(self, filename):
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(content.encode('utf-8'))
+        except FileNotFoundError:
+            self.send_error(404, f"File not found: {filename}")
+        except Exception as e:
+            self.send_error(500, f"Error serving file: {str(e)}")
 
     def log_message(self, format, *args):
         # Suppress default logging
